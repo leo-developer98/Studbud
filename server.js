@@ -5,11 +5,11 @@ const express = require('express');
 const app = express();
 
 // Serve static files from the public folder
-app.use(express.static('public'));
+app.use(express.static(__dirname + '/dist'));
 
 // Serve the index file for the root ("/") path
 app.get('/', function(req,res) {
-    res.sendFile(__dirname + '/public/index.html')
+    res.sendFile(__dirname + '/dist/index.html')
 })
 
 // Start the server, listening for incoming traffic and logging a message to the console
