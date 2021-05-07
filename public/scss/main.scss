@@ -1,6 +1,7 @@
-@import "_reset.scss";
-@import "_color.scss";
-@import "_layout.scss";
-@import "_typography.scss";
+@import "_reset";
+@import "_color";
+@import "_layout";
+@import "_typography";
 
-@import 'components/_navigation.scss';
+@import 'components/_navigation';
+@import 'components/tasklist';

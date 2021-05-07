@@ -445,6 +445,7 @@ id) /*: string*/
 var _componentsNavigation = require('./components/navigation');
 var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
 var _componentsNavigationDefault = _parcelHelpers.interopDefault(_componentsNavigation);
+require('./components/tasklist');
 // Navigation
 const links = document.querySelectorAll('.top_nav > ul > li > a');
 const pages = document.querySelectorAll('.page_container');
@@ -465,74 +466,8 @@ subNav.links.forEach(link => {
     subNav.setPage(pageId);
   });
 });
-// Task list
-const form = document.getElementById("taskForm");
-const button = document.getElementById("button");
-const tasks = document.getElementById("taskList");
-var taskDescription = document.getElementById("td");
-var dueDate = document.getElementById("dd");
-var completionTime = document.getElementById("ct");
-var priorityRating = document.getElementById("pr");
-var estimatedTime = document.getElementById("et");
-var completionStatus = document.getElementById("cs");
-button.addEventListener("click", function (event) {
-  event.preventDefault();
-  let td = taskDescription.value;
-  let dd = String(dueDate.value);
-  let ct = String(completionTime.value);
-  let pr = priorityRating.options[priorityRating.selectedIndex].value;
-  let et = estimatedTime.value;
-  let cs = completionStatus.value;
-  addTask(td, dd, ct, pr, et, cs);
-  console.log(taskList);
-});
-var taskList = [];
-function addTask(taskDescription, dueDate, completionTime, priorityRating, estimatedTime, completionStatus) {
-  let task = {
-    taskDescription,
-    dueDate,
-    completionTime,
-    priorityRating,
-    estimatedTime,
-    completionStatus
-  };
-  taskList.push(task);
-  showTask(task);
-}
-function showTask(task) {
-  // let item = document.createElement("ul");
-  // item.innerHTML  = "<p>" + task.taskDescription + "</p>";
-  // let itemDd = document.createElement("li");
-  // itemDd.innerHtml = "<h5>" + task.dueDate + "</h5>";
-  // let itemCt = document.createElement("li");
-  // itemCt.innerHTML = "<p>" + task.completionTime + "</p>";
-  // let itemPr = document.createElement("li");
-  // itemPr.innerHTML = "<p>" + task.priorityRating + "</p>";
-  // let itemEt = document.createElement("li");
-  // itemEt.innerHTML = "<p>" + task.estimatedTime + "</p>";
-  // let itemCs = document.createElement("li");
-  // itemCs.innerHTML = "<p>" + task.completionStatus + "</p>";
-  // Build the HTML structure into a single element
-  let item = document.createElement("ul");
-  item.innerHTML = "<h4>Task Due: " + task.dueDate + " @ " + task.completionTime + "</h4>" + "<p>Priority: <strong>" + task.priorityRating + "</strong></p><p>" + task.taskDescription + "</p><p>This will take you: <em>" + task.estimatedTime + " hours</em></p>";
-  let delButton = document.createElement("button");
-  let delButtonText = document.createTextNode("Delete Task");
-  delButton.appendChild(delButtonText);
-  delButton.addEventListener("click", function (event) {
-    event.preventDefault();
-    item.remove();
-  });
-  // item.appendChild(itemDd);
-  // item.appendChild(itemCt);
-  // item.appendChild(itemPr);
-  // item.appendChild(itemEt);
-  // item.appendChild(itemCs);
-  item.appendChild(delButton);
-  tasks.appendChild(item);
-  form.reset();
-}
 
-},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","./components/navigation":"2K1cj"}],"5gA8y":[function(require,module,exports) {
+},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","./components/navigation":"2K1cj","./components/tasklist":"Rj9Cl"}],"5gA8y":[function(require,module,exports) {
 "use strict";
 
 exports.interopDefault = function (a) {
@@ -606,6 +541,113 @@ class Navigation {
 }
 exports.default = Navigation;
 
-},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}]},["27Rzb","4OAbU"], "4OAbU", "parcelRequiref77e")
+},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"Rj9Cl":[function(require,module,exports) {
+// Task list 
+const form = document.getElementById("taskForm");
+const button = document.getElementById("button");
+const tasks = document.getElementById("taskList");
+
+var taskDescription = document.getElementById("td");
+var dueDate = document.getElementById("dd");
+var completionTime = document.getElementById("ct");
+var priorityRating = document.getElementById("pr");
+var estimatedTime = document.getElementById("et");
+var completionStatus = document.getElementById("cs");
+
+button.addEventListener("click", function(event) {
+  event.preventDefault();
+  let td = taskDescription.value;
+  let dd = String(dueDate.value);
+  let ct = String(completionTime.value);
+  let pr = priorityRating.options[priorityRating.selectedIndex].value;
+  let et = estimatedTime.value;
+  let cs = completionStatus.value;
+  addTask(td,dd,ct,pr,et,cs);
+  console.log(taskList);
+})
+
+var taskList = [];
+
+function addTask(taskDescription, dueDate, completionTime, priorityRating, estimatedTime, completionStatus) {
+  let task = {
+    id: Date.now(),
+    taskDescription,
+    dueDate,
+    completionTime,
+    priorityRating,
+    estimatedTime,
+    completionStatus
+  }
+  taskList.push(task);
+  showTask(task);
+}
+
+function showTask(task) {
+  // let item = document.createElement("ul");
+  // item.innerHTML  = "<p>" + task.taskDescription + "</p>";
+  // let itemDd = document.createElement("li");
+  // itemDd.innerHtml = "<h5>" + task.dueDate + "</h5>";
+  // let itemCt = document.createElement("li");
+  // itemCt.innerHTML = "<p>" + task.completionTime + "</p>";
+  // let itemPr = document.createElement("li");
+  // itemPr.innerHTML = "<p>" + task.priorityRating + "</p>";
+  // let itemEt = document.createElement("li");
+  // itemEt.innerHTML = "<p>" + task.estimatedTime + "</p>";
+  // let itemCs = document.createElement("li");
+  // itemCs.innerHTML = "<p>" + task.completionStatus + "</p>";
+
+  // Build the HTML structure into a single element
+
+updateEmpty();
+
+  let item = document.createElement("ul");
+  item.setAttribute('data-id', task.id);
+  item.innerHTML  = "<h4>Task Due: " + task.dueDate + " @ " + task.completionTime + "</h4>" +
+  "<p>Priority: <strong>" + task.priorityRating + "</strong></p><p>" + task.taskDescription + "</p><p>This will take you: <em>" + task.estimatedTime + " hours</em></p>";
+
+
+  let delButton = document.createElement("button");
+  let delButtonText = document.createTextNode("Delete Task");
+  delButton.appendChild(delButtonText);
+
+  delButton.addEventListener("click", function(event){
+    event.preventDefault();
+    let id = event.target.parentElement.getAttribute('data-id');
+    let index = taskList.findIndex(task => task.id === Number(id));
+
+    removeItemFromArray(taskList, index);
+    console.log(taskList);
+    updateEmpty();
+    item.remove();
+  })
+
+  // item.appendChild(itemDd);
+  // item.appendChild(itemCt);
+  // item.appendChild(itemPr);
+  // item.appendChild(itemEt);
+  // item.appendChild(itemCs);
+  item.appendChild(delButton);
+
+  tasks.appendChild(item);
+
+  form.reset();
+}
+
+function removeItemFromArray(arr, index) {
+    if (index > -1) {
+        arr.splice(index, 1);
+    }
+
+    return arr;
+}
+
+function updateEmpty() {
+    if (taskList.length > 0) {
+        document.getElementById('emptyTaskList').style.display = 'none';
+    } else {
+        document.getElementById('emptyTaskList').style.display = 'block';
+    }
+}
+},{}]},["27Rzb","4OAbU"], "4OAbU", "parcelRequiref77e")
 
 //# sourceMappingURL=index.8a5bc16d.js.map
