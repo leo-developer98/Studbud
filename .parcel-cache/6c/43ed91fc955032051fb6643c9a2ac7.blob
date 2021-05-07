@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+            
+<html lang="en">
+
+                
+<head>
+                
+    <title>Hello, world!</title>
+
+                
+    <meta charset="UTF-8">
+
+                
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+                
+    <meta name="description" content="">              
+</head>
+
+                
+<body>
+                
+    <h1>This is fucking cool</h1>
+    <form id="taskForm">
+        <label for="task">Task Description:</label>
+        <input type="text" name="task" id="td">
+        <br>
+
+        <label for="dueDate">Due Date:</label>
+        <input type="date" name="dueDate" id="dd">
+        <br>
+
+        <label for="completionTime">Completion Time:</label>
+        <input type="time" name="completionTime" id="ct">
+        <br>
+
+        <label for="priorityRanking">Priority Ranking:</label>
+        <select name="priorityRanking" id="pr">
+        <option value""="">Select from below:</option>
+        <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+        </select>
+        <br>
+        <!-- <label for="priorityRanking">Priority Ranking:</label>
+        <input type="text" name="priorityRanking" id="pr">
+        <br /> -->
+
+        <label for="estimatedTime">Estimated Time:</label>
+        <input type="number" name="estimatedTime" id="et" min="0" step="0.5">
+        <label for="task">hours</label>
+        <br>
+
+        <label for="completionStatus">Completion Status:</label>
+        <select name="completionStatus" id="cs">
+        <option value""="">Select from below:</option>
+        <option value="true">Completed</option>
+        <option value="false">Not Completed</option>
+        </select>
+        <br>
+        <input type="submit" id="button" value="Add Task">
+    </form>
+    <h3>Task List:</h3>
+    <div id="taskList">
+
+    </div>
+    <script src="4e6340146f7d0152c44dbd6ccf58b0e0"></script>            
+                
+</body>
+
+                
+</html>

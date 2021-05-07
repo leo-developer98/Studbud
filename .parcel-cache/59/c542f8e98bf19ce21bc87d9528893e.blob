@@ -1,0 +1,23 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+class Navigation {
+  constructor(links, pages) {
+    this.links = links;
+    this.pages = pages;
+    this.currentPage = null;
+  }
+  getLinks() {
+    console.log(this.links);
+  }
+  getHash(link) {
+    return link.href.split("#")[1];
+  }
+  setPage(pageId) {
+    this.currentPage = pageId;
+    console.log(this.currentPage);
+    this.links.forEach(link => {
+      link.classList.remove('active');
+    });
+  }
+}
+exports.default = Navigation;

@@ -20,9 +20,13 @@
   },
   "homepage": "https://github.com/leo-developer98/Studbud#readme",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "scss": "^1.32.11"
   },
   "devDependencies": {
-    "parcel": "^2.0.0-beta.2"
+    "@parcel/transformer-sass": "^2.0.0-beta.2",
+    "autoprefixer": "^10.2.5",
+    "parcel": "^2.0.0-beta.2",
+    "postcss": "^8.2.14"
   }
 }

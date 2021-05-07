@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+            
+<html lang="en">
+
+                
+<head>
+                
+    <title>StudBud</title>
+
+                
+    <meta charset="UTF-8">               
+    <meta name="viewport" content="width=device-width,initial-scale=1">            
+    <meta name="description" content="">            
+    <link href="/index.HASH_REF_80038805bd6829e42a01d0f20c72b7db.css" rel="stylesheet" type="text/css">  
+</head>
+
+                
+<body>
+    <nav class="top_nav">
+        <ul class="nav_links">
+            <li class="nav_item"><a href="#home" class="active">Home</a></li>
+            <li class="nav_item"><a href="#page1">Page 1</a></li>
+            <li class="nav_item"><a href="#page2">Page 2</a></li>
+            <li class="nav_item"><a href="#page3">Page 3</a></li>
+        </ul>
+    </nav>
+
+    <div id="home" class="page_container">
+        <h1>Add Task</h1>
+        <form id="taskForm">
+            <label for="task">Task Description:</label>
+            <input type="text" name="task" id="td">
+            <br>
+    
+            <label for="dueDate">Due Date:</label>
+            <input type="date" name="dueDate" id="dd">
+            <br>
+    
+            <label for="completionTime">Completion Time:</label>
+            <input type="time" name="completionTime" id="ct">
+            <br>
+    
+            <label for="priorityRanking">Priority Ranking:</label>
+            <select name="priorityRanking" id="pr">
+            <option value""="">Select from below:</option>
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+            </select>
+            <br>
+            <!-- <label for="priorityRanking">Priority Ranking:</label>
+            <input type="text" name="priorityRanking" id="pr">
+            <br /> -->
+    
+            <label for="estimatedTime">Estimated Time:</label>
+            <input type="number" name="estimatedTime" id="et" min="0" step="0.5">
+            <label for="task">hours</label>
+            <br>
+    
+            <label for="completionStatus">Completion Status:</label>
+            <select name="completionStatus" id="cs">
+            <option value""="">Select from below:</option>
+            <option value="true">Completed</option>
+            <option value="false">Not Completed</option>
+            </select>
+            <br>
+            <input type="submit" id="button" value="Add Task">
+        </form>
+    </div>
+                
+    <h1>Task List:</h1>
+    <div id="taskList">
+
+    </div>
+    <script src="/index.HASH_REF_97912cc17f1f5bdf37964fbc8a5bc16d.js"></script>            
+                
+</body>
+
+                
+</html>

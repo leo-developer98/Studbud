@@ -1,0 +1,27 @@
+nav {
+    width: 100%;
+    background-color: blue;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    
+    .nav_links {
+        list-style: none;
+        display: flex;
+        
+        .nav_item a {
+            display: inline-block;
+            text-decoration: none;
+            color: white;
+            padding: 1em 2em;
+
+            &:hover {
+                color: lime;
+            }
+
+            &.active {
+                font-weight: bold;
+            }
+        }
+    }
+}
