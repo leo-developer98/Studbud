@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+            
+<html lang="en">
+
+                
+<head>
+                
+    <title>StudBud</title>
+
+                
+    <meta charset="UTF-8">               
+    <meta name="viewport" content="width=device-width,initial-scale=1">            
+    <meta name="description" content="">            
+    <link href="ac2b17b88ef0ab3e3e3316d5a6be3892" rel="stylesheet" type="text/css">  
+</head>
+
+                
+<body class="app_container">
+    <nav class="top_nav">
+        <div class="task_btn"><i class="fas fa-list"></i></div>
+        <ul class="nav_links">
+            <li class="nav_item"><a href="#home" class="active">Home</a></li>
+            <li class="nav_item"><a href="#timers">Timers</a></li>
+            <li class="nav_item"><a href="#dictionary">Dictionary</a></li>
+            <li class="nav_item"><a href="#music_player">Music Player</a></li>
+            <li class="nav_item"><a href="#reading_list">Reading List</a></li>
+        </ul>
+    </nav>
+
+    <div id="home">
+        <div id="taskgrid">
+            <div id="taskList">
+                <h3>Task List:</h3>
+                <p id="emptyTaskList">You haven't added any tasks yet.</p>
+            </div>
+            <div id="add_task">
+                <form id="taskForm">
+                    <h3>Add Task</h3>
+                    <label for="task">Task Description:</label>
+                    <input type="text" name="task" id="td">
+                    <br>
+            
+                    <label for="dueDate">Due Date:</label>
+                    <input type="date" name="dueDate" id="dd">
+                    <br>
+            
+                    <label for="completionTime">Completion Time:</label>
+                    <input type="time" name="completionTime" id="ct">
+                    <br>
+            
+                    <label for="priorityRanking">Priority Ranking:</label>
+                    <select name="priorityRanking" id="pr">
+                    <option value="">Select from below:</option>
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                    </select>
+                    <br>
+                    <!-- <label for="priorityRanking">Priority Ranking:</label>
+                    <input type="text" name="priorityRanking" id="pr">
+                    <br /> -->
+            
+                    <label for="estimatedTime">Estimated Time:</label>
+                    <input type="number" name="estimatedTime" id="et" min="0" step="0.5">
+                    <label for="task">hours</label>
+                    <br>
+            
+                    <label for="completionStatus">Completion Status:</label>
+                    <select name="completionStatus" id="cs">
+                    <option value""="">Select from below:</option>
+                    <option value="true">Completed</option>
+                    <option value="false">Not Completed</option>
+                    </select>
+                    <br>
+                    <input type="submit" id="button" value="Add Task">
+                </form>
+            </div>
+            <div id="task_bottom">
+                <div class="add_btn"><i class="fas fa-plus fa-3x"></i></div>
+                <div></div>
+            </div>
+        </div>
+        <div id="kanban">
+            <h1>Heldfabodufbadfbla dasfbdksf af asdkflbdafkd alfd</h1>
+            <p>djafblkda l fjakdsl fadf kdf alkdf aldkf aldskf </p>
+        </div>
+    </div>
+
+    <div id="timers" class="page_container">
+        <h1>Page 1</h1>
+        <nav class="sub_nav">
+            <ul class="nav_links">
+                <li class="nav_item"><a href="#timers_p" class="active">Pomodoro Timer</a></li>
+                <li class="nav_item"><a href="#timers_s">Stopwatch Timer</a></li>
+            </ul>
+        </nav>
+
+        <div id="timers_p" class="sub_page_container">
+            <h2>Page 1 - 1</h2>
+            <p>nothing inside</p>
+        </div>
+        <div id="timers_s" class="sub_page_container" style="b2128223965640f2bf2992cdd0a10867">
+            <h2>Page 1 - 2</h2>
+            <p>nothing inside 2</p>
+        </div>
+    </div>
+                
+    <div id="dictionary" class="page_container">
+        <h1>Dictionary</h1>
+    </div>
+
+    <div id="music_player" class="page_container">
+        <h1>Music Player</h1>
+    </div>
+
+    <script src="4e6340146f7d0152c44dbd6ccf58b0e0"></script>            
+    <script src="7f6f3b94ad5f90428e6b3a7312e4519b" crossorigin="anonymous"></script>
+                
+</body>
+
+                
+</html>

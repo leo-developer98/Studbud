@@ -1,5 +1,5 @@
 /* Box sizing rules */
-@import url("https://fonts.googleapis.com/css?family=Poppins:400");
+@import url("https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100;0,200;0,300;0,400;1,100&display=swap");
 *,
 *::before,
 *::after {
@@ -78,14 +78,12 @@ select {
   }
 }
 .app_container {
-  background-color: #dff3fa;
+  background-color: #43519D;
+  overflow: hidden;
 }
 
-.page_container {
-  margin: 4em;
-}
 .page_container#home {
-  text-align: center;
+  display: block;
 }
 .page_container:not(#home) {
   display: none;
@@ -98,54 +96,29 @@ html {
 /*16px*/
 body {
   background: white;
-  font-family: "Poppins", sans-serif;
-  font-weight: 400;
-  line-height: 1.75;
+  font-family: "Raleway", sans-serif;
   color: #000000;
 }
 
-p {
-  margin-bottom: 1rem;
-}
-
-h1, h2, h3, h4, h5 {
-  margin: 3rem 0 1.38rem;
-  font-family: "Poppins", sans-serif;
-  font-weight: 400;
-  line-height: 1.3;
-}
-
-h1 {
-  margin-top: 0;
-  font-size: 3.052rem;
-}
-
-h2 {
-  font-size: 2.441rem;
-}
-
-h3 {
-  font-size: 1.953rem;
-}
-
-h4 {
-  font-size: 1.563rem;
-}
-
-h5 {
-  font-size: 1.25rem;
-}
-
-small, .text_small {
-  font-size: 0.8rem;
-}
-
 nav {
-  width: 100%;
-  background-color: blue;
   display: flex;
+  position: sticky;
+  background-color: #43519D;
+  color: white;
   justify-content: space-around;
+}
+nav .task_btn {
+  display: flex;
+  justify-content: center;
   align-items: center;
+  float: left;
+  margin-left: 20px;
+  cursor: pointer;
+  transition: all 0.5s ease-in-out;
+  color: white;
+}
+nav .task_btn.open {
+  color: lightgray;
 }
 nav .nav_links {
   list-style: none;
@@ -164,23 +137,150 @@ nav .nav_links .nav_item a.active {
   font-weight: bold;
 }
 
-.task_grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr;
-  grid-template-areas: "taskform tasklist";
-}
-
-#taskform {
-  grid-area: taskform;
-  max-width: 300px;
-  margin: 0 auto;
-}
-#taskform label {
-  display: block;
+.top_nav {
+  height: 100%;
   width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-#tasklist {
-  grid-area: tasklist;
+#taskWrapper {
+  display: block;
+  position: absolute;
+  width: 270px;
+  height: calc(100vh - 56px);
+  transition: all 0.35s ease-in-out;
+  background-color: #d4d4d4;
+  left: -270px;
+}
+#taskWrapper.open {
+  transition: all 0.35s ease-in-out;
+  left: 0px;
+}
+
+#taskgrid {
+  display: block;
+}
+#taskgrid h3 {
+  margin: 10px 20px;
+}
+#taskgrid #taskList {
+  display: block;
+  background-color: #d4d4d4;
+  height: 630px;
+  width: 100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+#taskgrid #taskList p {
+  margin: 0 20px;
+}
+#taskgrid #taskList .task_item {
+  display: block;
+  margin: 0 20px 10px 20px;
+  border-radius: 8px;
+  background-color: gray;
+  list-style: none;
+}
+
+#addTask {
+  display: block;
+  position: absolute;
+  width: 270px;
+  height: 400px;
+  background-color: whitesmoke;
+  bottom: calc(56px - 400px);
+  border-radius: 10px 10px 0 0;
+  padding: 10px;
+  overflow: hidden;
+  transition: all 0.5s ease-in-out;
+}
+#addTask.open {
+  bottom: 56px;
+  transition: all 0.5s ease-in-out;
+}
+#addTask #taskform {
+  width: 270px;
+  margin: 0 auto;
+  justify-content: left;
+  position: absolute;
+}
+#addTask #taskform label {
+  display: flex;
+  width: 100%;
+  float: left;
+}
+
+#addWrapper {
+  display: flex;
+  width: 270px;
+  position: absolute;
+  z-index: 9999;
+  bottom: 26px;
+  justify-content: center;
+  align-items: center;
+}
+#addWrapper .add_btn {
+  display: inline-block;
+  justify-content: center;
+  align-items: center;
+  color: #748AFF;
+  cursor: pointer;
+  padding: 0 4px;
+  background-color: white;
+  border-radius: 50%;
+  border: 10px solid white;
+}
+#addWrapper .add_btn:hover {
+  background-color: #748AFF;
+  border: 10px solid #748AFF;
+  color: white;
+}
+
+#task_bottom {
+  display: flex;
+  position: absolute;
+  height: 56px;
+  width: 270px;
+  bottom: 0;
+  background-color: #43519D;
+  align-items: center;
+}
+#task_bottom .more_btn {
+  display: inline-block;
+  color: white;
+  cursor: pointer;
+  margin: 5px;
+}
+
+#kanban {
+  left: 0;
+  padding: 10px;
+  width: 100%;
+  height: calc(100vh - 56px);
+  background-color: #fff;
+  transition: all 0.35s ease-in-out;
+}
+#kanban.open {
+  margin-left: 270px;
+  width: calc(100vw - 270px);
+  transition: all 0.35s ease-in-out;
+}
+
+.icons {
+  display: inline-block;
+}
+
+#taskList::-webkit-scrollbar {
+  width: 8px;
+}
+
+#taskList::-webkit-scrollbar-track {
+  display: none;
+}
+
+#taskList::-webkit-scrollbar-thumb {
+  background-color: #4e4e4e;
+  border-radius: 5px;
 }

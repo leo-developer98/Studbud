@@ -1,22 +1,156 @@
-.task_grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr;
-    grid-template-areas: "taskform tasklist";
+#taskWrapper {
+    display: block;
+    position: absolute;
+    width: 270px;
+    height: calc(100vh - 56px);
+    transition: all 0.35s ease-in-out;
+    background-color: rgb(212,212,212);
+    left: -270px;
 
-}
-
-#taskform {
-    grid-area: taskform;
-    max-width: 300px;
-    margin: 0 auto;
-
-    label {
-        display: block;
-        width: 100%;
+    &.open {
+        transition: all 0.35s ease-in-out;
+        left: 0px;
     }
 }
 
-#tasklist {
-    grid-area: tasklist;
+#taskgrid {
+    display: block;
+
+    h3 {
+        margin: 10px 20px;
+    }
+
+    #taskList {
+        display: block;
+        background-color: rgb(212,212,212);
+        height: 630px;
+        width: 100%;
+        overflow-y: scroll;
+        overflow-x: hidden;
+
+        p {
+            margin: 0 20px;
+        }
+
+
+        .task_item {
+            display: block;
+            margin: 0 20px 10px 20px;
+            border-radius: 8px;
+            background-color: gray;
+            list-style: none;
+        }
+    }
+}
+
+
+#addTask {
+    display: block;
+    position: absolute;
+    width: 270px;
+    height: 400px;
+    background-color: whitesmoke;
+    bottom: calc(56px - 400px);
+    border-radius: 10px 10px 0 0;
+    padding: 10px;
+    overflow: hidden;
+    transition: all 0.5s ease-in-out;
+
+    &.open {
+        bottom: 56px;
+        transition: all 0.5s ease-in-out;
+    }
+
+    #taskform {
+        width: 270px;
+        margin: 0 auto;
+        justify-content: left;
+        position: absolute;
+    
+        label {
+            display: flex;
+            width: 100%;
+            float: left;
+        }
+    } 
+} 
+
+
+#addWrapper {
+    display: flex;
+    width: 270px;
+    position: absolute;
+    z-index: 9999;
+    bottom: 26px;
+    justify-content: center;
+    align-items: center;
+
+    .add_btn {
+        display: inline-block;
+        justify-content: center;
+        align-items: center;
+        color: #748AFF;
+        cursor: pointer;
+        padding: 0 4px;
+        background-color: white;
+        border-radius: 50%;
+        border: 10px solid white;
+
+        &:hover {
+            background-color: #748AFF;
+            border: 10px solid #748AFF;
+            color: white;
+        }
+    }
+}
+
+#task_bottom {
+    display: flex;
+    position: absolute;
+    height: 56px;
+    width: 270px;
+    bottom: 0;
+    background-color: #43519D;
+    align-items: center;
+
+    .more_btn {
+        display: inline-block;
+        color: white;
+        cursor: pointer;
+        margin: 5px;
+    }
+}
+
+
+#kanban {
+    left: 0;
+    padding: 10px;
+    width: 100%;
+    height: calc(100vh - 56px);
+    background-color: #fff;
+    transition: all 0.35s ease-in-out;
+
+    &.open {
+        margin-left: 270px;
+        width: calc(100vw - 270px);
+        transition: all 0.35s ease-in-out;
+    }
+}
+
+
+.icons {
+    display: inline-block;
+}
+
+#taskList::-webkit-scrollbar {
+    width: 8px;
+}
+
+#taskList::-webkit-scrollbar-track {
+    display: none;
+}
+
+#taskList::-webkit-scrollbar-thumb {
+    background-color: #4e4e4e;
+    border-radius: 5px;
 }

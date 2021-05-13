@@ -467,7 +467,39 @@ subNav.links.forEach(link => {
   });
 });
 
-},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","./components/navigation":"2K1cj","./components/tasklist":"Rj9Cl"}],"5gA8y":[function(require,module,exports) {
+},{"./components/navigation":"2K1cj","./components/tasklist":"Rj9Cl","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"2K1cj":[function(require,module,exports) {
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+class Navigation {
+  constructor(links, pages) {
+    this.links = links;
+    this.pages = pages;
+    this.currentPage = null;
+  }
+  getLinks() {
+    console.log(this.links);
+  }
+  getHash(link) {
+    return link.href.split("#")[1];
+  }
+  setPage(pageId) {
+    this.currentPage = pageId;
+    console.log(this.currentPage);
+    this.links.forEach(link => {
+      link.classList.remove('active');
+      if (this.getHash(link) === pageId) {
+        link.classList.add('active');
+      }
+    });
+    this.pages.forEach(page => {
+      page.style.display = 'none';
+    });
+    document.getElementById(pageId).style.display = "block";
+  }
+}
+exports.default = Navigation;
+
+},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"5gA8y":[function(require,module,exports) {
 "use strict";
 
 exports.interopDefault = function (a) {
@@ -509,40 +541,10 @@ exports.export = function (dest, destName, get) {
     get: get
   });
 };
-},{}],"2K1cj":[function(require,module,exports) {
-var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
-_parcelHelpers.defineInteropFlag(exports);
-class Navigation {
-  constructor(links, pages) {
-    this.links = links;
-    this.pages = pages;
-    this.currentPage = null;
-  }
-  getLinks() {
-    console.log(this.links);
-  }
-  getHash(link) {
-    return link.href.split("#")[1];
-  }
-  setPage(pageId) {
-    this.currentPage = pageId;
-    console.log(this.currentPage);
-    this.links.forEach(link => {
-      link.classList.remove('active');
-      if (this.getHash(link) === pageId) {
-        link.classList.add('active');
-      }
-    });
-    this.pages.forEach(page => {
-      page.style.display = 'none';
-    });
-    document.getElementById(pageId).style.display = "block";
-  }
-}
-exports.default = Navigation;
-
-},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"Rj9Cl":[function(require,module,exports) {
+},{}],"Rj9Cl":[function(require,module,exports) {
 // Task list 
+const taskWrapper = document.getElementById("taskWrapper");
+const taskAll = document.getElementById("taskgrid");
 const form = document.getElementById("taskForm");
 const button = document.getElementById("button");
 const tasks = document.getElementById("taskList");
@@ -600,10 +602,20 @@ function showTask(task) {
 
 updateEmpty();
 
-  let item = document.createElement("ul");
+  let item = document.createElement("div");
+  item.setAttribute('class', 'task_item');
   item.setAttribute('data-id', task.id);
-  item.innerHTML  = "<h4>Task Due: " + task.dueDate + " @ " + task.completionTime + "</h4>" +
-  "<p>Priority: <strong>" + task.priorityRating + "</strong></p><p>" + task.taskDescription + "</p><p>This will take you: <em>" + task.estimatedTime + " hours</em></p>";
+  // item.innerHTML = "<p>" + task.taskDescription + "</p>";
+
+  // item.innerHTML = "<h3>" + task.taskDescription + "</h3>" + "<ul>" + "<li>" + task.dueDate + "</li>" + "<li>" + task.priorityRating + "</li>" + "<li>" + task.estimatedTime + "</li>" + "</ul>";
+  
+  // let taskDetails = document.createElement("div");
+  item.innerHTML = "<li>" + task.taskDescription + "</li>" + "<li> Due Date:" + task.dueDate + "</li>" + "<li> Priority Rating: " + task.priorityRating + "</li>" + "<li> Estimated Time: " + task.estimatedTime + "</li>";
+
+  // item.appendChild(taskDetails);
+  
+  // item.innerHTML  = "<h4>Task Due: " + task.dueDate + " @ " + task.completionTime + "</h4>" +
+  // "<p>Priority: <strong>" + task.priorityRating + "</strong></p><p>" + task.taskDescription + "</p><p>This will take you: <em>" + task.estimatedTime + " hours</em></p>";
 
 
   let delButton = document.createElement("button");
@@ -620,6 +632,7 @@ updateEmpty();
     updateEmpty();
     item.remove();
   })
+
 
   // item.appendChild(itemDd);
   // item.appendChild(itemCt);
@@ -648,6 +661,43 @@ function updateEmpty() {
         document.getElementById('emptyTaskList').style.display = 'block';
     }
 }
+
+
+
+const taskBtn = document.querySelector('.task_btn');
+const kanban = document.getElementById('kanban');
+
+let taskOpen = false;
+taskBtn.addEventListener('click', () => {
+  if(!taskOpen) {
+    taskBtn.classList.add('open');
+    taskAll.classList.add('open');
+    taskWrapper.classList.add('open');
+    kanban.classList.add('open');
+    taskOpen = true;
+  } else {
+    taskBtn.classList.remove('open');
+    taskAll.classList.remove('open');
+    taskWrapper.classList.remove('open');
+    kanban.classList.remove('open');
+    taskOpen = false;
+  }
+})
+
+const addBtn = document.querySelector('.add_btn');
+const addPage = document.getElementById('addTask');
+
+let addOpen = false;
+addBtn.addEventListener('click', () => {
+  if(!addOpen) {
+    addPage.classList.add('open');
+    addOpen = true;
+  } else {
+    addPage.classList.remove('open');
+    addOpen = false;
+  }
+})
+
 },{}]},["27Rzb","4OAbU"], "4OAbU", "parcelRequiref77e")
 
 //# sourceMappingURL=index.8a5bc16d.js.map

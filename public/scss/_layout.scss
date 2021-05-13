@@ -1,15 +1,16 @@
 .app_container {
-    background-color: rgb(223, 243, 250);
+    background-color: #43519D;
+    overflow: hidden;
 }
 
 .page_container {
-    margin: 4em;
 
     &#home {
-        text-align: center;
+        display: block;
     }
 
     &:not(#home) {
         display: none;
     }
 }
+

@@ -1,0 +1,182 @@
+/* Box sizing rules */
+@import url("https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100;0,200;0,300;0,400;1,100&display=swap");
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+/* Remove default padding */
+ul[class],
+ol[class] {
+  padding: 0;
+}
+/* Remove default margin */
+body,
+h1,
+h2,
+h3,
+h4,
+p,
+ul[class],
+ol[class],
+li,
+figure,
+figcaption,
+blockquote,
+dl,
+dd {
+  margin: 0;
+}
+/* Set core body defaults */
+body {
+  min-height: 100vh;
+  scroll-behavior: smooth;
+  text-rendering: optimizeSpeed;
+  line-height: 1.5;
+}
+/* Remove list styles on ul, ol elements with a class attribute */
+ul[class],
+ol[class] {
+  list-style: none;
+}
+/* A elements that don't have a class get default styles */
+a:not([class]) {
+  -webkit-text-decoration-skip: ink;
+          text-decoration-skip-ink: auto;
+}
+/* Make images easier to work with */
+img {
+  max-width: 100%;
+  display: block;
+}
+/* Natural flow and rhythm in articles by default */
+article > * + * {
+  margin-top: 1em;
+}
+/* Inherit fonts for inputs and buttons */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+/* Remove all animations and transitions for people that prefer not to see them */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    -webkit-animation-duration: 0.01ms !important;
+            animation-duration: 0.01ms !important;
+    -webkit-animation-iteration-count: 1 !important;
+            animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+.app_container {
+  background-color: #dff3fa;
+}
+.page_container {
+  margin: 4em;
+}
+.page_container#home {
+  text-align: center;
+}
+.page_container:not(#home) {
+  display: none;
+}
+html {
+  font-size: 100%;
+}
+/*16px*/
+body {
+  background: white;
+  font-family: "Raleway", sans-serif;
+  color: #000000;
+}
+nav {
+  width: 100%;
+  background-color: #43519D;
+  display: flex;
+  color: white;
+  justify-content: space-around;
+}
+nav .task_btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  float: left;
+  margin-left: 20px;
+  cursor: pointer;
+  transition: all 0.5s ease-in-out;
+  color: white;
+}
+nav .nav_links {
+  list-style: none;
+  display: flex;
+}
+nav .nav_links .nav_item a {
+  display: inline-block;
+  text-decoration: none;
+  color: white;
+  padding: 1em 2em;
+}
+nav .nav_links .nav_item a:hover {
+  color: lime;
+}
+nav .nav_links .nav_item a.active {
+  font-weight: bold;
+}
+.top_nav {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+.task_grid {
+  display: block;
+  width: 270px;
+  height: calc(100vh - 40px);
+  padding-top: 30px;
+  padding-left: 30px;
+  padding: 20px 20px 0 20px;
+  background-color: white;
+}
+#tasklist {
+  margin: 0 auto;
+  justify-content: left;
+}
+#tasklistul {
+  list-style: none;
+  margin-left: 0;
+}
+#tasklist .task_item {
+  display: block;
+  border: 3px solid gray;
+}
+#taskform {
+  max-width: 300px;
+  margin: 0 auto;
+  justify-content: left;
+}
+#taskform label {
+  display: flex;
+  width: 100%;
+  float: left;
+}
+.task_item ul {
+  list-style: none;
+}
+#kanban {
+  margin-left: 300px;
+  min-height: 380px;
+  background-color: #fff;
+  margin-left: 305px;
+  border-right: 1px solid #f1f1f1;
+  transition: opacity 0.25s cubic-bezier(0.4, 0, 0.6, 1);
+  position: relative;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overflow: hidden auto;
+  outline: 0;
+  transition: margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+/*# sourceMappingURL=index.HASH_REF_80038805bd6829e42a01d0f20c72b7db.css.map */
