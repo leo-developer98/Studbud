@@ -1,0 +1,211 @@
+// Task list 
+const taskWrapper = document.getElementById("taskWrapper");
+const taskAll = document.getElementById("taskgrid");
+const form = document.getElementById("taskForm");
+const tasks = document.getElementById("taskList");
+
+var taskDescription = document.getElementById("td");
+var dueDate = document.getElementById("dd");
+var completionTime = document.getElementById("ct");
+var priorityRating = document.getElementById("pr");
+var estimatedTime = document.getElementById("et");
+// var completionStatus = document.getElementById("cs");
+
+// var y = priorityRating.options;
+// var x = priorityRating.selectedIndex;
+// var prIndex = priorityRating.options[priorityRating.selectedIndex].index;
+
+
+const addBtn = document.getElementById('addBtn');
+const addPage = document.getElementById('addTask');
+const uploadBtn = document.getElementById('uploadBtn');
+const closeBtn = document.getElementById('closeAdd');
+
+let addOpen = false;
+
+// Add page open
+addBtn.addEventListener('click', () => {
+  if(!addOpen) {
+    addPage.classList.add('open');
+    addBtn.classList.add('open');
+    uploadBtn.classList.add('open');
+    addOpen = true;
+
+  } else {
+  }
+})
+
+// Add Tasks
+uploadBtn.addEventListener("click", function(event) {
+  if(addOpen) {
+    event.preventDefault();
+    let td = taskDescription.value;
+    let dd = String(dueDate.value);
+    let ct = String(completionTime.value);
+    let pr = priorityRating.options[priorityRating.selectedIndex].value;
+    let prIndex = priorityRating.options[priorityRating.selectedIndex].index;
+    let et = estimatedTime.value;
+    let cs = false;
+  
+    addTask(td,dd,ct,pr,prIndex,et,cs);
+    console.log(taskList);
+    // console.log(y[x].index);
+    // console.log(prIndex);
+  }
+})
+
+// Close add page
+closeBtn.addEventListener('click', () => {
+  if (addOpen) {
+    addPage.classList.remove('open');
+    addBtn.classList.remove('open');
+    uploadBtn.classList.remove('open');
+    addOpen = false;
+  } 
+})
+
+
+var taskList = [];
+
+function addTask(taskDescription, dueDate, completionTime, priorityRating, priorityRatingIndex, estimatedTime, completionStatus) {
+  let task = {
+    id: Date.now(),
+    taskDescription,
+    dueDate,
+    completionTime,
+    priorityRating,
+    priorityRatingIndex,
+    estimatedTime,
+    completionStatus
+  }
+  taskList.push(task);
+  showTask(task);
+}
+
+function showTask(task) {
+  // let item = document.createElement("ul");
+  // item.innerHTML  = "<p>" + task.taskDescription + "</p>";
+  // let itemDd = document.createElement("li");
+  // itemDd.innerHtml = "<h5>" + task.dueDate + "</h5>";
+  // let itemCt = document.createElement("li");
+  // itemCt.innerHTML = "<p>" + task.completionTime + "</p>";
+  // let itemPr = document.createElement("li");
+  // itemPr.innerHTML = "<p>" + task.priorityRating + "</p>";
+  // let itemEt = document.createElement("li");
+  // itemEt.innerHTML = "<p>" + task.estimatedTime + "</p>";
+  // let itemCs = document.createElement("li");
+  // itemCs.innerHTML = "<p>" + task.completionStatus + "</p>";
+
+  // Build the HTML structure into a single element
+
+updateEmpty();
+
+  let item = document.createElement("div");
+
+  item.setAttribute('class', 'task_item');
+  item.setAttribute('data-id', task.id);
+  // item.innerHTML = "<li>" + task.taskDescription + "</li>" + "<li> Due Date:" + task.dueDate + "</li>" + "<li> Priority Rating: " + task.priorityRating + "</li>" + "<li> Estimated Time: " + task.estimatedTime + "</li>";
+  item.classList.add('card');
+
+  let item_body = document.createElement('div');
+  item_body.setAttribute('class', 'card-body');
+
+  item_body.innerHTML = "<h5 class="card-titel"
+
+
+  let delButton = document.createElement("button");
+  let delButtonText = document.createTextNode("Delete Task");
+  delButton.appendChild(delButtonText);
+
+  delButton.addEventListener("click", function(event){
+    event.preventDefault();
+    let id = event.target.parentElement.getAttribute('data-id');
+    let index = taskList.findIndex(task => task.id === Number(id));
+
+    removeItemFromArray(taskList, index);
+    console.log(taskList);
+    updateEmpty();
+    item.remove();
+  })
+
+
+  // item.appendChild(itemDd);
+  // item.appendChild(itemCt);
+  // item.appendChild(itemPr);
+  // item.appendChild(itemEt);
+  // item.appendChild(itemCs);
+  item.appendChild(delButton);
+
+  tasks.appendChild(item);
+
+  form.reset();
+}
+
+function compareDueDate(a, b) {
+  if (a.dueDate < b.dueDate) {
+    return -1;
+  } else if (a.dueDate > b.dueDate) {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+
+function comparePriority(a, b) {
+  if (a.priorityRatingIndex < b.priorityRatingIndex) {
+    return -1;
+  } else if (a.priorityRatingIndex > b.priorityRatingIndex) {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+
+function compareEstimatedTime(a,b) {
+  if (a.estimatedTime < b.estimatedTime) {
+    return -1;
+  } else if (a.estimatedTime > b.estimatedTime) {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+
+
+function removeItemFromArray(arr, index) {
+    if (index > -1) {
+        arr.splice(index, 1);
+    }
+
+    return arr;
+}
+
+function updateEmpty() {
+    if (taskList.length > 0) {
+        document.getElementById('emptyTaskList').style.display = 'none';
+    } else {
+        document.getElementById('emptyTaskList').style.display = 'block';
+    }
+}
+
+
+
+const taskBtn = document.querySelector('.task_btn');
+const kanban = document.getElementById('kanban');
+
+let taskOpen = false;
+taskBtn.addEventListener('click', () => {
+  if(!taskOpen) {
+    taskBtn.classList.add('open');
+    taskAll.classList.add('open');
+    taskWrapper.classList.add('open');
+    kanban.classList.add('open');
+    taskOpen = true;
+  } else {
+    taskBtn.classList.remove('open');
+    taskAll.classList.remove('open');
+    taskWrapper.classList.remove('open');
+    kanban.classList.remove('open');
+    taskOpen = false;
+  }
+})

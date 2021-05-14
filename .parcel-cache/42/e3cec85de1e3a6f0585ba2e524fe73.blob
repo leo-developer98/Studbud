@@ -1,0 +1,292 @@
+/* Box sizing rules */
+@import url("https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100;0,200;0,300;0,400;1,100&display=swap");
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+/* Remove default padding */
+ul[class],
+ol[class] {
+  padding: 0;
+}
+/* Remove default margin */
+body,
+h1,
+h2,
+h3,
+h4,
+p,
+ul[class],
+ol[class],
+li,
+figure,
+figcaption,
+blockquote,
+dl,
+dd {
+  margin: 0;
+}
+/* Set core body defaults */
+body {
+  min-height: 100vh;
+  scroll-behavior: smooth;
+  text-rendering: optimizeSpeed;
+  line-height: 1.5;
+}
+/* Remove list styles on ul, ol elements with a class attribute */
+ul[class],
+ol[class] {
+  list-style: none;
+}
+/* A elements that don't have a class get default styles */
+a:not([class]) {
+  -webkit-text-decoration-skip: ink;
+          text-decoration-skip-ink: auto;
+}
+/* Make images easier to work with */
+img {
+  max-width: 100%;
+  display: block;
+}
+/* Natural flow and rhythm in articles by default */
+article > * + * {
+  margin-top: 1em;
+}
+/* Inherit fonts for inputs and buttons */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+/* Remove all animations and transitions for people that prefer not to see them */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    -webkit-animation-duration: 0.01ms !important;
+            animation-duration: 0.01ms !important;
+    -webkit-animation-iteration-count: 1 !important;
+            animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+.app_container {
+  background-color: #43519D;
+  overflow: hidden;
+}
+.page_container#home {
+  display: block;
+}
+.page_container:not(#home) {
+  display: none;
+}
+html {
+  font-size: 100%;
+}
+/*16px*/
+body {
+  background: white;
+  font-family: "Raleway", sans-serif;
+  color: #000000;
+}
+nav {
+  display: flex;
+  position: sticky;
+  background-color: #43519D;
+  color: white;
+  justify-content: space-around;
+}
+nav .task_btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  float: left;
+  margin-left: 20px;
+  cursor: pointer;
+  transition: all 0.5s ease-in-out;
+  color: white;
+}
+nav .task_btn.open {
+  color: lightgray;
+}
+nav .nav_links {
+  list-style: none;
+  display: flex;
+}
+nav .nav_links .nav_item a {
+  display: inline-block;
+  text-decoration: none;
+  color: white;
+  padding: 1em 2em;
+}
+nav .nav_links .nav_item a:hover {
+  color: lime;
+}
+nav .nav_links .nav_item a.active {
+  font-weight: bold;
+}
+.top_nav {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+@media only screen and (max-width: 450px) {
+  .top_nav {
+    display: none;
+  }
+}
+#taskWrapper {
+  display: block;
+  position: absolute;
+  width: 270px;
+  height: calc(100vh - 56px);
+  transition: all 0.35s ease-in-out;
+  background-color: #d4d4d4;
+  left: -270px;
+}
+#taskWrapper.open {
+  transition: all 0.35s ease-in-out;
+  left: 0px;
+}
+#taskgrid {
+  display: block;
+}
+#taskgrid h3 {
+  margin: 10px 20px;
+}
+#taskgrid #taskList {
+  display: block;
+  background-color: #d4d4d4;
+  height: 630px;
+  width: 100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+#taskgrid #taskList p {
+  margin: 0 20px;
+}
+#taskgrid #taskList .task_item {
+  display: block;
+  margin: 0 20px 10px 20px;
+  border-radius: 8px;
+  background-color: gray;
+  list-style: none;
+}
+#addTask {
+  display: block;
+  position: absolute;
+  width: 270px;
+  height: 450px;
+  background-color: whitesmoke;
+  bottom: calc(56px - 400px);
+  border-radius: 10px 10px 0 0;
+  padding: 10px;
+  overflow: hidden;
+  transition: all 0.5s ease-in-out;
+}
+#addTask.open {
+  bottom: 56px;
+  transition: all 0.5s ease-in-out;
+}
+#addTask #taskform {
+  width: 270px;
+  margin: 0 auto;
+  justify-content: left;
+  position: absolute;
+}
+#addTask #taskform:first-child {
+  display: inline-block;
+}
+#addTask #taskform label {
+  display: flex;
+  width: 100%;
+  float: left;
+}
+#closeAdd {
+  display: inline-flex;
+}
+#addWrapper {
+  display: flex;
+  width: 270px;
+  position: absolute;
+  z-index: 9999;
+  bottom: 26px;
+  justify-content: center;
+  align-items: center;
+}
+#addWrapper .add_btn {
+  display: inline-block;
+  justify-content: center;
+  align-items: center;
+  color: #748AFF;
+  cursor: pointer;
+  padding: 0 4px;
+  background-color: white;
+  border-radius: 50%;
+  border: 10px solid white;
+}
+#addWrapper .add_btn:hover {
+  background-color: #748AFF;
+  border: 10px solid #748AFF;
+  color: white;
+}
+#task_bottom {
+  display: flex;
+  position: absolute;
+  height: 56px;
+  width: 270px;
+  bottom: 0;
+  background-color: #43519D;
+  align-items: center;
+}
+#task_bottom .more_btn {
+  display: inline-block;
+  color: white;
+  cursor: pointer;
+  margin: 5px;
+}
+#kanban {
+  left: 0;
+  padding: 10px;
+  width: 100%;
+  height: calc(100vh - 56px);
+  background-color: #fff;
+  transition: all 0.35s ease-in-out;
+}
+#kanban.open {
+  margin-left: 270px;
+  width: calc(100vw - 270px);
+  transition: all 0.35s ease-in-out;
+}
+.icons {
+  display: inline-block;
+}
+#taskList::-webkit-scrollbar {
+  width: 8px;
+}
+#taskList::-webkit-scrollbar-track {
+  display: none;
+}
+#taskList::-webkit-scrollbar-thumb {
+  background-color: #4e4e4e;
+  border-radius: 5px;
+}
+@media only screen and (max-width: 450px) {
+  #kanban {
+    display: none;
+  }
+
+  #taskWrapper {
+    width: 100%;
+  }
+  #taskWrapper #addTask {
+    width: 100%;
+  }
+  #taskWrapper #task_bottom {
+    width: 100%;
+  }
+}
+/*# sourceMappingURL=index.HASH_REF_80038805bd6829e42a01d0f20c72b7db.css.map */

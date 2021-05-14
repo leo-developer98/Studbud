@@ -89,6 +89,14 @@ select {
   display: none;
 }
 
+.headings {
+  display: inline-block;
+}
+
+.btn-close {
+  float: right;
+}
+
 html {
   font-size: 100%;
 }
@@ -145,6 +153,11 @@ nav .nav_links .nav_item a.active {
   align-items: center;
 }
 
+@media only screen and (max-width: 450px) {
+  .top_nav {
+    display: none;
+  }
+}
 #taskWrapper {
   display: block;
   position: absolute;
@@ -177,20 +190,26 @@ nav .nav_links .nav_item a.active {
   margin: 0 20px;
 }
 #taskgrid #taskList .task_item {
-  display: block;
+  display: flex;
   margin: 0 20px 10px 20px;
+  width: 100px;
+  height: 75px;
   border-radius: 8px;
-  background-color: gray;
+  background-color: whitesmoke;
   list-style: none;
+}
+#taskgrid #taskList .card {
+  display: flex;
+  margin: 0 5px 10px 10px;
 }
 
 #addTask {
   display: block;
   position: absolute;
   width: 270px;
-  height: 400px;
+  height: 450px;
   background-color: whitesmoke;
-  bottom: calc(56px - 400px);
+  bottom: calc(56px - 450px);
   border-radius: 10px 10px 0 0;
   padding: 10px;
   overflow: hidden;
@@ -221,7 +240,7 @@ nav .nav_links .nav_item a.active {
   justify-content: center;
   align-items: center;
 }
-#addWrapper .add_btn {
+#addWrapper #addBtn {
   display: inline-block;
   justify-content: center;
   align-items: center;
@@ -232,7 +251,29 @@ nav .nav_links .nav_item a.active {
   border-radius: 50%;
   border: 10px solid white;
 }
-#addWrapper .add_btn:hover {
+#addWrapper #addBtn:hover {
+  background-color: #748AFF;
+  border: 10px solid #748AFF;
+  color: white;
+}
+#addWrapper #addBtn.open {
+  display: none;
+}
+#addWrapper #uploadBtn {
+  display: none;
+}
+#addWrapper #uploadBtn.open {
+  display: inline-block;
+  justify-content: center;
+  align-items: center;
+  color: #748AFF;
+  cursor: pointer;
+  background-color: white;
+  padding: 0 4px;
+  border-radius: 50%;
+  border: 10px solid white;
+}
+#addWrapper #uploadBtn.open:hover {
   background-color: #748AFF;
   border: 10px solid #748AFF;
   color: white;
@@ -283,4 +324,20 @@ nav .nav_links .nav_item a.active {
 #taskList::-webkit-scrollbar-thumb {
   background-color: #4e4e4e;
   border-radius: 5px;
+}
+
+@media only screen and (max-width: 450px) {
+  #kanban {
+    display: none;
+  }
+
+  #taskWrapper {
+    width: 100%;
+  }
+  #taskWrapper #addTask {
+    width: 100%;
+  }
+  #taskWrapper #task_bottom {
+    width: 100%;
+  }
 }

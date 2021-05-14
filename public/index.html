@@ -37,51 +37,35 @@
             </div>
             <div id="addTask">
                 <form id="taskForm">
-                    <h3>Add Task</h3>
-                    <label for="task">Task Description:</label>
-                    <input type="text" name="task" id="td">
-                    <br>
+                    <h3 class="headings">Add Task</h3>
+                    <button type="button" class="btn-close" aria-label="Close" id="closeAdd"></button>
+                    <label for="task" class="form-label">Task Description:</label>
+                    <input type="text" name="task" id="td" class="form-control form-control-sm" required>
             
                     <div class="icons"><i class="far fa-calendar"></i></div>
-                    <label for="dueDate">Due Date:</label>
-                    <input type="date" name="dueDate" id="dd">
-                    <br>
+                    <label for="dueDate" class="form-label">Due Date:</label>
+                    <input type="date" name="dueDate" id="dd" class="form-control form-control-sm">
             
                     <div class="icons"><i class="far fa-clock"></i></div>
-                    <label for="completionTime">Completion Time:</label>
-                    <input type="time" name="completionTime" id="ct">
-                    <br>
+                    <label for="completionTime" class="form-label">Completion Time:</label>
+                    <input type="time" name="completionTime" id="ct" class="form-control form-control-sm">
             
                     <div class="icons"><i class="fas fa-flag"></i></div>
-                    <label for="priorityRanking">Priority Ranking:</label>
-                    <select name="priorityRanking" id="pr">
+                    <label for="priorityRanking" class="form-label">Priority Ranking:</label>
+                    <select name="priorityRanking" id="pr" class="form-select form-select-sm">
                     <option value="">Select from below:</option>
                     <option value="low">Low</option>
                     <option value="medium">Medium</option>
                     <option value="high">High</option>
                     </select>
-                    <br>
-                    <!-- <label for="priorityRanking">Priority Ranking:</label>
-                    <input type="text" name="priorityRanking" id="pr">
-                    <br /> -->
             
-                    <label for="estimatedTime">Estimated Time:</label>
-                    <input type="number" name="estimatedTime" id="et" min="0" step="0.5">
-                    <label for="task">hours</label>
-                    <br>
-            
-                    <label for="completionStatus">Completion Status:</label>
-                    <select name="completionStatus" id="cs">
-                    <option value="">Select from below:</option>
-                    <option value="true">Completed</option>
-                    <option value="false">Not Completed</option>
-                    </select>
-                    <br>
-                    <input type="submit" id="button" value="Add Task">
+                    <label for="estimatedTime" class="form-label">Estimated Time (hours):</label>
+                    <input type="number" name="estimatedTime" id="et" min="0" step="0.5" class="form-control form-control-sm">
                 </form>
             </div>
             <div id="addWrapper">
-                <div class="add_btn"><i class="fas fa-plus fa-2x"></i></div>
+                <div id="addBtn"><i class="fas fa-plus fa-2x"></i></div>
+                <div id="uploadBtn"><i class="fas fa-arrow-up fa-2x"></i></i></div>
             </div>
             <div id="task_bottom">
                 <div class="more_btn"><i class="fas fa-ellipsis-h fa-2x"></i></div>
@@ -90,6 +74,7 @@
         <div id="kanban">
             <h1>Heldfabodufbadfbla dasfbdksf af asdkflbdafkd alfd</h1>
             <p>djafblkda l fjakdsl fadf kdf alkdf aldkf aldskf </p>
+            <div id="kanbanContainer"></div>
         </div>
     </div>
 
@@ -123,6 +108,10 @@
 
     <script src="script.js"></script>            
     <script src="https://kit.fontawesome.com/c7000e5e13.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link rel="stylesheet" href="./libraries/jkanban.min.css">
+    <script src="./libraries/jkanban.min.js"></script>
                 
 </body>
 

@@ -546,7 +546,6 @@ exports.export = function (dest, destName, get) {
 const taskWrapper = document.getElementById("taskWrapper");
 const taskAll = document.getElementById("taskgrid");
 const form = document.getElementById("taskForm");
-const button = document.getElementById("button");
 const tasks = document.getElementById("taskList");
 
 var taskDescription = document.getElementById("td");
@@ -554,29 +553,72 @@ var dueDate = document.getElementById("dd");
 var completionTime = document.getElementById("ct");
 var priorityRating = document.getElementById("pr");
 var estimatedTime = document.getElementById("et");
-var completionStatus = document.getElementById("cs");
+// var completionStatus = document.getElementById("cs");
 
-button.addEventListener("click", function(event) {
-  event.preventDefault();
-  let td = taskDescription.value;
-  let dd = String(dueDate.value);
-  let ct = String(completionTime.value);
-  let pr = priorityRating.options[priorityRating.selectedIndex].value;
-  let et = estimatedTime.value;
-  let cs = completionStatus.value;
-  addTask(td,dd,ct,pr,et,cs);
-  console.log(taskList);
+// var y = priorityRating.options;
+// var x = priorityRating.selectedIndex;
+// var prIndex = priorityRating.options[priorityRating.selectedIndex].index;
+
+
+const addBtn = document.getElementById('addBtn');
+const addPage = document.getElementById('addTask');
+const uploadBtn = document.getElementById('uploadBtn');
+const closeBtn = document.getElementById('closeAdd');
+
+let addOpen = false;
+
+// Add page open
+addBtn.addEventListener('click', () => {
+  if(!addOpen) {
+    addPage.classList.add('open');
+    addBtn.classList.add('open');
+    uploadBtn.classList.add('open');
+    addOpen = true;
+
+  } else {
+  }
 })
+
+// Add Tasks
+uploadBtn.addEventListener("click", function(event) {
+  if(addOpen) {
+    event.preventDefault();
+    let td = taskDescription.value;
+    let dd = String(dueDate.value);
+    let ct = String(completionTime.value);
+    let pr = priorityRating.options[priorityRating.selectedIndex].value;
+    let prIndex = priorityRating.options[priorityRating.selectedIndex].index;
+    let et = estimatedTime.value;
+    let cs = false;
+  
+    addTask(td,dd,ct,pr,prIndex,et,cs);
+    console.log(taskList);
+    // console.log(y[x].index);
+    // console.log(prIndex);
+  }
+})
+
+// Close add page
+closeBtn.addEventListener('click', () => {
+  if (addOpen) {
+    addPage.classList.remove('open');
+    addBtn.classList.remove('open');
+    uploadBtn.classList.remove('open');
+    addOpen = false;
+  } 
+})
+
 
 var taskList = [];
 
-function addTask(taskDescription, dueDate, completionTime, priorityRating, estimatedTime, completionStatus) {
+function addTask(taskDescription, dueDate, completionTime, priorityRating, priorityRatingIndex, estimatedTime, completionStatus) {
   let task = {
     id: Date.now(),
     taskDescription,
     dueDate,
     completionTime,
     priorityRating,
+    priorityRatingIndex,
     estimatedTime,
     completionStatus
   }
@@ -603,24 +645,48 @@ function showTask(task) {
 updateEmpty();
 
   let item = document.createElement("div");
-  item.setAttribute('class', 'task_item');
+  item.setAttribute('class', 'card');
+  // item.setAttribute('class', 'task_item');
   item.setAttribute('data-id', task.id);
-  // item.innerHTML = "<p>" + task.taskDescription + "</p>";
 
-  // item.innerHTML = "<h3>" + task.taskDescription + "</h3>" + "<ul>" + "<li>" + task.dueDate + "</li>" + "<li>" + task.priorityRating + "</li>" + "<li>" + task.estimatedTime + "</li>" + "</ul>";
-  
-  // let taskDetails = document.createElement("div");
-  item.innerHTML = "<li>" + task.taskDescription + "</li>" + "<li> Due Date:" + task.dueDate + "</li>" + "<li> Priority Rating: " + task.priorityRating + "</li>" + "<li> Estimated Time: " + task.estimatedTime + "</li>";
 
-  // item.appendChild(taskDetails);
-  
-  // item.innerHTML  = "<h4>Task Due: " + task.dueDate + " @ " + task.completionTime + "</h4>" +
-  // "<p>Priority: <strong>" + task.priorityRating + "</strong></p><p>" + task.taskDescription + "</p><p>This will take you: <em>" + task.estimatedTime + " hours</em></p>";
+  // item.innerHTML = "<li>" + task.taskDescription + "</li>" + "<li> Due Date:" + task.dueDate + "</li>" + "<li> Priority Rating: " + task.priorityRating + "</li>" + "<li> Estimated Time: " + task.estimatedTime + "</li>";
+  // item.classList.add('card');
+
+  let item_body = document.createElement('div');
+  item_body.setAttribute('class', 'card-body');
+
+  let item_title = document.createElement("h5");
+  item_title.setAttribute('class', 'card-title');
+  item_title.appendChild(document.createTextNode(task.taskDescription));
+
+  let item_dd = document.createElement("p");
+  item_dd.setAttribute('class', 'card-text');
+  item_dd.appendChild(document.createTextNode(task.dueDate));
+
+  let item_pr = document.createElement("p");
+  item_pr.setAttribute('class', 'card-text');
+  item_pr.appendChild(document.createTextNode(task.priorityRating));
+
+  let item_et = document.createElement("p");
+  item_et.setAttribute('class', 'card-text');
+  item_et.appendChild(document.createTextNode(task.estimatedTime));
+
+
+  item_body.appendChild(item_title);
+  item_body.appendChild(item_dd);
+  item_body.appendChild(item_pr);
+  item_body.appendChild(item_et);
+  item.appendChild(item_body);
+
 
 
   let delButton = document.createElement("button");
-  let delButtonText = document.createTextNode("Delete Task");
+  let delButtonText = document.createTextNode("Done");
   delButton.appendChild(delButtonText);
+
+  delButton.setAttribute('class', "btn btn-outline-success");
+  delButton.classList.add('task_delete');
 
   delButton.addEventListener("click", function(event){
     event.preventDefault();
@@ -645,6 +711,37 @@ updateEmpty();
 
   form.reset();
 }
+
+function compareDueDate(a, b) {
+  if (a.dueDate < b.dueDate) {
+    return -1;
+  } else if (a.dueDate > b.dueDate) {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+
+function comparePriority(a, b) {
+  if (a.priorityRatingIndex < b.priorityRatingIndex) {
+    return -1;
+  } else if (a.priorityRatingIndex > b.priorityRatingIndex) {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+
+function compareEstimatedTime(a,b) {
+  if (a.estimatedTime < b.estimatedTime) {
+    return -1;
+  } else if (a.estimatedTime > b.estimatedTime) {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+
 
 function removeItemFromArray(arr, index) {
     if (index > -1) {
@@ -684,20 +781,8 @@ taskBtn.addEventListener('click', () => {
   }
 })
 
-const addBtn = document.querySelector('.add_btn');
-const addPage = document.getElementById('addTask');
 
-let addOpen = false;
-addBtn.addEventListener('click', () => {
-  if(!addOpen) {
-    addPage.classList.add('open');
-    addOpen = true;
-  } else {
-    addPage.classList.remove('open');
-    addOpen = false;
-  }
-})
-
+// Kanban Board
 },{}]},["27Rzb","4OAbU"], "4OAbU", "parcelRequiref77e")
 
 //# sourceMappingURL=index.8a5bc16d.js.map

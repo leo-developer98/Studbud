@@ -34,11 +34,18 @@
 
 
         .task_item {
-            display: block;
+            display: flex;
             margin: 0 20px 10px 20px;
+            width: 100px;
+            height: 75px;
             border-radius: 8px;
-            background-color: gray;
+            background-color: whitesmoke;
             list-style: none;
+        }
+
+        .card {
+            display: flex;
+            margin: 0 5px 10px 10px;
         }
     }
 }
@@ -48,9 +55,9 @@
     display: block;
     position: absolute;
     width: 270px;
-    height: 400px;
+    height: 450px;
     background-color: whitesmoke;
-    bottom: calc(56px - 400px);
+    bottom: calc(56px - 450px);
     border-radius: 10px 10px 0 0;
     padding: 10px;
     overflow: hidden;
@@ -85,7 +92,7 @@
     justify-content: center;
     align-items: center;
 
-    .add_btn {
+    #addBtn {
         display: inline-block;
         justify-content: center;
         align-items: center;
@@ -100,6 +107,32 @@
             background-color: #748AFF;
             border: 10px solid #748AFF;
             color: white;
+        }
+
+        &.open {
+            display: none;
+        }
+    }
+
+    #uploadBtn {
+        display: none;
+
+        &.open {
+            display: inline-block;
+            justify-content: center;
+            align-items: center;
+            color: #748AFF;
+            cursor: pointer;
+            background-color: white;
+            padding: 0 4px;
+            border-radius: 50%;
+            border: 10px solid white;
+
+            &:hover {
+                background-color: #748AFF;
+                border: 10px solid #748AFF;
+                color: white;
+            }
         }
     }
 }
@@ -153,4 +186,27 @@
 #taskList::-webkit-scrollbar-thumb {
     background-color: #4e4e4e;
     border-radius: 5px;
+}
+
+
+
+
+
+
+@media only screen and (max-width: 450px) {
+    #kanban {
+        display: none;
+    }
+
+    #taskWrapper {
+        width: 100%;
+
+        #addTask {
+            width: 100%;
+        }
+
+        #task_bottom {
+            width: 100%;
+        }
+    }
 }
