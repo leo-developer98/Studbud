@@ -452,23 +452,23 @@ nav .nav_links .nav_item .nav_btn.active {
   background-color: #748aff;
   height: 60px;
 }
-#timers .modal-header #timerNav {
+#timers #timerNav {
   position: absolute;
   display: flex;
   justify-content: center;
   align-items: center;
 }
-#timers .modal-header #timerNav #timerTabs {
+#timers #timerNav #timerTabs {
   display: flex;
   background-color: #252e59;
   padding: 0.75rem;
   border-radius: 8px;
   align-items: center;
 }
-#timers .modal-header #timerNav #timerTabs > * {
+#timers #timerNav #timerTabs > * {
   z-index: 2;
 }
-#timers .modal-header #timerNav #timerTabs .tab {
+#timers #timerNav #timerTabs .tab {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -481,19 +481,19 @@ nav .nav_links .nav_item .nav_btn.active {
   font-weight: 0.5rem;
   color: #a0a0a0;
 }
-#timers .modal-header #timerNav #timerTabs input[type=radio] {
+#timers #timerNav #timerTabs input[type=radio] {
   display: none;
 }
-#timers .modal-header #timerNav #timerTabs input[type=radio]:checked + label {
+#timers #timerNav #timerTabs input[type=radio]:checked + label {
   color: white;
 }
-#timers .modal-header #timerNav #timerTabs input[id=tabP]:checked ~ .glider {
+#timers #timerNav #timerTabs input[id=tabP]:checked ~ .glider {
   transform: translateX(0);
 }
-#timers .modal-header #timerNav #timerTabs input[id=tabS]:checked ~ .glider {
+#timers #timerNav #timerTabs input[id=tabS]:checked ~ .glider {
   transform: translateX(100%);
 }
-#timers .modal-header #timerNav #timerTabs .glider {
+#timers #timerNav #timerTabs .glider {
   position: absolute;
   display: flex;
   margin: 0;
@@ -507,4 +507,16 @@ nav .nav_links .nav_item .nav_btn.active {
 #timers .modal-body {
   display: flex;
   height: 600px;
+}
+#timers .modal-body #timers_p {
+  display: none;
+}
+#timers .modal-body #timers_p.active {
+  display: block;
+}
+#timers .modal-body #timers_s {
+  display: block;
+}
+#timers .modal-body #timers_s.active {
+  display: block;
 }

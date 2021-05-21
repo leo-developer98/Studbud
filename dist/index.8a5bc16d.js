@@ -546,12 +546,10 @@ exports.export = function (dest, destName, get) {
   });
 };
 },{}],"Rj9Cl":[function(require,module,exports) {
-var _localStorageJs = require('./localStorage.js');
+var _taskStorageJs = require('./taskStorage.js');
 var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
-var _localStorageJsDefault = _parcelHelpers.interopDefault(_localStorageJs);
-var _librariesJkanbanMinJs = require('../libraries/jkanban.min.js');
-var _librariesJkanbanMinJsDefault = _parcelHelpers.interopDefault(_librariesJkanbanMinJs);
-// Task list
+var _taskStorageJsDefault = _parcelHelpers.interopDefault(_taskStorageJs);
+require('../libraries/jkanban.min.js');
 const taskWrapper = document.getElementById("taskWrapper");
 const taskAll = document.getElementById("taskgrid");
 const form = document.getElementById("taskForm");
@@ -561,6 +559,8 @@ var dueDate = document.getElementById("dd");
 var completionTime = document.getElementById("ct");
 var priorityRating = document.getElementById("pr");
 var estimatedTime = document.getElementById("et");
+var labelName = document.getElementById("newLabelInput");
+var labelColour = document.getElementById("labelColourInput");
 // var completionStatus = document.getElementById("cs");
 // var y = priorityRating.options;
 // var x = priorityRating.selectedIndex;
@@ -643,17 +643,33 @@ uploadBtn.addEventListener("click", function (event) {
     let prIndex = priorityRating.options[priorityRating.selectedIndex].index;
     let et = estimatedTime.value;
     let cs = false;
-    addTask(td, dd, ct, pr, prIndex, et, cs);
+    let label = {
+      name: labelName.value,
+      colour: labelColour.value
+    };
+    addTask(td, dd, ct, pr, prIndex, et, cs, label);
     console.log(taskList);
   }
 });
-var taskList = [];
-Object.keys(localStorage).forEach(function (key) {
-  let task = localStorage.getItem(key);
-  let taskObj = JSON.parse(task);
-  showTask(taskObj);
+// var taskList = [];
+// localStorage.setItem('tasks', JSON.stringify(taskList));
+// Object.keys(localStorage).forEach(function (key) {
+// let task = localStorage.getItem(key);
+// let taskObj = JSON.parse(task);
+// showTask(taskObj);
+// });
+// Object.keys(localStorage).forEach(function (key) {
+// let task = localStorage.getItem(key);
+// let taskObj = JSON.parse(task);
+// showTask(taskObj);
+// });
+// Task Storage
+const taskStorage = new _taskStorageJsDefault.default();
+const taskList = taskStorage.tasks;
+taskList.forEach(element => {
+  showTask(element);
 });
-function addTask(taskDescription, dueDate, completionTime, priorityRating, priorityRatingIndex, estimatedTime, completionStatus) {
+function addTask(taskDescription, dueDate, completionTime, priorityRating, priorityRatingIndex, estimatedTime, completionStatus, label) {
   let task = {
     id: Date.now(),
     taskDescription,
@@ -662,20 +678,31 @@ function addTask(taskDescription, dueDate, completionTime, priorityRating, prior
     priorityRating,
     priorityRatingIndex,
     estimatedTime,
-    completionStatus
+    completionStatus,
+    label
   };
   if (document.forms["taskForm"]["taskName"].value == "") {
     alert("Task Description must be filled out");
     return false;
   } else {
     let key = task.taskDescription.toString();
-    let value = JSON.stringify(task);
-    if (localStorage.getItem(key) === null) {
-      localStorage.setItem(key, value);
+    // let value = JSON.stringify(task);
+    // if (localStorage.getItem(key) === null) {
+    // localStorage.setItem(key, value);
+    // showTask(task);
+    if (taskStorage.getIndexByName(key) === -1) {
+      taskStorage.create(task, key);
       showTask(task);
     } else {
-      alert("Task " + taskDescription.toString() + " is already exists in the list");
+      alert("Task " + key + " is already exists in the list");
     }
+  }
+}
+function updateEmpty() {
+  if (taskList.length > 0) {
+    document.getElementById('emptyTaskList').style.display = 'none';
+  } else {
+    document.getElementById('emptyTaskList').style.display = 'block';
   }
 }
 function showTask(task) {
@@ -706,6 +733,16 @@ function showTask(task) {
   item_title.appendChild(document.createTextNode(task.taskDescription));
   item_body.appendChild(item_title);
   // Add details only when they exist
+  if (task.hasOwnProperty('label') && task['label']) {
+    let lb = document.createElement("div");
+    lb.setAttribute('class', 'task_details');
+    lb.innerHTML = '<i class="fas fa-tag"></i>';
+    let item_tag = document.createElement('span');
+    item_tag.setAttribute('class', 'badge');
+    item_tag.appendChild(document.createTextNode(task.label.name));
+    item_tag.style.backgroundColor = task.label.colour;
+    item_body.appendChild(item_tag);
+  }
   if (task.hasOwnProperty('dueDate') && task['dueDate']) {
     let dd = document.createElement("div");
     dd.setAttribute('class', 'task_details');
@@ -765,11 +802,12 @@ function showTask(task) {
   delButton.classList.add('deleteBtn');
   delButton.addEventListener("click", function (event) {
     event.preventDefault();
-    let id = event.target.parentElement.getAttribute('data-id');
-    let index = taskList.findIndex(task => task.id === Number(id));
-    removeItemFromArray(taskList, index);
-    console.log(taskList);
-    localStorage.removeItem(task.taskDescription.toString());
+    // let id = event.target.parentElement.getAttribute('data-id');
+    // let index = taskList.findIndex(task => task.id === Number(id));
+    // removeItemFromArray(taskList, index);
+    // console.log(taskList);
+    // localStorage.removeItem(task.taskDescription.toString());
+    taskStorage.delete(task.taskDescription.toString());
     item.remove();
     updateEmpty();
   });
@@ -820,182 +858,8 @@ function removeItemFromArray(arr, index) {
   }
   return arr;
 }
-function updateEmpty() {
-  if (localStorage.length > 0) {
-    document.getElementById('emptyTaskList').style.display = 'none';
-  } else {
-    document.getElementById('emptyTaskList').style.display = 'block';
-  }
-}
-// Local Storage
-const storage = new _localStorageJsDefault.default();
-const tasksStorage = storage.tasks;
-// Kanban Board
-// From jKanban example:
-var KanbanTest = new _librariesJkanbanMinJsDefault.default({
-  element: "#myKanban",
-  gutter: "10px",
-  widthBoard: "450px",
-  itemHandleOptions: {
-    enabled: true
-  },
-  click: function (el) {
-    console.log("Trigger on all items click!");
-  },
-  context: function (el, e) {
-    console.log("Trigger on all items right-click!");
-  },
-  dropEl: function (el, target, source, sibling) {
-    console.log(target.parentElement.getAttribute('data-id'));
-    console.log(el, target, source, sibling);
-  },
-  buttonClick: function (el, boardId) {
-    console.log(el);
-    console.log(boardId);
-    // create a form to enter element
-    var formItem = document.createElement("form");
-    formItem.setAttribute("class", "itemform");
-    formItem.innerHTML = '<div class="form-group"><textarea class="form-control" rows="2" autofocus></textarea></div><div class="form-group"><button type="submit" class="btn btn-primary btn-xs pull-right">Submit</button><button type="button" id="CancelBtn" class="btn btn-default btn-xs pull-right">Cancel</button></div>';
-    KanbanTest.addForm(boardId, formItem);
-    formItem.addEventListener("submit", function (e) {
-      e.preventDefault();
-      var text = e.target[0].value;
-      KanbanTest.addElement(boardId, {
-        title: text
-      });
-      formItem.parentNode.removeChild(formItem);
-    });
-    document.getElementById("CancelBtn").onclick = function () {
-      formItem.parentNode.removeChild(formItem);
-    };
-  },
-  itemAddOptions: {
-    enabled: true,
-    content: '+ Add New Card',
-    class: 'custom-button',
-    footer: true
-  },
-  boards: [{
-    id: "_todo",
-    title: "To Do (Can drop item only in working)",
-    class: "info,good",
-    dragTo: ["_working"],
-    item: [{
-      id: "_test_delete",
-      title: "Try drag this (Look the console)",
-      drag: function (el, source) {
-        console.log("START DRAG: " + el.dataset.eid);
-      },
-      dragend: function (el) {
-        console.log("END DRAG: " + el.dataset.eid);
-      },
-      drop: function (el) {
-        console.log("DROPPED: " + el.dataset.eid);
-      }
-    }, {
-      title: "Try Click This!",
-      click: function (el) {
-        alert("click");
-      },
-      context: function (el, e) {
-        alert("right-click at (" + `${e.pageX}` + "," + `${e.pageX}` + ")");
-      },
-      class: ["peppe", "bello"]
-    }]
-  }, {
-    id: "_working",
-    title: "Working (Try drag me too)",
-    class: "warning",
-    item: [{
-      title: "Do Something!"
-    }, {
-      title: "Run?"
-    }]
-  }, {
-    id: "_done",
-    title: "Done (Can drop item only in working)",
-    class: "success",
-    dragTo: ["_working"],
-    item: [{
-      title: "All right"
-    }, {
-      title: "Ok!"
-    }]
-  }]
-});
-var toDoButton = document.getElementById("addToDo");
-toDoButton.addEventListener("click", function () {
-  KanbanTest.addElement("_todo", {
-    title: "Test Add"
-  });
-});
-var addBoardDefault = document.getElementById("addDefault");
-addBoardDefault.addEventListener("click", function () {
-  KanbanTest.addBoards([{
-    id: "_default",
-    title: "Kanban Default",
-    item: [{
-      title: "Default Item"
-    }, {
-      title: "Default Item 2"
-    }, {
-      title: "Default Item 3"
-    }]
-  }]);
-});
-var removeBoard = document.getElementById("removeBoard");
-removeBoard.addEventListener("click", function () {
-  KanbanTest.removeBoard("_done");
-});
-var removeElement = document.getElementById("removeElement");
-removeElement.addEventListener("click", function () {
-  KanbanTest.removeElement("_test_delete");
-});
-var allEle = KanbanTest.getBoardElements("_todo");
-allEle.forEach(function (item, index) {});
 
-},{"./localStorage.js":"3aDed","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","../libraries/jkanban.min.js":"3IAxf"}],"3aDed":[function(require,module,exports) {
-var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
-_parcelHelpers.defineInteropFlag(exports);
-class LocalStorage {
-  constructor() {
-    // if item by key `tasks` is not defined JSON.parse return null, so I use `or empty array`
-    this.tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-  }
-  create(data) {
-    data.token = this.token;
-    this.tasks.push(data);
-    localStorage.setItem('tasks', JSON.stringify(this.tasks));
-  }
-  getIndexByToken(token) {
-    for (let i = 0; i < this.tasks.length; i++) {
-      if (this.tasks[i].token === token) {
-        return i;
-      }
-    }
-    return -1;
-  }
-  get token() {
-    return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-  }
-  update(data) {
-    let index = this.getIndexByToken(data.token);
-    if (index !== -1) {
-      this.tasks[index] = data;
-      localStorage.setItem('tasks', JSON.stringify(this.tasks));
-    }
-  }
-  delete(data) {
-    let index = this.getIndexByToken(data.token);
-    if (index !== -1) {
-      this.tasks.splice(index, 1);
-      localStorage.setItem('tasks', JSON.stringify(this.tasks));
-    }
-  }
-}
-exports.default = LocalStorage;
-
-},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"3IAxf":[function(require,module,exports) {
+},{"../libraries/jkanban.min.js":"3IAxf","./taskStorage.js":"3WapR","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"3IAxf":[function(require,module,exports) {
 var global = arguments[3];
 !(function () {
   return function e(t, n, o) {
@@ -1782,7 +1646,54 @@ var global = arguments[3];
   }]
 }, {}, [1]);
 
-},{}],"1ujtl":[function(require,module,exports) {
+},{}],"3WapR":[function(require,module,exports) {
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+class TaskStorage {
+  constructor() {
+    // if item by key `tasks` is not defined JSON.parse return null, so I use `or empty array`
+    this.tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+  }
+  create(item, name) {
+    item.name = name;
+    let index = this.getIndexByName(name);
+    if (index === -1) {
+      this.tasks.push(item);
+      localStorage.setItem('tasks', JSON.stringify(this.tasks));
+    } else {
+      console.log("Task already exist in the list");
+    }
+  }
+  getIndexByName(name) {
+    for (let i = 0; i < this.tasks.length; i++) {
+      if (this.tasks[i].name == name) {
+        return i;
+      }
+    }
+    return -1;
+  }
+  update(name) {
+    let index = this.getIndexByName(name);
+    if (index !== -1) {
+      this.tasks[index] = item;
+      localStorage.setItem('tasks', JSON.stringify(this.tasks));
+    } else {
+      console.log("Task doesn't exist in the list");
+    }
+  }
+  delete(name) {
+    let index = this.getIndexByName(name);
+    if (index !== -1) {
+      this.tasks.splice(index, 1);
+      localStorage.setItem('tasks', JSON.stringify(this.tasks));
+    } else {
+      console.log("Task doesn't exist in the list");
+    }
+  }
+}
+exports.default = TaskStorage;
+
+},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"1ujtl":[function(require,module,exports) {
 // MIT License
 
 // Copyright (c) 2017 Thiago Santos
@@ -1833,6 +1744,40 @@ var global = arguments[3];
 
 // $("radio").on('click', function() {
 //   console.log($("radio:chekced").val() + "is checked!");
+// });
+
+const tabP = document.getElementById('tabP');
+const tabS = document.getElementById('tabS');
+const timerP = document.getElementById('timers_p');
+const timerS = document.getElementById('timers_s');
+
+// if (tabP.checked) {
+//     console.log("pomodoro checked");
+//     timerP.classList.add('active');
+//     timerS.classList.remove('active');
+// } else if (tabS.checked) {
+//     console.log("stopwatch checked");
+//     timerP.classList.remove('active');
+//     timerS.classList.add('active');
+// }
+
+$(document).ready(function(){
+    $('input[id="tabP"]').click(function(){
+        timerP.classList.add("active");
+        timerS.classList.remove('active');
+    });
+    $('input[id="tabS"]').click(function(){
+        timerP.classList.remove("active");
+        timerS.classList.add('active');
+    });
+});
+
+// $('input:radio').on('change', function(e){
+//     var name = e.currentTarget.name,
+//     value = e.currentTarget.value;
+              
+//     $('.name').text(name);
+//     $('.value').text(value);
 // });
 },{}],"2jNHT":[function(require,module,exports) {
 

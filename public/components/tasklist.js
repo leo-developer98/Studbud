@@ -1,7 +1,6 @@
-import LocalStorage from './localStorage.js';
+import TaskStorage from './taskStorage.js';
 import jKanban from '../libraries/jkanban.min.js';
 
-// Task list 
 const taskWrapper = document.getElementById("taskWrapper");
 const taskAll = document.getElementById("taskgrid");
 const form = document.getElementById("taskForm");
@@ -12,6 +11,8 @@ var dueDate = document.getElementById("dd");
 var completionTime = document.getElementById("ct");
 var priorityRating = document.getElementById("pr");
 var estimatedTime = document.getElementById("et");
+var labelName = document.getElementById("newLabelInput");
+var labelColour = document.getElementById("labelColourInput");
 // var completionStatus = document.getElementById("cs");
 
 // var y = priorityRating.options;
@@ -108,8 +109,12 @@ uploadBtn.addEventListener("click", function (event) {
     let prIndex = priorityRating.options[priorityRating.selectedIndex].index;
     let et = estimatedTime.value;
     let cs = false;
+    let label = {
+      name: labelName.value,
+      colour: labelColour.value
+    }
 
-    addTask(td, dd, ct, pr, prIndex, et, cs);
+    addTask(td, dd, ct, pr, prIndex, et, cs, label);
     console.log(taskList);
     // console.log(y[x].index);
     // console.log(prIndex);
@@ -117,16 +122,34 @@ uploadBtn.addEventListener("click", function (event) {
 })
 
 
-var taskList = [];
+// var taskList = [];
 
-Object.keys(localStorage).forEach(function (key) {
-  let task = localStorage.getItem(key);
-  let taskObj = JSON.parse(task);
-  showTask(taskObj);
-});
+// localStorage.setItem('tasks', JSON.stringify(taskList));
+
+// Object.keys(localStorage).forEach(function (key) {
+//   let task = localStorage.getItem(key);
+//   let taskObj = JSON.parse(task);
+//   showTask(taskObj);
+// });
+
+// Object.keys(localStorage).forEach(function (key) {
+//   let task = localStorage.getItem(key);
+//   let taskObj = JSON.parse(task);
+//   showTask(taskObj);
+// });
 
 
-function addTask(taskDescription, dueDate, completionTime, priorityRating, priorityRatingIndex, estimatedTime, completionStatus) {
+
+// Task Storage
+const taskStorage = new TaskStorage();
+const taskList = taskStorage.tasks;
+
+taskList.forEach((element) => {
+  showTask(element);
+})
+
+
+function addTask(taskDescription, dueDate, completionTime, priorityRating, priorityRatingIndex, estimatedTime, completionStatus, label) {
   let task = {
     id: Date.now(),
     taskDescription,
@@ -135,7 +158,8 @@ function addTask(taskDescription, dueDate, completionTime, priorityRating, prior
     priorityRating,
     priorityRatingIndex,
     estimatedTime,
-    completionStatus
+    completionStatus,
+    label
   }
 
   if (document.forms["taskForm"]["taskName"].value == "") {
@@ -143,16 +167,28 @@ function addTask(taskDescription, dueDate, completionTime, priorityRating, prior
     return false;
   } else {
     let key = (task.taskDescription).toString();
-    let value = JSON.stringify(task);
+    // let value = JSON.stringify(task);
 
-    if (localStorage.getItem(key) === null) {
-      localStorage.setItem(key, value);
+    // if (localStorage.getItem(key) === null) {
+    //   localStorage.setItem(key, value);
+    //   showTask(task);
+    if (taskStorage.getIndexByName(key)  === -1) {
+      taskStorage.create(task, key);
       showTask(task);
     } else {
-      alert("Task " + taskDescription.toString() + " is already exists in the list")
+      alert("Task " + key + " is already exists in the list")
     }
   }
 }
+
+function updateEmpty() {
+  if (taskList.length > 0) {
+    document.getElementById('emptyTaskList').style.display = 'none';
+  } else {
+    document.getElementById('emptyTaskList').style.display = 'block';
+  }
+}
+
 
 function showTask(task) {
   // let item = document.createElement("ul");
@@ -191,6 +227,18 @@ function showTask(task) {
   item_body.appendChild(item_title);
 
   // Add details only when they exist
+  if (task.hasOwnProperty('label') && task['label']) {
+    let lb = document.createElement("div");
+    lb.setAttribute('class', 'task_details');
+    lb.innerHTML = '<i class="fas fa-tag"></i>';
+    
+    let item_tag = document.createElement('span');
+    item_tag.setAttribute('class', 'badge');
+    item_tag.appendChild(document.createTextNode(task.label.name));
+    item_tag.style.backgroundColor = task.label.colour;
+    item_body.appendChild(item_tag);
+  }
+
   if (task.hasOwnProperty('dueDate') && task['dueDate']) {
     let dd = document.createElement("div");
     dd.setAttribute('class', 'task_details');
@@ -256,6 +304,7 @@ function showTask(task) {
     et.appendChild(item_et);
     item_body.appendChild(et);
   }
+  
 
   item.appendChild(item_body);
 
@@ -270,12 +319,14 @@ function showTask(task) {
 
   delButton.addEventListener("click", function (event) {
     event.preventDefault();
-    let id = event.target.parentElement.getAttribute('data-id');
-    let index = taskList.findIndex(task => task.id === Number(id));
+    // let id = event.target.parentElement.getAttribute('data-id');
+    // let index = taskList.findIndex(task => task.id === Number(id));
+    // removeItemFromArray(taskList, index);
+    // console.log(taskList);
 
-    removeItemFromArray(taskList, index);
-    console.log(taskList);
-    localStorage.removeItem(task.taskDescription.toString());
+
+    // localStorage.removeItem(task.taskDescription.toString());
+    taskStorage.delete(task.taskDescription.toString());
     item.remove();
     updateEmpty();
   })
@@ -339,19 +390,6 @@ function removeItemFromArray(arr, index) {
   return arr;
 }
 
-function updateEmpty() {
-  if (localStorage.length > 0) {
-    document.getElementById('emptyTaskList').style.display = 'none';
-  } else {
-    document.getElementById('emptyTaskList').style.display = 'block';
-  }
-}
-
-
-
-// Local Storage
-const storage = new LocalStorage();
-const tasksStorage = storage.tasks;
 
 
 
@@ -359,156 +397,3 @@ const tasksStorage = storage.tasks;
 
 
 // Kanban Board
-
-// From jKanban example:
-
-var KanbanTest = new jKanban({
-  element: "#myKanban",
-  gutter: "10px",
-  widthBoard: "450px",
-  itemHandleOptions: {
-    enabled: true,
-  },
-  click: function (el) {
-    console.log("Trigger on all items click!");
-  },
-  context: function (el, e) {
-    console.log("Trigger on all items right-click!");
-  },
-  dropEl: function (el, target, source, sibling) {
-    console.log(target.parentElement.getAttribute('data-id'));
-    console.log(el, target, source, sibling)
-  },
-  buttonClick: function (el, boardId) {
-    console.log(el);
-    console.log(boardId);
-
-    // create a form to enter element
-    var formItem = document.createElement("form");
-    formItem.setAttribute("class", "itemform");
-    formItem.innerHTML =
-      '<div class="form-group"><textarea class="form-control" rows="2" autofocus></textarea></div><div class="form-group"><button type="submit" class="btn btn-primary btn-xs pull-right">Submit</button><button type="button" id="CancelBtn" class="btn btn-default btn-xs pull-right">Cancel</button></div>';
-
-    KanbanTest.addForm(boardId, formItem);
-    formItem.addEventListener("submit", function (e) {
-      e.preventDefault();
-      var text = e.target[0].value;
-      KanbanTest.addElement(boardId, {
-        title: text
-      });
-      formItem.parentNode.removeChild(formItem);
-    });
-    document.getElementById("CancelBtn").onclick = function () {
-      formItem.parentNode.removeChild(formItem);
-    };
-  },
-  itemAddOptions: {
-    enabled: true,
-    content: '+ Add New Card',
-    class: 'custom-button',
-    footer: true
-  },
-  boards: [
-    {
-      id: "_todo",
-      title: "To Do (Can drop item only in working)",
-      class: "info,good",
-      dragTo: ["_working"],
-      item: [
-        {
-          id: "_test_delete",
-          title: "Try drag this (Look the console)",
-          drag: function (el, source) {
-            console.log("START DRAG: " + el.dataset.eid);
-          },
-          dragend: function (el) {
-            console.log("END DRAG: " + el.dataset.eid);
-          },
-          drop: function (el) {
-            console.log("DROPPED: " + el.dataset.eid);
-          }
-        },
-        {
-          title: "Try Click This!",
-          click: function (el) {
-            alert("click");
-          },
-          context: function (el, e) {
-            alert("right-click at (" + `${e.pageX}` + "," + `${e.pageX}` + ")")
-          },
-          class: ["peppe", "bello"]
-        }
-      ]
-    },
-    {
-      id: "_working",
-      title: "Working (Try drag me too)",
-      class: "warning",
-      item: [
-        {
-          title: "Do Something!"
-        },
-        {
-          title: "Run?"
-        }
-      ]
-    },
-    {
-      id: "_done",
-      title: "Done (Can drop item only in working)",
-      class: "success",
-      dragTo: ["_working"],
-      item: [
-        {
-          title: "All right"
-        },
-        {
-          title: "Ok!"
-        }
-      ]
-    }
-  ]
-});
-
-var toDoButton = document.getElementById("addToDo");
-toDoButton.addEventListener("click", function () {
-  KanbanTest.addElement("_todo", {
-    title: "Test Add"
-  });
-});
-
-var addBoardDefault = document.getElementById("addDefault");
-addBoardDefault.addEventListener("click", function () {
-  KanbanTest.addBoards([
-    {
-      id: "_default",
-      title: "Kanban Default",
-      item: [
-        {
-          title: "Default Item"
-        },
-        {
-          title: "Default Item 2"
-        },
-        {
-          title: "Default Item 3"
-        }
-      ]
-    }
-  ]);
-});
-
-var removeBoard = document.getElementById("removeBoard");
-removeBoard.addEventListener("click", function () {
-  KanbanTest.removeBoard("_done");
-});
-
-var removeElement = document.getElementById("removeElement");
-removeElement.addEventListener("click", function () {
-  KanbanTest.removeElement("_test_delete");
-});
-
-var allEle = KanbanTest.getBoardElements("_todo");
-allEle.forEach(function (item, index) {
-  //console.log(item);
-});
