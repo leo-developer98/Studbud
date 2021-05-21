@@ -549,6 +549,8 @@ exports.export = function (dest, destName, get) {
 var _taskStorageJs = require('./taskStorage.js');
 var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
 var _taskStorageJsDefault = _parcelHelpers.interopDefault(_taskStorageJs);
+var _labelStorageJs = require('./labelStorage.js');
+var _labelStorageJsDefault = _parcelHelpers.interopDefault(_labelStorageJs);
 require('../libraries/jkanban.min.js');
 const taskWrapper = document.getElementById("taskWrapper");
 const taskAll = document.getElementById("taskgrid");
@@ -666,6 +668,9 @@ uploadBtn.addEventListener("click", function (event) {
 // Task Storage
 const taskStorage = new _taskStorageJsDefault.default();
 const taskList = taskStorage.tasks;
+// Label Storage
+const labelStorage = new _labelStorageJsDefault.default();
+const labelList = labelStorage.labels;
 taskList.forEach(element => {
   showTask(element);
 });
@@ -705,6 +710,52 @@ function updateEmpty() {
     document.getElementById('emptyTaskList').style.display = 'block';
   }
 }
+// Add created labels in LabelStorage to dropdown list
+const labelDropdown = document.getElementById('taskLabelDropdown');
+labelList.forEach(element => {
+  let labelSelect = document.createElement('li');
+  let labelBtn = document.createElement('button');
+  labelBtn.classList.add('btn');
+  labelBtn.classList.add('nav_btn');
+  labelBtn.classList.add('dropdown-item');
+  labelBtn.classList.add('label_btns');
+  labelBtn.innerHTML = element.name.toString();
+  // add Delete Button
+  let delButton = document.createElement("button");
+  // // let delButtonText = document.createTextNode("X");
+  // delButton.appendChild(delButtonText);
+  delButton.setAttribute('class', "btn-close");
+  delButton.classList.add('deleteBtn');
+  delButton.addEventListener("click", function (event) {
+    event.preventDefault();
+    labelStorage.delete(element);
+    labelSelect.remove();
+  });
+  labelSelect.appendChild(labelBtn);
+  labelSelect.appendChild(delButton);
+  labelDropdown.appendChild(labelSelect);
+});
+// Event Listener for label buttons in dropdown list
+const labelBtns = document.querySelectorAll(".label_btns");
+for (let i = 0; i < labelBtns.length; i++) {
+  labelBtns[i].addEventListener('click', function (e) {
+    let labelTitle = e.currentTarget.innerHTML;
+    console.log(labelTitle.toString());
+    document.getElementById("newLabelInput").value = labelTitle.toString();
+    let colour = labelStorage.getColour(labelTitle.toString());
+    document.getElementById("labelColourInput").value = colour;
+  });
+}
+// function updateLabel(label) {
+// let labelSelect = document.createElement('li');
+// let labelBtn = document.createElement('button');
+// labelBtn.classList.add('btn');
+// labelBtn.classList.add('nav_btn');
+// labelBtn.classList.add('dropdown-item');
+// labelBtn.innerHTML = label.name.toString();
+// labelSelect.appendChild(labelBtn);
+// labelDropdown.appendChild(labelSelect);
+// }
 function showTask(task) {
   // let item = document.createElement("ul");
   // item.innerHTML  = "<p>" + task.taskDescription + "</p>";
@@ -734,12 +785,19 @@ function showTask(task) {
   item_body.appendChild(item_title);
   // Add details only when they exist
   if (task.hasOwnProperty('label') && task['label']) {
-    let lb = document.createElement("div");
-    lb.setAttribute('class', 'task_details');
-    lb.innerHTML = '<i class="fas fa-tag"></i>';
+    // let lb = document.createElement("div");
+    // lb.setAttribute('class', 'task_details');
+    // lb.innerHTML = '<i class="fas fa-tag"></i>';
+    // if (labelStorage.getIndex(task.label) !== -1) {
+    // alert("Choose another label")
+    // } else {
+    labelStorage.create(task.label, task.label.name, task.label.colour);
+    let labelName = task.label.name;
+    let labelNameString = labelName.toString();
     let item_tag = document.createElement('span');
     item_tag.setAttribute('class', 'badge');
-    item_tag.appendChild(document.createTextNode(task.label.name));
+    item_tag.setAttribute('id', labelNameString);
+    item_tag.appendChild(document.createTextNode(labelName));
     item_tag.style.backgroundColor = task.label.colour;
     item_body.appendChild(item_tag);
   }
@@ -859,7 +917,7 @@ function removeItemFromArray(arr, index) {
   return arr;
 }
 
-},{"../libraries/jkanban.min.js":"3IAxf","./taskStorage.js":"3WapR","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"3IAxf":[function(require,module,exports) {
+},{"../libraries/jkanban.min.js":"3IAxf","./taskStorage.js":"3WapR","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","./labelStorage.js":"BKomJ"}],"3IAxf":[function(require,module,exports) {
 var global = arguments[3];
 !(function () {
   return function e(t, n, o) {
@@ -1692,6 +1750,65 @@ class TaskStorage {
   }
 }
 exports.default = TaskStorage;
+
+},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"BKomJ":[function(require,module,exports) {
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+class LabelStorage {
+  constructor() {
+    // if item by key `tasks` is not defined JSON.parse return null, so I use `or empty array`
+    this.labels = JSON.parse(localStorage.getItem('labels')) || [];
+  }
+  create(label, name, colour) {
+    label.name = name;
+    label.colour = colour;
+    let index = this.getIndex(label);
+    if (index === -1) {
+      this.labels.push(label);
+      localStorage.setItem('labels', JSON.stringify(this.labels));
+    } else {
+      console.log("Label already exist in the list");
+    }
+  }
+  getIndex(label) {
+    for (let i = 0; i < this.labels.length; i++) {
+      if (this.labels[i].colour == label.colour) {
+        return i;
+      } else if (this.labels[i].name == label.name) {
+        return i;
+      }
+    }
+    return -1;
+  }
+  getColour(name) {
+    for (let i = 0; i < this.labels.length; i++) {
+      if (this.labels[i].name == name) {
+        return this.labels[i].colour.toString();
+      }
+    }
+    // return -1;
+    console.log("cannot find the label: " + name.toString());
+  }
+  update(label) {
+    let index = this.getIndex(label);
+    if (index !== -1) {
+      this.labels[index] = label;
+      localStorage.setItem('labels', JSON.stringify(this.labels));
+    } else {
+      console.log("Label doesn't exist in the list");
+    }
+  }
+  delete(label) {
+    let index = this.getIndex(label);
+    if (index !== -1) {
+      this.labels.splice(index, 1);
+      localStorage.setItem('labels', JSON.stringify(this.labels));
+    } else {
+      console.log("Label doesn't exist in the list");
+    }
+  }
+}
+exports.default = LabelStorage;
 
 },{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"1ujtl":[function(require,module,exports) {
 // MIT License

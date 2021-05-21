@@ -280,6 +280,15 @@ nav .nav_links .nav_item .nav_btn.active {
 #taskWrapper #addTask label span {
   margin-left: 7px;
 }
+#taskWrapper #addTask #taskLabelDropdown .label_btns {
+  display: flex;
+  width: 75%;
+  float: left;
+}
+#taskWrapper #addTask #taskLabelDropdown .deleteBtn {
+  display: inline-block;
+  margin: 5px;
+}
 #uploadBtnContainer {
   display: flex;
   width: 270px;
@@ -487,7 +496,7 @@ nav .nav_links .nav_item .nav_btn.active {
   display: block;
 }
 #timers .modal-body #timers_s {
-  display: block;
+  display: none;
 }
 #timers .modal-body #timers_s.active {
   display: block;

@@ -1,0 +1,46 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+class LabelStorage {
+  constructor() {
+    // if item by key `tasks` is not defined JSON.parse return null, so I use `or empty array`
+    this.labels = JSON.parse(localStorage.getItem('labels')) || [];
+  }
+  create(label) {
+    let index = this.getIndex(label);
+    if (index === -1) {
+      this.labels.push(label);
+      localStorage.setItem('labels', JSON.stringify(this.labels));
+    } else {
+      console.log("Label already exist in the list");
+    }
+  }
+  getIndex(label) {
+    for (let i = 0; i < this.labels.length; i++) {
+      if (this.labels[i].colour == label.colour) {
+        return i;
+      } else if (this.labels[i].name == label.name) {
+        return i;
+      }
+    }
+    return -1;
+  }
+  update(label) {
+    let index = this.getIndex(label);
+    if (index !== -1) {
+      this.labels[index] = label;
+      localStorage.setItem('labels', JSON.stringify(this.labels));
+    } else {
+      console.log("Label doesn't exist in the list");
+    }
+  }
+  delete(label) {
+    let index = this.getIndexByName(name);
+    if (index !== -1) {
+      this.labels.splice(index, 1);
+      localStorage.setItem('labels', JSON.stringify(this.labels));
+    } else {
+      console.log("Label doesn't exist in the list");
+    }
+  }
+}
+exports.default = LabelStorage;
