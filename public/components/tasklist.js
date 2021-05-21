@@ -1,3 +1,6 @@
+import LocalStorage from './localStorage.js';
+import jKanban from '../libraries/jkanban.min.js';
+
 // Task list 
 const taskWrapper = document.getElementById("taskWrapper");
 const taskAll = document.getElementById("taskgrid");
@@ -15,29 +18,88 @@ var estimatedTime = document.getElementById("et");
 // var x = priorityRating.selectedIndex;
 // var prIndex = priorityRating.options[priorityRating.selectedIndex].index;
 
+Date.prototype.toDateInputValue = (function () {
+  var local = new Date(this);
+  local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
+  return local.toJSON().slice(0, 10);
+});
+
+// dueDate.value = new Date().toDateInputValue();
+
 
 const addBtn = document.getElementById('addBtn');
 const addPage = document.getElementById('addTask');
 const uploadBtn = document.getElementById('uploadBtn');
 const closeBtn = document.getElementById('closeAdd');
 
-let addOpen = false;
+const taskBtn = document.querySelector('.task_btn');
+const kanban = document.getElementById('kanban');
 
-// Add page open
+let taskOpen = false;
+// Event Listener: Task List Open
+taskBtn.addEventListener('click', () => {
+  if (!taskOpen) {
+    taskBtn.classList.add('open');
+    taskAll.classList.add('open');
+    taskWrapper.classList.add('open');
+    kanban.classList.add('open');
+    taskOpen = true;
+  } else {
+    taskBtn.classList.remove('open');
+    taskAll.classList.remove('open');
+    taskWrapper.classList.remove('open');
+    kanban.classList.remove('open');
+    taskOpen = false;
+  }
+})
+
+// close Task List when main page is clicked
+kanban.onclick = function () {
+  if (taskOpen) {
+    taskBtn.classList.remove('open');
+    taskAll.classList.remove('open');
+    taskWrapper.classList.remove('open');
+    kanban.classList.remove('open');
+    taskOpen = false;
+  }
+}
+
+// close Add Tasks when Task Grid is clicked
+taskAll.onclick = function () {
+  if (addOpen) {
+    addPage.classList.remove('open');
+    addBtn.classList.remove('open');
+    uploadBtn.classList.remove('open');
+    addOpen = false;
+  }
+}
+
+
+let addOpen = false;
+// Event Listener: Open Add Page
 addBtn.addEventListener('click', () => {
-  if(!addOpen) {
+  if (!addOpen) {
     addPage.classList.add('open');
     addBtn.classList.add('open');
     uploadBtn.classList.add('open');
     addOpen = true;
-
-  } else {
   }
 })
 
-// Add Tasks
-uploadBtn.addEventListener("click", function(event) {
-  if(addOpen) {
+// Event Listener: Close Add Page
+closeBtn.addEventListener('click', () => {
+  if (addOpen) {
+    addPage.classList.remove('open');
+    addBtn.classList.remove('open');
+    uploadBtn.classList.remove('open');
+    addOpen = false;
+  }
+})
+
+
+// Event Listener: Upload Tasks
+uploadBtn.addEventListener("click", function (event) {
+  if (addOpen) {
     event.preventDefault();
     let td = taskDescription.value;
     let dd = String(dueDate.value);
@@ -46,26 +108,23 @@ uploadBtn.addEventListener("click", function(event) {
     let prIndex = priorityRating.options[priorityRating.selectedIndex].index;
     let et = estimatedTime.value;
     let cs = false;
-  
-    addTask(td,dd,ct,pr,prIndex,et,cs);
+
+    addTask(td, dd, ct, pr, prIndex, et, cs);
     console.log(taskList);
     // console.log(y[x].index);
     // console.log(prIndex);
   }
 })
 
-// Close add page
-closeBtn.addEventListener('click', () => {
-  if (addOpen) {
-    addPage.classList.remove('open');
-    addBtn.classList.remove('open');
-    uploadBtn.classList.remove('open');
-    addOpen = false;
-  } 
-})
-
 
 var taskList = [];
+
+Object.keys(localStorage).forEach(function (key) {
+  let task = localStorage.getItem(key);
+  let taskObj = JSON.parse(task);
+  showTask(taskObj);
+});
+
 
 function addTask(taskDescription, dueDate, completionTime, priorityRating, priorityRatingIndex, estimatedTime, completionStatus) {
   let task = {
@@ -78,8 +137,21 @@ function addTask(taskDescription, dueDate, completionTime, priorityRating, prior
     estimatedTime,
     completionStatus
   }
-  taskList.push(task);
-  showTask(task);
+
+  if (document.forms["taskForm"]["taskName"].value == "") {
+    alert("Task Description must be filled out");
+    return false;
+  } else {
+    let key = (task.taskDescription).toString();
+    let value = JSON.stringify(task);
+
+    if (localStorage.getItem(key) === null) {
+      localStorage.setItem(key, value);
+      showTask(task);
+    } else {
+      alert("Task " + taskDescription.toString() + " is already exists in the list")
+    }
+  }
 }
 
 function showTask(task) {
@@ -98,11 +170,11 @@ function showTask(task) {
 
   // Build the HTML structure into a single element
 
-updateEmpty();
+  updateEmpty();
 
   let item = document.createElement("div");
   item.setAttribute('class', 'card');
-  // item.setAttribute('class', 'task_item');
+  item.classList.add('task_item');
   item.setAttribute('data-id', task.id);
 
 
@@ -116,44 +188,102 @@ updateEmpty();
   item_title.setAttribute('class', 'card-title');
   item_title.appendChild(document.createTextNode(task.taskDescription));
 
-  let item_dd = document.createElement("p");
-  item_dd.setAttribute('class', 'card-text');
-  item_dd.appendChild(document.createTextNode(task.dueDate));
-
-  let item_pr = document.createElement("p");
-  item_pr.setAttribute('class', 'card-text');
-  item_pr.appendChild(document.createTextNode(task.priorityRating));
-
-  let item_et = document.createElement("p");
-  item_et.setAttribute('class', 'card-text');
-  item_et.appendChild(document.createTextNode(task.estimatedTime));
-
-
   item_body.appendChild(item_title);
-  item_body.appendChild(item_dd);
-  item_body.appendChild(item_pr);
-  item_body.appendChild(item_et);
+
+  // Add details only when they exist
+  if (task.hasOwnProperty('dueDate') && task['dueDate']) {
+    let dd = document.createElement("div");
+    dd.setAttribute('class', 'task_details');
+    dd.innerHTML = '<i class="far fa-calendar"></i>';
+
+    let item_dd = document.createElement("p");
+    item_dd.setAttribute('class', 'card-text');
+    item_dd.appendChild(document.createTextNode(task.dueDate));
+
+    dd.appendChild(item_dd);
+    item_body.appendChild(dd);
+  }
+
+  if (task.hasOwnProperty('priorityRating') && task['priorityRating']) {
+    let pr = document.createElement("div");
+    pr.setAttribute('class', 'task_details');
+
+    if (task['priorityRating'] == "Low") {
+      pr.classList.add("low_pr");
+    }
+    else if (task['priorityRating']) {
+      pr.classList.add("medium_pr");
+    }
+    else if (task['priorityRating']) {
+      pr.classList.add("high_pr");
+    }
+    pr.innerHTML = '<i class="fas fa-flag"></i>';
+
+    let item_pr = document.createElement("p");
+    item_pr.setAttribute('class', 'card-text');
+    // item_pr.innerHTML('<i class="fas fa-flag"></i>');
+    item_pr.appendChild(document.createTextNode(task.priorityRating));
+
+    pr.appendChild(item_pr);
+    item_body.appendChild(pr);
+  }
+
+
+  // add estimated time input when theres an input value
+  // let etInput = document.forms["taskForm"]["estimatedTime"].value;
+  // if (etInput !== "") {
+  //   let et = document.createElement("div");
+  //   et.setAttribute('class', 'task_details');
+  //   et.innerHTML = '<i class="far fa-clock"></i>';
+
+  //   let item_et = document.createElement("p");
+  //   item_et.setAttribute('class', 'card-text');
+  //   item_et.appendChild(document.createTextNode(task.estimatedTime + " hours"));
+
+  //   et.appendChild(item_et);
+  //   item_body.appendChild(et);
+  // }
+
+  if (task.hasOwnProperty('estimatedTime') && task['estimatedTime']) {
+    let et = document.createElement("div");
+    et.setAttribute('class', 'task_details');
+    et.innerHTML = '<i class="far fa-clock"></i>';
+
+    let item_et = document.createElement("p");
+    item_et.setAttribute('class', 'card-text');
+    item_et.appendChild(document.createTextNode(task.estimatedTime + " hours"));
+
+    et.appendChild(item_et);
+    item_body.appendChild(et);
+  }
+
   item.appendChild(item_body);
 
 
-
+  // add Delete Button
   let delButton = document.createElement("button");
-  let delButtonText = document.createTextNode("Done");
+  let delButtonText = document.createTextNode("Delete");
   delButton.appendChild(delButtonText);
 
-  delButton.setAttribute('class', "btn btn-outline-success");
-  delButton.classList.add('task_delete');
+  delButton.setAttribute('class', "btn btn-outline-danger");
+  delButton.classList.add('deleteBtn');
 
-  delButton.addEventListener("click", function(event){
+  delButton.addEventListener("click", function (event) {
     event.preventDefault();
     let id = event.target.parentElement.getAttribute('data-id');
     let index = taskList.findIndex(task => task.id === Number(id));
 
     removeItemFromArray(taskList, index);
     console.log(taskList);
-    updateEmpty();
+    localStorage.removeItem(task.taskDescription.toString());
     item.remove();
+    updateEmpty();
   })
+
+  // Create "Move to Kanban" Button
+  let moveButton = document.createElement("button");
+  let moveButtonText = document.createTextNode("Move");
+  moveButton.appendChild(moveButtonText);
 
 
   // item.appendChild(itemDd);
@@ -167,6 +297,8 @@ updateEmpty();
 
   form.reset();
 }
+
+// Helper functions
 
 function compareDueDate(a, b) {
   if (a.dueDate < b.dueDate) {
@@ -188,7 +320,7 @@ function comparePriority(a, b) {
   }
 }
 
-function compareEstimatedTime(a,b) {
+function compareEstimatedTime(a, b) {
   if (a.estimatedTime < b.estimatedTime) {
     return -1;
   } else if (a.estimatedTime > b.estimatedTime) {
@@ -200,42 +332,183 @@ function compareEstimatedTime(a,b) {
 
 
 function removeItemFromArray(arr, index) {
-    if (index > -1) {
-        arr.splice(index, 1);
-    }
+  if (index > -1) {
+    arr.splice(index, 1);
+  }
 
-    return arr;
+  return arr;
 }
 
 function updateEmpty() {
-    if (taskList.length > 0) {
-        document.getElementById('emptyTaskList').style.display = 'none';
-    } else {
-        document.getElementById('emptyTaskList').style.display = 'block';
-    }
+  if (localStorage.length > 0) {
+    document.getElementById('emptyTaskList').style.display = 'none';
+  } else {
+    document.getElementById('emptyTaskList').style.display = 'block';
+  }
 }
 
 
 
-const taskBtn = document.querySelector('.task_btn');
-const kanban = document.getElementById('kanban');
+// Local Storage
+const storage = new LocalStorage();
+const tasksStorage = storage.tasks;
 
-let taskOpen = false;
-taskBtn.addEventListener('click', () => {
-  if(!taskOpen) {
-    taskBtn.classList.add('open');
-    taskAll.classList.add('open');
-    taskWrapper.classList.add('open');
-    kanban.classList.add('open');
-    taskOpen = true;
-  } else {
-    taskBtn.classList.remove('open');
-    taskAll.classList.remove('open');
-    taskWrapper.classList.remove('open');
-    kanban.classList.remove('open');
-    taskOpen = false;
-  }
-})
+
+
+
 
 
 // Kanban Board
+
+// From jKanban example:
+
+var KanbanTest = new jKanban({
+  element: "#myKanban",
+  gutter: "10px",
+  widthBoard: "450px",
+  itemHandleOptions: {
+    enabled: true,
+  },
+  click: function (el) {
+    console.log("Trigger on all items click!");
+  },
+  context: function (el, e) {
+    console.log("Trigger on all items right-click!");
+  },
+  dropEl: function (el, target, source, sibling) {
+    console.log(target.parentElement.getAttribute('data-id'));
+    console.log(el, target, source, sibling)
+  },
+  buttonClick: function (el, boardId) {
+    console.log(el);
+    console.log(boardId);
+
+    // create a form to enter element
+    var formItem = document.createElement("form");
+    formItem.setAttribute("class", "itemform");
+    formItem.innerHTML =
+      '<div class="form-group"><textarea class="form-control" rows="2" autofocus></textarea></div><div class="form-group"><button type="submit" class="btn btn-primary btn-xs pull-right">Submit</button><button type="button" id="CancelBtn" class="btn btn-default btn-xs pull-right">Cancel</button></div>';
+
+    KanbanTest.addForm(boardId, formItem);
+    formItem.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var text = e.target[0].value;
+      KanbanTest.addElement(boardId, {
+        title: text
+      });
+      formItem.parentNode.removeChild(formItem);
+    });
+    document.getElementById("CancelBtn").onclick = function () {
+      formItem.parentNode.removeChild(formItem);
+    };
+  },
+  itemAddOptions: {
+    enabled: true,
+    content: '+ Add New Card',
+    class: 'custom-button',
+    footer: true
+  },
+  boards: [
+    {
+      id: "_todo",
+      title: "To Do (Can drop item only in working)",
+      class: "info,good",
+      dragTo: ["_working"],
+      item: [
+        {
+          id: "_test_delete",
+          title: "Try drag this (Look the console)",
+          drag: function (el, source) {
+            console.log("START DRAG: " + el.dataset.eid);
+          },
+          dragend: function (el) {
+            console.log("END DRAG: " + el.dataset.eid);
+          },
+          drop: function (el) {
+            console.log("DROPPED: " + el.dataset.eid);
+          }
+        },
+        {
+          title: "Try Click This!",
+          click: function (el) {
+            alert("click");
+          },
+          context: function (el, e) {
+            alert("right-click at (" + `${e.pageX}` + "," + `${e.pageX}` + ")")
+          },
+          class: ["peppe", "bello"]
+        }
+      ]
+    },
+    {
+      id: "_working",
+      title: "Working (Try drag me too)",
+      class: "warning",
+      item: [
+        {
+          title: "Do Something!"
+        },
+        {
+          title: "Run?"
+        }
+      ]
+    },
+    {
+      id: "_done",
+      title: "Done (Can drop item only in working)",
+      class: "success",
+      dragTo: ["_working"],
+      item: [
+        {
+          title: "All right"
+        },
+        {
+          title: "Ok!"
+        }
+      ]
+    }
+  ]
+});
+
+var toDoButton = document.getElementById("addToDo");
+toDoButton.addEventListener("click", function () {
+  KanbanTest.addElement("_todo", {
+    title: "Test Add"
+  });
+});
+
+var addBoardDefault = document.getElementById("addDefault");
+addBoardDefault.addEventListener("click", function () {
+  KanbanTest.addBoards([
+    {
+      id: "_default",
+      title: "Kanban Default",
+      item: [
+        {
+          title: "Default Item"
+        },
+        {
+          title: "Default Item 2"
+        },
+        {
+          title: "Default Item 3"
+        }
+      ]
+    }
+  ]);
+});
+
+var removeBoard = document.getElementById("removeBoard");
+removeBoard.addEventListener("click", function () {
+  KanbanTest.removeBoard("_done");
+});
+
+var removeElement = document.getElementById("removeElement");
+removeElement.addEventListener("click", function () {
+  KanbanTest.removeElement("_test_delete");
+});
+
+var allEle = KanbanTest.getBoardElements("_todo");
+allEle.forEach(function (item, index) {
+  //console.log(item);
+});

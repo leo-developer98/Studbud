@@ -3,5 +3,9 @@
 @import "_layout";
 @import "_typography";
 
-@import 'components/_navigation';
-@import 'components/tasklist';
+@import "components/navigation";
+@import "components/tasklist";
+@import "components/timers";
+@import "components/dictionary";
+@import "components/_readinglist";
+@import "components/musicplayer";

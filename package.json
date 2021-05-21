@@ -21,7 +21,9 @@
   "homepage": "https://github.com/leo-developer98/Studbud#readme",
   "dependencies": {
     "express": "^4.17.1",
-    "scss": "^1.32.11"
+    "jquery": "^3.6.0",
+    "scss": "^1.32.11",
+    "urban-dictionary": "^3.0.0"
   },
   "devDependencies": {
     "@parcel/transformer-sass": "^2.0.0-beta.2",

@@ -1,0 +1,392 @@
+/* Box sizing rules */
+@import url("https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100;0,200;0,300;0,400;1,100&display=swap");
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+/* Remove default padding */
+ul[class],
+ol[class] {
+  padding: 0;
+}
+/* Remove default margin */
+body,
+h1,
+h2,
+h3,
+h4,
+p,
+ul[class],
+ol[class],
+li,
+figure,
+figcaption,
+blockquote,
+dl,
+dd {
+  margin: 0;
+}
+/* Set core body defaults */
+body {
+  min-height: 100vh;
+  scroll-behavior: smooth;
+  text-rendering: optimizeSpeed;
+  line-height: 1.5;
+}
+/* Remove list styles on ul, ol elements with a class attribute */
+ul[class],
+ol[class] {
+  list-style: none;
+}
+/* A elements that don't have a class get default styles */
+a:not([class]) {
+  -webkit-text-decoration-skip: ink;
+          text-decoration-skip-ink: auto;
+}
+/* Make images easier to work with */
+img {
+  max-width: 100%;
+  display: block;
+}
+/* Natural flow and rhythm in articles by default */
+article > * + * {
+  margin-top: 1em;
+}
+/* Inherit fonts for inputs and buttons */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+/* Remove all animations and transitions for people that prefer not to see them */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    -webkit-animation-duration: 0.01ms !important;
+            animation-duration: 0.01ms !important;
+    -webkit-animation-iteration-count: 1 !important;
+            animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+.app_container {
+  background-color: #43519D;
+  overflow: hidden;
+}
+.page_container#home {
+  display: block;
+}
+.page_container:not(#home) {
+  display: none;
+}
+.headings {
+  display: inline-block;
+}
+.btn-close {
+  float: right;
+}
+.modal {
+  display: none;
+  /* Hidden by default */
+  position: fixed;
+  /* Stay in place */
+  z-index: 1;
+  /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%;
+  /* Full width */
+  height: 100%;
+  /* Full height */
+  overflow: auto;
+  /* Enable scroll if needed */
+  background-color: black;
+  /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4);
+  /* Black w/ opacity */
+}
+html {
+  font-size: 100%;
+}
+/*16px*/
+body {
+  background: white;
+  font-family: "Raleway", sans-serif;
+  color: #000000;
+}
+nav {
+  display: flex;
+  position: sticky;
+  background-color: #43519D;
+  color: white;
+  justify-content: space-around;
+}
+nav .task_btn {
+  display: flex;
+  float: left;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  color: white;
+  height: 56px;
+  width: 56px;
+  justify-content: center;
+  align-items: center;
+}
+nav .task_btn:hover {
+  background-color: #252e59;
+  border-color: #252e59;
+}
+nav .task_btn.open {
+  color: whitesmoke;
+  background-color: #252e59;
+  border-color: #252e59;
+}
+nav .nav_links {
+  list-style: none;
+  display: flex;
+}
+nav .nav_links .nav_item a {
+  display: inline-block;
+  text-decoration: none;
+  color: white;
+  padding: 1em 2em;
+  transition: all 0.3s ease-in-out;
+}
+nav .nav_links .nav_item a:hover {
+  background-color: #252e59;
+  border-color: #252e59;
+}
+nav .nav_links .nav_item a.active {
+  font-weight: bold;
+}
+nav .nav_links .nav_item .nav_btn {
+  display: inline-block;
+  text-decoration: none;
+  color: white;
+  padding: 1em 2em;
+  border: none;
+  border-radius: 0;
+  transition: all 0.3s ease-in-out;
+}
+nav .nav_links .nav_item .nav_btn:hover {
+  background-color: #252e59;
+  border-color: #252e59;
+}
+nav .nav_links .nav_item .nav_btn.active {
+  font-weight: bold;
+}
+.top_nav {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+@media only screen and (max-width: 450px) {
+  .top_nav {
+    display: none;
+  }
+}
+#taskWrapper {
+  display: block;
+  position: absolute;
+  width: 270px;
+  height: calc(100vh - 56px);
+  transition: all 0.35s ease-in-out;
+  background-color: #d4d4d4;
+  left: -270px;
+}
+#taskWrapper.open {
+  transition: all 0.35s ease-in-out;
+  left: 0px;
+}
+#taskgrid {
+  display: block;
+}
+#taskgrid h3 {
+  margin: 10px 20px;
+}
+#taskgrid #taskList {
+  display: block;
+  background-color: #d4d4d4;
+  height: 630px;
+  width: 100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+#taskgrid #taskList #emptyTaskList {
+  margin: 0 20px;
+}
+#taskgrid #taskList .task_item {
+  display: flex;
+  margin: 0 5px 10px 10px;
+  border-radius: 8px;
+  background-color: whitesmoke;
+  list-style: none;
+}
+#taskgrid #taskList .task_item .card-text {
+  margin-left: 10px;
+}
+#taskgrid #taskList .task_item .task_details {
+  color: #383838;
+}
+#taskgrid #taskList .task_item .task_details.low_pr {
+  color: #293eff;
+}
+#taskgrid #taskList .task_item .task_details.medium_pr {
+  color: #fcb500;
+}
+#taskgrid #taskList .task_item .task_details.high_pr {
+  color: #c91400;
+}
+#taskgrid #taskList .task_item .task_details i {
+  display: inline-block;
+}
+#taskgrid #taskList .task_item .task_details p {
+  display: inline-block;
+  color: #383838;
+}
+#taskgrid #taskList .task_item .deleteBtn {
+  margin: 5px;
+  display: inline-block;
+}
+#addTask {
+  display: block;
+  position: absolute;
+  width: 270px;
+  height: 450px;
+  background-color: whitesmoke;
+  bottom: calc(56px - 450px);
+  border-radius: 10px 10px 0 0;
+  padding: 10px;
+  overflow: hidden;
+  transition: all 0.5s ease-in-out;
+}
+#addTask.open {
+  bottom: 56px;
+  transition: all 0.5s ease-in-out;
+}
+#uploadBtnContainer {
+  display: flex;
+  width: 270px;
+  position: absolute;
+  z-index: 9999;
+  bottom: 26px;
+  justify-content: center;
+  align-items: center;
+}
+#uploadBtnContainer #addBtn {
+  display: inline-block;
+  justify-content: center;
+  align-items: center;
+  color: #748AFF;
+  cursor: pointer;
+  padding: 0 4px;
+  background-color: white;
+  border-radius: 50%;
+  border: 10px solid white;
+}
+#uploadBtnContainer #addBtn:hover {
+  background-color: #748AFF;
+  border: 10px solid #748AFF;
+  color: white;
+}
+#uploadBtnContainer #addBtn.open {
+  display: none;
+}
+#uploadBtnContainer #uploadBtn {
+  display: none;
+}
+#uploadBtnContainer #uploadBtn.open {
+  display: inline-block;
+  justify-content: center;
+  align-items: center;
+  color: #748AFF;
+  cursor: pointer;
+  background-color: white;
+  padding: 0 4px;
+  border-radius: 50%;
+  border: 10px solid white;
+}
+#uploadBtnContainer #uploadBtn.open:hover {
+  background-color: #748AFF;
+  border: 10px solid #748AFF;
+  color: white;
+}
+#task_bottom {
+  display: flex;
+  position: absolute;
+  height: 56px;
+  width: 270px;
+  bottom: 0;
+  background-color: #43519D;
+  align-items: center;
+}
+#taskList::-webkit-scrollbar {
+  width: 8px;
+}
+#taskList::-webkit-scrollbar-track {
+  display: none;
+}
+#taskList::-webkit-scrollbar-thumb {
+  background-color: #4e4e4e;
+  border-radius: 5px;
+}
+#kanban {
+  left: 0;
+  padding: 10px;
+  width: 100%;
+  height: calc(100vh - 56px);
+  background-color: #fff;
+  transition: all 0.35s ease-in-out;
+}
+#kanban.open {
+  margin-left: 270px;
+  width: calc(100vw - 270px);
+  transition: all 0.35s ease-in-out;
+}
+@media only screen and (max-width: 450px) {
+  #kanban {
+    display: none;
+  }
+
+  #taskWrapper {
+    width: 100%;
+  }
+  #taskWrapper #addTask {
+    width: 100%;
+  }
+  #taskWrapper #task_bottom {
+    width: 100%;
+  }
+}
+#myKanban {
+  overflow-x: auto;
+  padding: 20px 0;
+}
+.success {
+  background: #00b961;
+}
+.info {
+  background: #2a92bf;
+}
+.warning {
+  background: #f4ce46;
+}
+.error {
+  background: #fb7d44;
+}
+.custom-button {
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 7px 15px;
+  margin: 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+/*# sourceMappingURL=index.HASH_REF_80038805bd6829e42a01d0f20c72b7db.css.map */

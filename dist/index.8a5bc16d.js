@@ -446,6 +446,10 @@ var _componentsNavigation = require('./components/navigation');
 var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
 var _componentsNavigationDefault = _parcelHelpers.interopDefault(_componentsNavigation);
 require('./components/tasklist');
+require('./components/timers');
+require('./components/readinglist');
+require('./components/dictionary');
+require('./components/musicplayer');
 // Navigation
 const links = document.querySelectorAll('.top_nav > ul > li > a');
 const pages = document.querySelectorAll('.page_container');
@@ -467,7 +471,7 @@ subNav.links.forEach(link => {
   });
 });
 
-},{"./components/navigation":"2K1cj","./components/tasklist":"Rj9Cl","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"2K1cj":[function(require,module,exports) {
+},{"./components/navigation":"2K1cj","./components/tasklist":"Rj9Cl","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","./components/timers":"1ujtl","./components/readinglist":"2jNHT","./components/dictionary":"2aL5o","./components/musicplayer":"6m8Cd"}],"2K1cj":[function(require,module,exports) {
 var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
 _parcelHelpers.defineInteropFlag(exports);
 class Navigation {
@@ -542,46 +546,95 @@ exports.export = function (dest, destName, get) {
   });
 };
 },{}],"Rj9Cl":[function(require,module,exports) {
-// Task list 
+var _localStorageJs = require('./localStorage.js');
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+var _localStorageJsDefault = _parcelHelpers.interopDefault(_localStorageJs);
+var _librariesJkanbanMinJs = require('../libraries/jkanban.min.js');
+var _librariesJkanbanMinJsDefault = _parcelHelpers.interopDefault(_librariesJkanbanMinJs);
+// Task list
 const taskWrapper = document.getElementById("taskWrapper");
 const taskAll = document.getElementById("taskgrid");
 const form = document.getElementById("taskForm");
 const tasks = document.getElementById("taskList");
-
 var taskDescription = document.getElementById("td");
 var dueDate = document.getElementById("dd");
 var completionTime = document.getElementById("ct");
 var priorityRating = document.getElementById("pr");
 var estimatedTime = document.getElementById("et");
 // var completionStatus = document.getElementById("cs");
-
 // var y = priorityRating.options;
 // var x = priorityRating.selectedIndex;
 // var prIndex = priorityRating.options[priorityRating.selectedIndex].index;
-
-
+Date.prototype.toDateInputValue = function () {
+  var local = new Date(this);
+  local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
+  return local.toJSON().slice(0, 10);
+};
+// dueDate.value = new Date().toDateInputValue();
 const addBtn = document.getElementById('addBtn');
 const addPage = document.getElementById('addTask');
 const uploadBtn = document.getElementById('uploadBtn');
 const closeBtn = document.getElementById('closeAdd');
-
+const taskBtn = document.querySelector('.task_btn');
+const kanban = document.getElementById('kanban');
+let taskOpen = false;
+// Event Listener: Task List Open
+taskBtn.addEventListener('click', () => {
+  if (!taskOpen) {
+    taskBtn.classList.add('open');
+    taskAll.classList.add('open');
+    taskWrapper.classList.add('open');
+    kanban.classList.add('open');
+    taskOpen = true;
+  } else {
+    taskBtn.classList.remove('open');
+    taskAll.classList.remove('open');
+    taskWrapper.classList.remove('open');
+    kanban.classList.remove('open');
+    taskOpen = false;
+  }
+});
+// close Task List when main page is clicked
+kanban.onclick = function () {
+  if (taskOpen) {
+    taskBtn.classList.remove('open');
+    taskAll.classList.remove('open');
+    taskWrapper.classList.remove('open');
+    kanban.classList.remove('open');
+    taskOpen = false;
+  }
+};
+// close Add Tasks when Task Grid is clicked
+taskAll.onclick = function () {
+  if (addOpen) {
+    addPage.classList.remove('open');
+    addBtn.classList.remove('open');
+    uploadBtn.classList.remove('open');
+    addOpen = false;
+  }
+};
 let addOpen = false;
-
-// Add page open
+// Event Listener: Open Add Page
 addBtn.addEventListener('click', () => {
-  if(!addOpen) {
+  if (!addOpen) {
     addPage.classList.add('open');
     addBtn.classList.add('open');
     uploadBtn.classList.add('open');
     addOpen = true;
-
-  } else {
   }
-})
-
-// Add Tasks
-uploadBtn.addEventListener("click", function(event) {
-  if(addOpen) {
+});
+// Event Listener: Close Add Page
+closeBtn.addEventListener('click', () => {
+  if (addOpen) {
+    addPage.classList.remove('open');
+    addBtn.classList.remove('open');
+    uploadBtn.classList.remove('open');
+    addOpen = false;
+  }
+});
+// Event Listener: Upload Tasks
+uploadBtn.addEventListener("click", function (event) {
+  if (addOpen) {
     event.preventDefault();
     let td = taskDescription.value;
     let dd = String(dueDate.value);
@@ -590,27 +643,16 @@ uploadBtn.addEventListener("click", function(event) {
     let prIndex = priorityRating.options[priorityRating.selectedIndex].index;
     let et = estimatedTime.value;
     let cs = false;
-  
-    addTask(td,dd,ct,pr,prIndex,et,cs);
+    addTask(td, dd, ct, pr, prIndex, et, cs);
     console.log(taskList);
-    // console.log(y[x].index);
-    // console.log(prIndex);
   }
-})
-
-// Close add page
-closeBtn.addEventListener('click', () => {
-  if (addOpen) {
-    addPage.classList.remove('open');
-    addBtn.classList.remove('open');
-    uploadBtn.classList.remove('open');
-    addOpen = false;
-  } 
-})
-
-
+});
 var taskList = [];
-
+Object.keys(localStorage).forEach(function (key) {
+  let task = localStorage.getItem(key);
+  let taskObj = JSON.parse(task);
+  showTask(taskObj);
+});
 function addTask(taskDescription, dueDate, completionTime, priorityRating, priorityRatingIndex, estimatedTime, completionStatus) {
   let task = {
     id: Date.now(),
@@ -621,11 +663,21 @@ function addTask(taskDescription, dueDate, completionTime, priorityRating, prior
     priorityRatingIndex,
     estimatedTime,
     completionStatus
+  };
+  if (document.forms["taskForm"]["taskName"].value == "") {
+    alert("Task Description must be filled out");
+    return false;
+  } else {
+    let key = task.taskDescription.toString();
+    let value = JSON.stringify(task);
+    if (localStorage.getItem(key) === null) {
+      localStorage.setItem(key, value);
+      showTask(task);
+    } else {
+      alert("Task " + taskDescription.toString() + " is already exists in the list");
+    }
   }
-  taskList.push(task);
-  showTask(task);
 }
-
 function showTask(task) {
   // let item = document.createElement("ul");
   // item.innerHTML  = "<p>" + task.taskDescription + "</p>";
@@ -639,79 +691,102 @@ function showTask(task) {
   // itemEt.innerHTML = "<p>" + task.estimatedTime + "</p>";
   // let itemCs = document.createElement("li");
   // itemCs.innerHTML = "<p>" + task.completionStatus + "</p>";
-
   // Build the HTML structure into a single element
-
-updateEmpty();
-
+  updateEmpty();
   let item = document.createElement("div");
   item.setAttribute('class', 'card');
-  // item.setAttribute('class', 'task_item');
+  item.classList.add('task_item');
   item.setAttribute('data-id', task.id);
-
-
   // item.innerHTML = "<li>" + task.taskDescription + "</li>" + "<li> Due Date:" + task.dueDate + "</li>" + "<li> Priority Rating: " + task.priorityRating + "</li>" + "<li> Estimated Time: " + task.estimatedTime + "</li>";
   // item.classList.add('card');
-
   let item_body = document.createElement('div');
   item_body.setAttribute('class', 'card-body');
-
   let item_title = document.createElement("h5");
   item_title.setAttribute('class', 'card-title');
   item_title.appendChild(document.createTextNode(task.taskDescription));
-
-  let item_dd = document.createElement("p");
-  item_dd.setAttribute('class', 'card-text');
-  item_dd.appendChild(document.createTextNode(task.dueDate));
-
-  let item_pr = document.createElement("p");
-  item_pr.setAttribute('class', 'card-text');
-  item_pr.appendChild(document.createTextNode(task.priorityRating));
-
-  let item_et = document.createElement("p");
-  item_et.setAttribute('class', 'card-text');
-  item_et.appendChild(document.createTextNode(task.estimatedTime));
-
-
   item_body.appendChild(item_title);
-  item_body.appendChild(item_dd);
-  item_body.appendChild(item_pr);
-  item_body.appendChild(item_et);
+  // Add details only when they exist
+  if (task.hasOwnProperty('dueDate') && task['dueDate']) {
+    let dd = document.createElement("div");
+    dd.setAttribute('class', 'task_details');
+    dd.innerHTML = '<i class="far fa-calendar"></i>';
+    let item_dd = document.createElement("p");
+    item_dd.setAttribute('class', 'card-text');
+    item_dd.appendChild(document.createTextNode(task.dueDate));
+    dd.appendChild(item_dd);
+    item_body.appendChild(dd);
+  }
+  if (task.hasOwnProperty('priorityRating') && task['priorityRating']) {
+    let pr = document.createElement("div");
+    pr.setAttribute('class', 'task_details');
+    if (task['priorityRating'] == "Low") {
+      pr.classList.add("low_pr");
+    } else if (task['priorityRating']) {
+      pr.classList.add("medium_pr");
+    } else if (task['priorityRating']) {
+      pr.classList.add("high_pr");
+    }
+    pr.innerHTML = '<i class="fas fa-flag"></i>';
+    let item_pr = document.createElement("p");
+    item_pr.setAttribute('class', 'card-text');
+    // item_pr.innerHTML('<i class="fas fa-flag"></i>');
+    item_pr.appendChild(document.createTextNode(task.priorityRating));
+    pr.appendChild(item_pr);
+    item_body.appendChild(pr);
+  }
+  // add estimated time input when theres an input value
+  // let etInput = document.forms["taskForm"]["estimatedTime"].value;
+  // if (etInput !== "") {
+  // let et = document.createElement("div");
+  // et.setAttribute('class', 'task_details');
+  // et.innerHTML = '<i class="far fa-clock"></i>';
+  // let item_et = document.createElement("p");
+  // item_et.setAttribute('class', 'card-text');
+  // item_et.appendChild(document.createTextNode(task.estimatedTime + " hours"));
+  // et.appendChild(item_et);
+  // item_body.appendChild(et);
+  // }
+  if (task.hasOwnProperty('estimatedTime') && task['estimatedTime']) {
+    let et = document.createElement("div");
+    et.setAttribute('class', 'task_details');
+    et.innerHTML = '<i class="far fa-clock"></i>';
+    let item_et = document.createElement("p");
+    item_et.setAttribute('class', 'card-text');
+    item_et.appendChild(document.createTextNode(task.estimatedTime + " hours"));
+    et.appendChild(item_et);
+    item_body.appendChild(et);
+  }
   item.appendChild(item_body);
-
-
-
+  // add Delete Button
   let delButton = document.createElement("button");
-  let delButtonText = document.createTextNode("Done");
+  let delButtonText = document.createTextNode("Delete");
   delButton.appendChild(delButtonText);
-
-  delButton.setAttribute('class', "btn btn-outline-success");
-  delButton.classList.add('task_delete');
-
-  delButton.addEventListener("click", function(event){
+  delButton.setAttribute('class', "btn btn-outline-danger");
+  delButton.classList.add('deleteBtn');
+  delButton.addEventListener("click", function (event) {
     event.preventDefault();
     let id = event.target.parentElement.getAttribute('data-id');
     let index = taskList.findIndex(task => task.id === Number(id));
-
     removeItemFromArray(taskList, index);
     console.log(taskList);
-    updateEmpty();
+    localStorage.removeItem(task.taskDescription.toString());
     item.remove();
-  })
-
-
+    updateEmpty();
+  });
+  // Create "Move to Kanban" Button
+  let moveButton = document.createElement("button");
+  let moveButtonText = document.createTextNode("Move");
+  moveButton.appendChild(moveButtonText);
   // item.appendChild(itemDd);
   // item.appendChild(itemCt);
   // item.appendChild(itemPr);
   // item.appendChild(itemEt);
   // item.appendChild(itemCs);
   item.appendChild(delButton);
-
   tasks.appendChild(item);
-
   form.reset();
 }
-
+// Helper functions
 function compareDueDate(a, b) {
   if (a.dueDate < b.dueDate) {
     return -1;
@@ -721,7 +796,6 @@ function compareDueDate(a, b) {
     return 0;
   }
 }
-
 function comparePriority(a, b) {
   if (a.priorityRatingIndex < b.priorityRatingIndex) {
     return -1;
@@ -731,8 +805,7 @@ function comparePriority(a, b) {
     return 0;
   }
 }
-
-function compareEstimatedTime(a,b) {
+function compareEstimatedTime(a, b) {
   if (a.estimatedTime < b.estimatedTime) {
     return -1;
   } else if (a.estimatedTime > b.estimatedTime) {
@@ -741,48 +814,1032 @@ function compareEstimatedTime(a,b) {
     return 0;
   }
 }
-
-
 function removeItemFromArray(arr, index) {
-    if (index > -1) {
-        arr.splice(index, 1);
-    }
-
-    return arr;
-}
-
-function updateEmpty() {
-    if (taskList.length > 0) {
-        document.getElementById('emptyTaskList').style.display = 'none';
-    } else {
-        document.getElementById('emptyTaskList').style.display = 'block';
-    }
-}
-
-
-
-const taskBtn = document.querySelector('.task_btn');
-const kanban = document.getElementById('kanban');
-
-let taskOpen = false;
-taskBtn.addEventListener('click', () => {
-  if(!taskOpen) {
-    taskBtn.classList.add('open');
-    taskAll.classList.add('open');
-    taskWrapper.classList.add('open');
-    kanban.classList.add('open');
-    taskOpen = true;
-  } else {
-    taskBtn.classList.remove('open');
-    taskAll.classList.remove('open');
-    taskWrapper.classList.remove('open');
-    kanban.classList.remove('open');
-    taskOpen = false;
+  if (index > -1) {
+    arr.splice(index, 1);
   }
-})
-
-
+  return arr;
+}
+function updateEmpty() {
+  if (localStorage.length > 0) {
+    document.getElementById('emptyTaskList').style.display = 'none';
+  } else {
+    document.getElementById('emptyTaskList').style.display = 'block';
+  }
+}
+// Local Storage
+const storage = new _localStorageJsDefault.default();
+const tasksStorage = storage.tasks;
 // Kanban Board
+// From jKanban example:
+var KanbanTest = new _librariesJkanbanMinJsDefault.default({
+  element: "#myKanban",
+  gutter: "10px",
+  widthBoard: "450px",
+  itemHandleOptions: {
+    enabled: true
+  },
+  click: function (el) {
+    console.log("Trigger on all items click!");
+  },
+  context: function (el, e) {
+    console.log("Trigger on all items right-click!");
+  },
+  dropEl: function (el, target, source, sibling) {
+    console.log(target.parentElement.getAttribute('data-id'));
+    console.log(el, target, source, sibling);
+  },
+  buttonClick: function (el, boardId) {
+    console.log(el);
+    console.log(boardId);
+    // create a form to enter element
+    var formItem = document.createElement("form");
+    formItem.setAttribute("class", "itemform");
+    formItem.innerHTML = '<div class="form-group"><textarea class="form-control" rows="2" autofocus></textarea></div><div class="form-group"><button type="submit" class="btn btn-primary btn-xs pull-right">Submit</button><button type="button" id="CancelBtn" class="btn btn-default btn-xs pull-right">Cancel</button></div>';
+    KanbanTest.addForm(boardId, formItem);
+    formItem.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var text = e.target[0].value;
+      KanbanTest.addElement(boardId, {
+        title: text
+      });
+      formItem.parentNode.removeChild(formItem);
+    });
+    document.getElementById("CancelBtn").onclick = function () {
+      formItem.parentNode.removeChild(formItem);
+    };
+  },
+  itemAddOptions: {
+    enabled: true,
+    content: '+ Add New Card',
+    class: 'custom-button',
+    footer: true
+  },
+  boards: [{
+    id: "_todo",
+    title: "To Do (Can drop item only in working)",
+    class: "info,good",
+    dragTo: ["_working"],
+    item: [{
+      id: "_test_delete",
+      title: "Try drag this (Look the console)",
+      drag: function (el, source) {
+        console.log("START DRAG: " + el.dataset.eid);
+      },
+      dragend: function (el) {
+        console.log("END DRAG: " + el.dataset.eid);
+      },
+      drop: function (el) {
+        console.log("DROPPED: " + el.dataset.eid);
+      }
+    }, {
+      title: "Try Click This!",
+      click: function (el) {
+        alert("click");
+      },
+      context: function (el, e) {
+        alert("right-click at (" + `${e.pageX}` + "," + `${e.pageX}` + ")");
+      },
+      class: ["peppe", "bello"]
+    }]
+  }, {
+    id: "_working",
+    title: "Working (Try drag me too)",
+    class: "warning",
+    item: [{
+      title: "Do Something!"
+    }, {
+      title: "Run?"
+    }]
+  }, {
+    id: "_done",
+    title: "Done (Can drop item only in working)",
+    class: "success",
+    dragTo: ["_working"],
+    item: [{
+      title: "All right"
+    }, {
+      title: "Ok!"
+    }]
+  }]
+});
+var toDoButton = document.getElementById("addToDo");
+toDoButton.addEventListener("click", function () {
+  KanbanTest.addElement("_todo", {
+    title: "Test Add"
+  });
+});
+var addBoardDefault = document.getElementById("addDefault");
+addBoardDefault.addEventListener("click", function () {
+  KanbanTest.addBoards([{
+    id: "_default",
+    title: "Kanban Default",
+    item: [{
+      title: "Default Item"
+    }, {
+      title: "Default Item 2"
+    }, {
+      title: "Default Item 3"
+    }]
+  }]);
+});
+var removeBoard = document.getElementById("removeBoard");
+removeBoard.addEventListener("click", function () {
+  KanbanTest.removeBoard("_done");
+});
+var removeElement = document.getElementById("removeElement");
+removeElement.addEventListener("click", function () {
+  KanbanTest.removeElement("_test_delete");
+});
+var allEle = KanbanTest.getBoardElements("_todo");
+allEle.forEach(function (item, index) {});
+
+},{"./localStorage.js":"3aDed","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","../libraries/jkanban.min.js":"3IAxf"}],"3aDed":[function(require,module,exports) {
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+class LocalStorage {
+  constructor() {
+    // if item by key `tasks` is not defined JSON.parse return null, so I use `or empty array`
+    this.tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+  }
+  create(data) {
+    data.token = this.token;
+    this.tasks.push(data);
+    localStorage.setItem('tasks', JSON.stringify(this.tasks));
+  }
+  getIndexByToken(token) {
+    for (let i = 0; i < this.tasks.length; i++) {
+      if (this.tasks[i].token === token) {
+        return i;
+      }
+    }
+    return -1;
+  }
+  get token() {
+    return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+  }
+  update(data) {
+    let index = this.getIndexByToken(data.token);
+    if (index !== -1) {
+      this.tasks[index] = data;
+      localStorage.setItem('tasks', JSON.stringify(this.tasks));
+    }
+  }
+  delete(data) {
+    let index = this.getIndexByToken(data.token);
+    if (index !== -1) {
+      this.tasks.splice(index, 1);
+      localStorage.setItem('tasks', JSON.stringify(this.tasks));
+    }
+  }
+}
+exports.default = LocalStorage;
+
+},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"3IAxf":[function(require,module,exports) {
+var global = arguments[3];
+!(function () {
+  return function e(t, n, o) {
+    function i(a, c) {
+      if (!n[a]) {
+        if (!t[a]) {
+          var d = "function" == typeof require && require;
+          if (!c && d) return d(a, !0);
+          if (r) return r(a, !0);
+          var s = new Error("Cannot find module '" + a + "'");
+          throw (s.code = "MODULE_NOT_FOUND", s);
+        }
+        var l = n[a] = {
+          exports: {}
+        };
+        t[a][0].call(l.exports, function (e) {
+          return i(t[a][1][e] || e);
+        }, l, l.exports, e, t, n, o);
+      }
+      return n[a].exports;
+    }
+    for (var r = "function" == typeof require && require, a = 0; a < o.length; a++) i(o[a]);
+    return i;
+  };
+})()({
+  1: [function (e, t, n) {
+    var o = e("dragula");
+    !(function () {
+      this.jKanban = function () {
+        var e = this, t = {
+          enabled: !1
+        }, n = {
+          enabled: !1
+        };
+        (this._disallowedItemProperties = ["id", "title", "click", "context", "drag", "dragend", "drop", "order"], this.element = "", this.container = "", this.boardContainer = [], this.handlers = [], this.dragula = o, this.drake = "", this.drakeBoard = "", this.itemAddOptions = n, this.itemHandleOptions = t);
+        var i = {
+          element: "",
+          gutter: "15px",
+          widthBoard: "250px",
+          responsive: "700",
+          responsivePercentage: !1,
+          boards: [],
+          dragBoards: !0,
+          dragItems: !0,
+          itemAddOptions: n,
+          itemHandleOptions: t,
+          dragEl: function (e, t) {},
+          dragendEl: function (e) {},
+          dropEl: function (e, t, n, o) {},
+          dragBoard: function (e, t) {},
+          dragendBoard: function (e) {},
+          dropBoard: function (e, t, n, o) {},
+          click: function (e) {},
+          context: function (e, t) {},
+          buttonClick: function (e, t) {}
+        };
+        function r(t, n) {
+          t.addEventListener("click", function (t) {
+            (t.preventDefault(), e.options.click(this), "function" == typeof this.clickfn && this.clickfn(this));
+          });
+        }
+        function a(t, n) {
+          t.addEventListener ? t.addEventListener("contextmenu", function (t) {
+            (t.preventDefault(), e.options.context(this, t), "function" == typeof this.contextfn && this.contextfn(this, t));
+          }, !1) : t.attachEvent("oncontextmenu", function () {
+            (e.options.context(this), "function" == typeof this.contextfn && this.contextfn(this), window.event.returnValue = !1);
+          });
+        }
+        function c(t, n) {
+          t.addEventListener("click", function (t) {
+            (t.preventDefault(), e.options.buttonClick(this, n));
+          });
+        }
+        function d(t) {
+          var n = [];
+          return (e.options.boards.map(function (e) {
+            if (e.id === t) return n.push(e);
+          }), n[0]);
+        }
+        function s(t, n) {
+          for (var o in n) e._disallowedItemProperties.indexOf(o) > -1 || t.setAttribute("data-" + o, n[o]);
+        }
+        function l(t) {
+          var n = ("title" in t) ? t.title : "";
+          if (e.options.itemHandleOptions.enabled) {
+            if (void 0 !== (e.options.itemHandleOptions.customHandler || void 0)) return n = "<div> " + e.options.itemHandleOptions.customHandler.replace(/%([^%]+)%/g, (e, n) => void 0 !== t[n] ? t[n] : "") + " </div>";
+            var o = e.options.itemHandleOptions.customCssHandler, i = e.options.itemHandleOptions.customCssIconHandler, r = e.options.itemHandleOptions.customItemLayout;
+            (void 0 === (o || void 0) && (o = "drag_handler"), void 0 === (i || void 0) && (i = o + "_icon"), void 0 === (r || void 0) && (r = ""), n = "<div class='item_handle " + o + "'><i class='item_handle " + i + "'></i></div><div>" + n + "</div>");
+          }
+          return n;
+        }
+        (arguments[0] && "object" == typeof arguments[0] && (this.options = (function (e, t) {
+          var n;
+          for (n in t) t.hasOwnProperty(n) && (e[n] = t[n]);
+          return e;
+        })(i, arguments[0])), this.__getCanMove = function (t) {
+          return e.options.itemHandleOptions.enabled ? e.options.itemHandleOptions.handleClass ? t.classList.contains(e.options.itemHandleOptions.handleClass) : t.classList.contains("item_handle") : !!e.options.dragItems;
+        }, this.init = function () {
+          (!(function () {
+            e.element = document.querySelector(e.options.element);
+            var t = document.createElement("div");
+            (t.classList.add("kanban-container"), e.container = t, document.querySelector(e.options.element).dataset.hasOwnProperty("board") ? (url = document.querySelector(e.options.element).dataset.board, window.fetch(url, {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json"
+              }
+            }).then(t => {
+              t.json().then(function (t) {
+                (e.options.boards = t, e.addBoards(e.options.boards, !0));
+              });
+            }).catch(e => {
+              console.log("Error: ", e);
+            })) : e.addBoards(e.options.boards, !0));
+            e.element.appendChild(e.container);
+          })(), window.innerWidth > e.options.responsive && (e.drakeBoard = e.dragula([e.container], {
+            moves: function (t, n, o, i) {
+              return !!e.options.dragBoards && (o.classList.contains("kanban-board-header") || o.classList.contains("kanban-title-board"));
+            },
+            accepts: function (e, t, n, o) {
+              return t.classList.contains("kanban-container");
+            },
+            revertOnSpill: !0,
+            direction: "horizontal"
+          }).on("drag", function (t, n) {
+            (t.classList.add("is-moving"), e.options.dragBoard(t, n), "function" == typeof t.dragfn && t.dragfn(t, n));
+          }).on("dragend", function (t) {
+            (!(function () {
+              for (var t = 1, n = 0; n < e.container.childNodes.length; n++) e.container.childNodes[n].dataset.order = t++;
+            })(), t.classList.remove("is-moving"), e.options.dragendBoard(t), "function" == typeof t.dragendfn && t.dragendfn(t));
+          }).on("drop", function (t, n, o, i) {
+            (t.classList.remove("is-moving"), e.options.dropBoard(t, n, o, i), "function" == typeof t.dropfn && t.dropfn(t, n, o, i));
+          }), e.drake = e.dragula(e.boardContainer, {
+            moves: function (t, n, o, i) {
+              return e.__getCanMove(o);
+            },
+            revertOnSpill: !0
+          }).on("cancel", function (t, n, o) {
+            e.enableAllBoards();
+          }).on("drag", function (t, n) {
+            var o = t.getAttribute("class");
+            if ("" !== o && o.indexOf("not-draggable") > -1) e.drake.cancel(!0); else {
+              (t.classList.add("is-moving"), e.options.dragEl(t, n));
+              var i = d(n.parentNode.dataset.id);
+              (void 0 !== i.dragTo && e.options.boards.map(function (t) {
+                -1 === i.dragTo.indexOf(t.id) && t.id !== n.parentNode.dataset.id && e.findBoard(t.id).classList.add("disabled-board");
+              }), null !== t && "function" == typeof t.dragfn && t.dragfn(t, n));
+            }
+          }).on("dragend", function (t) {
+            (e.options.dragendEl(t), null !== t && "function" == typeof t.dragendfn && t.dragendfn(t));
+          }).on("drop", function (t, n, o, i) {
+            e.enableAllBoards();
+            var r = d(o.parentNode.dataset.id);
+            (void 0 !== r.dragTo && -1 === r.dragTo.indexOf(n.parentNode.dataset.id) && n.parentNode.dataset.id !== o.parentNode.dataset.id && e.drake.cancel(!0), null !== t) && (!1 === e.options.dropEl(t, n, o, i) && e.drake.cancel(!0), t.classList.remove("is-moving"), "function" == typeof t.dropfn && t.dropfn(t, n, o, i));
+          })));
+        }, this.enableAllBoards = function () {
+          var e = document.querySelectorAll(".kanban-board");
+          if (e.length > 0 && void 0 !== e) for (var t = 0; t < e.length; t++) e[t].classList.remove("disabled-board");
+        }, this.addElement = function (t, n) {
+          var o = e.element.querySelector('[data-id="' + t + '"] .kanban-drag'), i = document.createElement("div");
+          return (i.classList.add("kanban-item"), void 0 !== n.id && "" !== n.id && i.setAttribute("data-eid", n.id), n.class && Array.isArray(n.class) && n.class.forEach(function (e) {
+            i.classList.add(e);
+          }), i.innerHTML = l(n), i.clickfn = n.click, i.contextfn = n.context, i.dragfn = n.drag, i.dragendfn = n.dragend, i.dropfn = n.drop, s(i, n), r(i), a(i), e.options.itemHandleOptions.enabled && (i.style.cursor = "default"), o.appendChild(i), e);
+        }, this.addForm = function (t, n) {
+          var o = e.element.querySelector('[data-id="' + t + '"] .kanban-drag'), i = n.getAttribute("class");
+          return (n.setAttribute("class", i + " not-draggable"), o.appendChild(n), e);
+        }, this.addBoards = function (t, n) {
+          if (e.options.responsivePercentage) if ((e.container.style.width = "100%", e.options.gutter = "1%", window.innerWidth > e.options.responsive)) var o = (100 - 2 * t.length) / t.length; else o = 100 - 2 * t.length; else o = e.options.widthBoard;
+          var i = e.options.itemAddOptions.enabled, d = e.options.itemAddOptions.content, u = e.options.itemAddOptions.class, f = e.options.itemAddOptions.footer;
+          for (var p in t) {
+            var v = t[p];
+            (n || e.options.boards.push(v), e.options.responsivePercentage || ("" === e.container.style.width ? e.container.style.width = parseInt(o) + 2 * parseInt(e.options.gutter) + "px" : e.container.style.width = parseInt(e.container.style.width) + parseInt(o) + 2 * parseInt(e.options.gutter) + "px"));
+            var m = document.createElement("div");
+            (m.dataset.id = v.id, m.dataset.order = e.container.childNodes.length + 1, m.classList.add("kanban-board"), e.options.responsivePercentage ? m.style.width = o + "%" : m.style.width = o, m.style.marginLeft = e.options.gutter, m.style.marginRight = e.options.gutter);
+            var h = document.createElement("header");
+            if ("" !== v.class && void 0 !== v.class) var g = v.class.split(","); else g = [];
+            (h.classList.add("kanban-board-header"), g.map(function (e) {
+              (e = e.replace(/^[ ]+/g, ""), h.classList.add(e));
+            }), h.innerHTML = '<div class="kanban-title-board">' + v.title + "</div>");
+            var y = document.createElement("main");
+            if ((y.classList.add("kanban-drag"), "" !== v.bodyClass && void 0 !== v.bodyClass)) var b = v.bodyClass.split(","); else b = [];
+            for (var w in (b.map(function (e) {
+              y.classList.add(e);
+            }), e.boardContainer.push(y), v.item)) {
+              var E = v.item[w], T = document.createElement("div");
+              (T.classList.add("kanban-item"), E.id && (T.dataset.eid = E.id), E.class && Array.isArray(E.class) && E.class.forEach(function (e) {
+                T.classList.add(e);
+              }), T.innerHTML = l(E), T.clickfn = E.click, T.contextfn = E.context, T.dragfn = E.drag, T.dragendfn = E.dragend, T.dropfn = E.drop, s(T, E), r(T), a(T), e.options.itemHandleOptions.enabled && (T.style.cursor = "default"), y.appendChild(T));
+            }
+            var x = document.createElement("footer");
+            if (i) {
+              var C = document.createElement("BUTTON"), O = document.createTextNode(d || "+");
+              (C.setAttribute("class", u || "kanban-title-button btn btn-default btn-xs"), C.appendChild(O), f ? x.appendChild(C) : h.appendChild(C), c(C, v.id));
+            }
+            (m.appendChild(h), m.appendChild(y), m.appendChild(x), e.container.appendChild(m));
+          }
+          return e;
+        }, this.findBoard = function (t) {
+          return e.element.querySelector('[data-id="' + t + '"]');
+        }, this.getParentBoardID = function (t) {
+          return ("string" == typeof t && (t = e.element.querySelector('[data-eid="' + t + '"]')), null === t ? null : t.parentNode.parentNode.dataset.id);
+        }, this.moveElement = function (e, t, n) {
+          if (e !== this.getParentBoardID(t)) return (this.removeElement(t), this.addElement(e, n));
+        }, this.replaceElement = function (t, n) {
+          var o = t;
+          return ("string" == typeof o && (o = e.element.querySelector('[data-eid="' + t + '"]')), o.innerHTML = l(n), o.clickfn = n.click, o.contextfn = n.context, o.dragfn = n.drag, o.dragendfn = n.dragend, o.dropfn = n.drop, s(o, n), r(o), a(o), e);
+        }, this.findElement = function (t) {
+          return e.element.querySelector('[data-eid="' + t + '"]');
+        }, this.getBoardElements = function (t) {
+          return e.element.querySelector('[data-id="' + t + '"] .kanban-drag').childNodes;
+        }, this.removeElement = function (t) {
+          return ("string" == typeof t && (t = e.element.querySelector('[data-eid="' + t + '"]')), null !== t && ("function" == typeof t.remove ? t.remove() : t.parentNode.removeChild(t)), e);
+        }, this.removeBoard = function (t) {
+          var n = null;
+          ("string" == typeof t && (n = e.element.querySelector('[data-id="' + t + '"]')), null !== n && ("function" == typeof n.remove ? n.remove() : n.parentNode.removeChild(n)));
+          for (var o = 0; o < e.options.boards.length; o++) if (e.options.boards[o].id === t) {
+            e.options.boards.splice(o, 1);
+            break;
+          }
+          return e;
+        }, this.onButtonClick = function (e) {}, this.init());
+      };
+    })();
+  }, {
+    dragula: 9
+  }],
+  2: [function (e, t, n) {
+    t.exports = function (e, t) {
+      return Array.prototype.slice.call(e, t);
+    };
+  }, {}],
+  3: [function (e, t, n) {
+    "use strict";
+    var o = e("ticky");
+    t.exports = function (e, t, n) {
+      e && o(function () {
+        e.apply(n || null, t || []);
+      });
+    };
+  }, {
+    ticky: 11
+  }],
+  4: [function (e, t, n) {
+    "use strict";
+    var o = e("atoa"), i = e("./debounce");
+    t.exports = function (e, t) {
+      var n = t || ({}), r = {};
+      return (void 0 === e && (e = {}), e.on = function (t, n) {
+        return (r[t] ? r[t].push(n) : r[t] = [n], e);
+      }, e.once = function (t, n) {
+        return (n._once = !0, e.on(t, n), e);
+      }, e.off = function (t, n) {
+        var o = arguments.length;
+        if (1 === o) delete r[t]; else if (0 === o) r = {}; else {
+          var i = r[t];
+          if (!i) return e;
+          i.splice(i.indexOf(n), 1);
+        }
+        return e;
+      }, e.emit = function () {
+        var t = o(arguments);
+        return e.emitterSnapshot(t.shift()).apply(this, t);
+      }, e.emitterSnapshot = function (t) {
+        var a = (r[t] || []).slice(0);
+        return function () {
+          var r = o(arguments), c = this || e;
+          if ("error" === t && !1 !== n.throws && !a.length) throw 1 === r.length ? r[0] : r;
+          return (a.forEach(function (o) {
+            (n.async ? i(o, r, c) : o.apply(c, r), o._once && e.off(t, o));
+          }), e);
+        };
+      }, e);
+    };
+  }, {
+    "./debounce": 3,
+    atoa: 2
+  }],
+  5: [function (e, t, n) {
+    (function (n) {
+      (function () {
+        "use strict";
+        var o = e("custom-event"), i = e("./eventmap"), r = n.document, a = function (e, t, n, o) {
+          return e.addEventListener(t, n, o);
+        }, c = function (e, t, n, o) {
+          return e.removeEventListener(t, n, o);
+        }, d = [];
+        function s(e, t, n) {
+          var o = (function (e, t, n) {
+            var o, i;
+            for (o = 0; o < d.length; o++) if ((i = d[o]).element === e && i.type === t && i.fn === n) return o;
+          })(e, t, n);
+          if (o) {
+            var i = d[o].wrapper;
+            return (d.splice(o, 1), i);
+          }
+        }
+        (n.addEventListener || (a = function (e, t, o) {
+          return e.attachEvent("on" + t, (function (e, t, o) {
+            var i = s(e, t, o) || (function (e, t, o) {
+              return function (t) {
+                var i = t || n.event;
+                (i.target = i.target || i.srcElement, i.preventDefault = i.preventDefault || (function () {
+                  i.returnValue = !1;
+                }), i.stopPropagation = i.stopPropagation || (function () {
+                  i.cancelBubble = !0;
+                }), i.which = i.which || i.keyCode, o.call(e, i));
+              };
+            })(e, 0, o);
+            return (d.push({
+              wrapper: i,
+              element: e,
+              type: t,
+              fn: o
+            }), i);
+          })(e, t, o));
+        }, c = function (e, t, n) {
+          var o = s(e, t, n);
+          if (o) return e.detachEvent("on" + t, o);
+        }), t.exports = {
+          add: a,
+          remove: c,
+          fabricate: function (e, t, n) {
+            var a = -1 === i.indexOf(t) ? new o(t, {
+              detail: n
+            }) : (function () {
+              var e;
+              r.createEvent ? (e = r.createEvent("Event")).initEvent(t, !0, !0) : r.createEventObject && (e = r.createEventObject());
+              return e;
+            })();
+            e.dispatchEvent ? e.dispatchEvent(a) : e.fireEvent("on" + t, a);
+          }
+        });
+      }).call(this);
+    }).call(this, "undefined" != typeof global ? global : "undefined" != typeof self ? self : "undefined" != typeof window ? window : {});
+  }, {
+    "./eventmap": 6,
+    "custom-event": 7
+  }],
+  6: [function (e, t, n) {
+    (function (e) {
+      (function () {
+        "use strict";
+        var n = [], o = "", i = /^on/;
+        for (o in e) i.test(o) && n.push(o.slice(2));
+        t.exports = n;
+      }).call(this);
+    }).call(this, "undefined" != typeof global ? global : "undefined" != typeof self ? self : "undefined" != typeof window ? window : {});
+  }, {}],
+  7: [function (e, t, n) {
+    (function (e) {
+      (function () {
+        var n = e.CustomEvent;
+        t.exports = (function () {
+          try {
+            var e = new n("cat", {
+              detail: {
+                foo: "bar"
+              }
+            });
+            return "cat" === e.type && "bar" === e.detail.foo;
+          } catch (e) {}
+          return !1;
+        })() ? n : "undefined" != typeof document && "function" == typeof document.createEvent ? function (e, t) {
+          var n = document.createEvent("CustomEvent");
+          return (t ? n.initCustomEvent(e, t.bubbles, t.cancelable, t.detail) : n.initCustomEvent(e, !1, !1, void 0), n);
+        } : function (e, t) {
+          var n = document.createEventObject();
+          return (n.type = e, t ? (n.bubbles = Boolean(t.bubbles), n.cancelable = Boolean(t.cancelable), n.detail = t.detail) : (n.bubbles = !1, n.cancelable = !1, n.detail = void 0), n);
+        };
+      }).call(this);
+    }).call(this, "undefined" != typeof global ? global : "undefined" != typeof self ? self : "undefined" != typeof window ? window : {});
+  }, {}],
+  8: [function (e, t, n) {
+    "use strict";
+    var o = {}, i = "(?:^|\\s)", r = "(?:\\s|$)";
+    function a(e) {
+      var t = o[e];
+      return (t ? t.lastIndex = 0 : o[e] = t = new RegExp(i + e + r, "g"), t);
+    }
+    t.exports = {
+      add: function (e, t) {
+        var n = e.className;
+        n.length ? a(t).test(n) || (e.className += " " + t) : e.className = t;
+      },
+      rm: function (e, t) {
+        e.className = e.className.replace(a(t), " ").trim();
+      }
+    };
+  }, {}],
+  9: [function (e, t, n) {
+    (function (n) {
+      (function () {
+        "use strict";
+        var o = e("contra/emitter"), i = e("crossvent"), r = e("./classes"), a = document, c = a.documentElement;
+        function d(e, t, o, r) {
+          n.navigator.pointerEnabled ? i[t](e, ({
+            mouseup: "pointerup",
+            mousedown: "pointerdown",
+            mousemove: "pointermove"
+          })[o], r) : n.navigator.msPointerEnabled ? i[t](e, ({
+            mouseup: "MSPointerUp",
+            mousedown: "MSPointerDown",
+            mousemove: "MSPointerMove"
+          })[o], r) : (i[t](e, ({
+            mouseup: "touchend",
+            mousedown: "touchstart",
+            mousemove: "touchmove"
+          })[o], r), i[t](e, o, r));
+        }
+        function s(e) {
+          if (void 0 !== e.touches) return e.touches.length;
+          if (void 0 !== e.which && 0 !== e.which) return e.which;
+          if (void 0 !== e.buttons) return e.buttons;
+          var t = e.button;
+          return void 0 !== t ? 1 & t ? 1 : 2 & t ? 3 : 4 & t ? 2 : 0 : void 0;
+        }
+        function l(e, t) {
+          return void 0 !== n[t] ? n[t] : c.clientHeight ? c[e] : a.body[e];
+        }
+        function u(e, t, n) {
+          var o, i = (e = e || ({})).className || "";
+          return (e.className += " gu-hide", o = a.elementFromPoint(t, n), e.className = i, o);
+        }
+        function f() {
+          return !1;
+        }
+        function p() {
+          return !0;
+        }
+        function v(e) {
+          return e.width || e.right - e.left;
+        }
+        function m(e) {
+          return e.height || e.bottom - e.top;
+        }
+        function h(e) {
+          return e.parentNode === a ? null : e.parentNode;
+        }
+        function g(e) {
+          return "INPUT" === e.tagName || "TEXTAREA" === e.tagName || "SELECT" === e.tagName || (function e(t) {
+            if (!t) return !1;
+            if ("false" === t.contentEditable) return !1;
+            if ("true" === t.contentEditable) return !0;
+            return e(h(t));
+          })(e);
+        }
+        function y(e) {
+          return e.nextElementSibling || (function () {
+            var t = e;
+            do {
+              t = t.nextSibling;
+            } while (t && 1 !== t.nodeType);
+            return t;
+          })();
+        }
+        function b(e, t) {
+          var n = (function (e) {
+            return e.targetTouches && e.targetTouches.length ? e.targetTouches[0] : e.changedTouches && e.changedTouches.length ? e.changedTouches[0] : e;
+          })(t), o = {
+            pageX: "clientX",
+            pageY: "clientY"
+          };
+          return ((e in o) && !((e in n)) && (o[e] in n) && (e = o[e]), n[e]);
+        }
+        t.exports = function (e, t) {
+          var n, w, E, T, x, C, O, k, S, L, B;
+          1 === arguments.length && !1 === Array.isArray(e) && (t = e, e = []);
+          var N, I = null, A = t || ({});
+          (void 0 === A.moves && (A.moves = p), void 0 === A.accepts && (A.accepts = p), void 0 === A.invalid && (A.invalid = function () {
+            return !1;
+          }), void 0 === A.containers && (A.containers = e || []), void 0 === A.isContainer && (A.isContainer = f), void 0 === A.copy && (A.copy = !1), void 0 === A.copySortSource && (A.copySortSource = !1), void 0 === A.revertOnSpill && (A.revertOnSpill = !1), void 0 === A.removeOnSpill && (A.removeOnSpill = !1), void 0 === A.direction && (A.direction = "vertical"), void 0 === A.ignoreInputTextSelection && (A.ignoreInputTextSelection = !0), void 0 === A.mirrorContainer && (A.mirrorContainer = a.body));
+          var _ = o({
+            containers: A.containers,
+            start: function (e) {
+              var t = j(e);
+              t && F(t);
+            },
+            end: R,
+            cancel: W,
+            remove: V,
+            destroy: function () {
+              (P(!0), K({}));
+            },
+            canMove: function (e) {
+              return !!j(e);
+            },
+            dragging: !1
+          });
+          return (!0 === A.removeOnSpill && _.on("over", function (e) {
+            r.rm(e, "gu-hide");
+          }).on("out", function (e) {
+            _.dragging && r.add(e, "gu-hide");
+          }), P(), _);
+          function H(e) {
+            return -1 !== _.containers.indexOf(e) || A.isContainer(e);
+          }
+          function P(e) {
+            var t = e ? "remove" : "add";
+            (d(c, t, "mousedown", X), d(c, t, "mouseup", K));
+          }
+          function q(e) {
+            d(c, e ? "remove" : "add", "mousemove", Y);
+          }
+          function M(e) {
+            var t = e ? "remove" : "add";
+            (i[t](c, "selectstart", D), i[t](c, "click", D));
+          }
+          function D(e) {
+            N && e.preventDefault();
+          }
+          function X(e) {
+            if ((C = e.clientX, O = e.clientY, 1 === s(e) && !e.metaKey && !e.ctrlKey)) {
+              var t = e.target, n = j(t);
+              n && (N = n, q(), "mousedown" === e.type && (g(t) ? t.focus() : e.preventDefault()));
+            }
+          }
+          function Y(e) {
+            if (N) if (0 !== s(e)) {
+              if (!(void 0 !== e.clientX && Math.abs(e.clientX - C) <= (A.slideFactorX || 0) && void 0 !== e.clientY && Math.abs(e.clientY - O) <= (A.slideFactorY || 0))) {
+                if (A.ignoreInputTextSelection) {
+                  var t = b("clientX", e) || 0, o = b("clientY", e) || 0;
+                  if (g(a.elementFromPoint(t, o))) return;
+                }
+                var i = N;
+                (q(!0), M(), R(), F(i));
+                var u, f = {
+                  left: (u = E.getBoundingClientRect()).left + l("scrollLeft", "pageXOffset"),
+                  top: u.top + l("scrollTop", "pageYOffset")
+                };
+                (T = b("pageX", e) - f.left, x = b("pageY", e) - f.top, r.add(L || E, "gu-transit"), (function () {
+                  if (!n) {
+                    var e = E.getBoundingClientRect();
+                    ((n = E.cloneNode(!0)).style.width = v(e) + "px", n.style.height = m(e) + "px", r.rm(n, "gu-transit"), r.add(n, "gu-mirror"), A.mirrorContainer.appendChild(n), d(c, "add", "mousemove", Q), r.add(A.mirrorContainer, "gu-unselectable"), _.emit("cloned", n, E, "mirror"));
+                  }
+                })(), Q(e));
+              }
+            } else K({});
+          }
+          function j(e) {
+            if (!(_.dragging && n || H(e))) {
+              for (var t = e; h(e) && !1 === H(h(e)); ) {
+                if (A.invalid(e, t)) return;
+                if (!(e = h(e))) return;
+              }
+              var o = h(e);
+              if (o && !A.invalid(e, t) && A.moves(e, o, t, y(e))) return {
+                item: e,
+                source: o
+              };
+            }
+          }
+          function F(e) {
+            var t, n;
+            (t = e.item, n = e.source, ("boolean" == typeof A.copy ? A.copy : A.copy(t, n)) && (L = e.item.cloneNode(!0), _.emit("cloned", L, e.item, "copy")), w = e.source, E = e.item, k = S = y(e.item), _.dragging = !0, _.emit("drag", E, w));
+          }
+          function R() {
+            if (_.dragging) {
+              var e = L || E;
+              z(e, h(e));
+            }
+          }
+          function U() {
+            (N = !1, q(!0), M(!0));
+          }
+          function K(e) {
+            if ((U(), _.dragging)) {
+              var t = L || E, o = b("clientX", e) || 0, i = b("clientY", e) || 0, r = J(u(n, o, i), o, i);
+              r && (L && A.copySortSource || !L || r !== w) ? z(t, r) : A.removeOnSpill ? V() : W();
+            }
+          }
+          function z(e, t) {
+            var n = h(e);
+            (L && A.copySortSource && t === w && n.removeChild(E), $(t) ? _.emit("cancel", e, w, w) : _.emit("drop", e, t, w, S), G());
+          }
+          function V() {
+            if (_.dragging) {
+              var e = L || E, t = h(e);
+              (t && t.removeChild(e), _.emit(L ? "cancel" : "remove", e, t, w), G());
+            }
+          }
+          function W(e) {
+            if (_.dragging) {
+              var t = arguments.length > 0 ? e : A.revertOnSpill, n = L || E, o = h(n), i = $(o);
+              (!1 === i && t && (L ? o && o.removeChild(L) : w.insertBefore(n, k)), i || t ? _.emit("cancel", n, w, w) : _.emit("drop", n, o, w, S), G());
+            }
+          }
+          function G() {
+            var e = L || E;
+            (U(), n && (r.rm(A.mirrorContainer, "gu-unselectable"), d(c, "remove", "mousemove", Q), h(n).removeChild(n), n = null), e && r.rm(e, "gu-transit"), B && clearTimeout(B), _.dragging = !1, I && _.emit("out", e, I, w), _.emit("dragend", e), w = E = L = k = S = B = I = null);
+          }
+          function $(e, t) {
+            var o;
+            return (o = void 0 !== t ? t : n ? S : y(L || E), e === w && o === k);
+          }
+          function J(e, t, n) {
+            for (var o = e; o && !i(); ) o = h(o);
+            return o;
+            function i() {
+              if (!1 === H(o)) return !1;
+              var i = Z(o, e), r = ee(o, i, t, n);
+              return !!$(o, r) || A.accepts(E, o, w, r);
+            }
+          }
+          function Q(e) {
+            if (n) {
+              e.preventDefault();
+              var t = b("clientX", e) || 0, o = b("clientY", e) || 0, i = t - T, r = o - x;
+              (n.style.left = i + "px", n.style.top = r + "px");
+              var a = L || E, c = u(n, t, o), d = J(c, t, o), s = null !== d && d !== I;
+              (s || null === d) && (I && v("out"), I = d, s && v("over"));
+              var l = h(a);
+              if (d !== w || !L || A.copySortSource) {
+                var f, p = Z(d, c);
+                if (null !== p) f = ee(d, p, t, o); else {
+                  if (!0 !== A.revertOnSpill || L) return void (L && l && l.removeChild(a));
+                  (f = k, d = w);
+                }
+                (null === f && s || f !== a && f !== y(a)) && (S = f, d.insertBefore(a, f), _.emit("shadow", a, d, w));
+              } else l && l.removeChild(a);
+            }
+            function v(e) {
+              _.emit(e, a, I, w);
+            }
+          }
+          function Z(e, t) {
+            for (var n = t; n !== e && h(n) !== e; ) n = h(n);
+            return n === c ? null : n;
+          }
+          function ee(e, t, n, o) {
+            var i, r = "horizontal" === A.direction;
+            return t !== e ? (i = t.getBoundingClientRect(), a(r ? n > i.left + v(i) / 2 : o > i.top + m(i) / 2)) : (function () {
+              var t, i, a, c = e.children.length;
+              for (t = 0; t < c; t++) {
+                if ((i = e.children[t], a = i.getBoundingClientRect(), r && a.left + a.width / 2 > n)) return i;
+                if (!r && a.top + a.height / 2 > o) return i;
+              }
+              return null;
+            })();
+            function a(e) {
+              return e ? y(t) : t;
+            }
+          }
+        };
+      }).call(this);
+    }).call(this, "undefined" != typeof global ? global : "undefined" != typeof self ? self : "undefined" != typeof window ? window : {});
+  }, {
+    "./classes": 8,
+    "contra/emitter": 4,
+    crossvent: 5
+  }],
+  10: [function (e, t, n) {
+    var o, i, r = t.exports = {};
+    function a() {
+      throw new Error("setTimeout has not been defined");
+    }
+    function c() {
+      throw new Error("clearTimeout has not been defined");
+    }
+    function d(e) {
+      if (o === setTimeout) return setTimeout(e, 0);
+      if ((o === a || !o) && setTimeout) return (o = setTimeout, setTimeout(e, 0));
+      try {
+        return o(e, 0);
+      } catch (t) {
+        try {
+          return o.call(null, e, 0);
+        } catch (t) {
+          return o.call(this, e, 0);
+        }
+      }
+    }
+    !(function () {
+      try {
+        o = "function" == typeof setTimeout ? setTimeout : a;
+      } catch (e) {
+        o = a;
+      }
+      try {
+        i = "function" == typeof clearTimeout ? clearTimeout : c;
+      } catch (e) {
+        i = c;
+      }
+    })();
+    var s, l = [], u = !1, f = -1;
+    function p() {
+      u && s && (u = !1, s.length ? l = s.concat(l) : f = -1, l.length && v());
+    }
+    function v() {
+      if (!u) {
+        var e = d(p);
+        u = !0;
+        for (var t = l.length; t; ) {
+          for ((s = l, l = []); ++f < t; ) s && s[f].run();
+          (f = -1, t = l.length);
+        }
+        (s = null, u = !1, (function (e) {
+          if (i === clearTimeout) return clearTimeout(e);
+          if ((i === c || !i) && clearTimeout) return (i = clearTimeout, clearTimeout(e));
+          try {
+            i(e);
+          } catch (t) {
+            try {
+              return i.call(null, e);
+            } catch (t) {
+              return i.call(this, e);
+            }
+          }
+        })(e));
+      }
+    }
+    function m(e, t) {
+      (this.fun = e, this.array = t);
+    }
+    function h() {}
+    (r.nextTick = function (e) {
+      var t = new Array(arguments.length - 1);
+      if (arguments.length > 1) for (var n = 1; n < arguments.length; n++) t[n - 1] = arguments[n];
+      (l.push(new m(e, t)), 1 !== l.length || u || d(v));
+    }, m.prototype.run = function () {
+      this.fun.apply(null, this.array);
+    }, r.title = "browser", r.browser = !0, r.env = {}, r.argv = [], r.version = "", r.versions = {}, r.on = h, r.addListener = h, r.once = h, r.off = h, r.removeListener = h, r.removeAllListeners = h, r.emit = h, r.prependListener = h, r.prependOnceListener = h, r.listeners = function (e) {
+      return [];
+    }, r.binding = function (e) {
+      throw new Error("process.binding is not supported");
+    }, r.cwd = function () {
+      return "/";
+    }, r.chdir = function (e) {
+      throw new Error("process.chdir is not supported");
+    }, r.umask = function () {
+      return 0;
+    });
+  }, {}],
+  11: [function (e, t, n) {
+    (function (e) {
+      (function () {
+        var n;
+        (n = "function" == typeof e ? function (t) {
+          e(t);
+        } : function (e) {
+          setTimeout(e, 0);
+        }, t.exports = n);
+      }).call(this);
+    }).call(this, e("timers").setImmediate);
+  }, {
+    timers: 12
+  }],
+  12: [function (e, t, n) {
+    (function (t, o) {
+      (function () {
+        var i = e("process/browser.js").nextTick, r = Function.prototype.apply, a = Array.prototype.slice, c = {}, d = 0;
+        function s(e, t) {
+          (this._id = e, this._clearFn = t);
+        }
+        (n.setTimeout = function () {
+          return new s(r.call(setTimeout, window, arguments), clearTimeout);
+        }, n.setInterval = function () {
+          return new s(r.call(setInterval, window, arguments), clearInterval);
+        }, n.clearTimeout = n.clearInterval = function (e) {
+          e.close();
+        }, s.prototype.unref = s.prototype.ref = function () {}, s.prototype.close = function () {
+          this._clearFn.call(window, this._id);
+        }, n.enroll = function (e, t) {
+          (clearTimeout(e._idleTimeoutId), e._idleTimeout = t);
+        }, n.unenroll = function (e) {
+          (clearTimeout(e._idleTimeoutId), e._idleTimeout = -1);
+        }, n._unrefActive = n.active = function (e) {
+          clearTimeout(e._idleTimeoutId);
+          var t = e._idleTimeout;
+          t >= 0 && (e._idleTimeoutId = setTimeout(function () {
+            e._onTimeout && e._onTimeout();
+          }, t));
+        }, n.setImmediate = "function" == typeof t ? t : function (e) {
+          var t = d++, o = !(arguments.length < 2) && a.call(arguments, 1);
+          return (c[t] = !0, i(function () {
+            c[t] && (o ? e.apply(null, o) : e.call(null), n.clearImmediate(t));
+          }), t);
+        }, n.clearImmediate = "function" == typeof o ? o : function (e) {
+          delete c[e];
+        });
+      }).call(this);
+    }).call(this, e("timers").setImmediate, e("timers").clearImmediate);
+  }, {
+    "process/browser.js": 10,
+    timers: 12
+  }]
+}, {}, [1]);
+
+},{}],"1ujtl":[function(require,module,exports) {
+// MIT License
+
+// Copyright (c) 2017 Thiago Santos
+
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+// // Get the modal
+// var timerModal = document.getElementById("timers");
+
+// // Get the button that opens the modal
+// var btn = document.getElementById("myBtn");
+
+// // Get the <span> element that closes the modal
+// var span = document.getElementsByClassName("close")[0];
+
+// // When the user clicks on the button, open the modal 
+// btn.onclick = function () {
+//   modal.style.display = "block";
+// }
+
+// // When the user clicks on <span> (x), close the modal
+// span.onclick = function () {
+//   modal.style.display = "none";
+// }
+
+// // When the user clicks anywhere outside of the modal, close it
+// window.onclick = function (event) {
+//   if (event.target == modal) {
+//     modal.style.display = "none";
+//   }
+// }
+
+// $("radio").on('click', function() {
+//   console.log($("radio:chekced").val() + "is checked!");
+// });
+},{}],"2jNHT":[function(require,module,exports) {
+
+},{}],"2aL5o":[function(require,module,exports) {
+
+},{}],"6m8Cd":[function(require,module,exports) {
+
 },{}]},["27Rzb","4OAbU"], "4OAbU", "parcelRequiref77e")
 
 //# sourceMappingURL=index.8a5bc16d.js.map

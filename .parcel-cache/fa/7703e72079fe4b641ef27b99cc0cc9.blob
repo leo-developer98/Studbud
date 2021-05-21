@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+            
+<html lang="en">
+
+                
+<head>
+                
+    <title>StudBud</title>
+
+                
+    <meta charset="UTF-8">               
+    <meta name="viewport" content="width=device-width,initial-scale=1">            
+    <meta name="description" content="">            
+    <link href="ac2b17b88ef0ab3e3e3316d5a6be3892" rel="stylesheet" type="text/css">  
+    <link href="7101a6f10d2c2dc39a95d52cf8329559" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link rel="stylesheet" href="5c15d1e7a5cbe030e8e4556ea080e4e1">
+</head>
+
+                
+<body class="app_container" id="home">
+    <nav class="top_nav">
+        <div class="task_btn"><i class="fas fa-list"></i></div>
+        <ul class="nav_links">
+            <li class="nav_item"><a href="#home" class="active">Home</a></li>
+            <li class="nav_item"><button type="button" class="btn nav_btn" data-bs-toggle="modal" data-bs-target="#timers">Timers</button></li>
+            <li class="nav_item"><button type="button" class="btn nav_btn">Dictionary</button></li>
+            <li class="nav_item"><button type="button" class="btn nav_btn">Music Player</button></li>
+            <li class="nav_item"><button type="button" class="btn nav_btn">Reading List</button></li>
+        </ul>
+    </nav>
+
+    <div id="taskWrapper">
+        <div id="taskgrid">
+            <h3>Task List:</h3>
+            <div id="taskList">
+                <p id="emptyTaskList">You haven't added any tasks yet.</p>
+            </div>
+        </div>
+        <div id="addTask">
+            <form id="taskForm">
+                <h3 class="headings">Add Task</h3>
+                <button type="button" class="btn-close" aria-label="Close" id="closeAdd"></button>
+                <label for="task" class="form-label">Task Description:</label>
+                <input type="text" name="task" id="td" class="form-control form-control-sm" required="">
+        
+                <!-- <div class="icons"><i class="far fa-calendar"></i></div> -->
+                <label for="dueDate" class="form-label"><i class="far fa-calendar"></i><span> Due Date:</span></label>
+                <input type="date" name="dueDate" id="dd" class="form-control form-control-sm">
+        
+                <!-- <div class="icons"><i class="far fa-clock"></i></div> -->
+                <label for="completionTime" class="form-label"><i class="far fa-clock"></i><span> Completion Time:</span></label>
+                <input type="time" name="completionTime" id="ct" class="form-control form-control-sm">
+        
+                <!-- <div class="icons"><i class="fas fa-flag"></i></div> -->
+                <label for="priorityRanking" class="form-label"><i class="fas fa-flag"></i><span> Priority Ranking:</span></label>
+                <select name="priorityRanking" id="pr" class="form-select form-select-sm">
+                <option value="">Select from below:</option>
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+                </select>
+                
+                <!-- <div class="icons"><i class="far fa-clock"></i><span>Estimated Time (hours):</span></div> -->
+                <label for="estimatedTime" class="form-label"><i class="far fa-clock"></i><span> Estimated Time (hours):</span></label>
+                <input type="number" name="estimatedTime" id="et" min="0" step="0.5" class="form-control form-control-sm">
+            </form>
+        </div>
+        <div id="uploadBtnContainer">
+            <div id="addBtn"><i class="fas fa-plus fa-2x"></i></div>
+            <div id="uploadBtn"><i class="fas fa-arrow-up fa-2x"></i></div>
+        </div>
+        <div id="task_bottom">
+            <div class="dropdown">
+                <button type="button" id="moreBtn" class="btn btn-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Sort tasks</button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                  <li><a class="dropdown-item" href="#">Sort by date created</a></li>
+                  <li><a class="dropdown-item" href="#">Sort by due date</a></li>
+                  <li><a class="dropdown-item" href="#">Sort by priority rating</a></li>
+                  <li><a class="dropdown-item" href="#">Sort by estimated time</a></li>
+                </ul>
+              </div>
+        </div>
+    </div>
+    <div id="kanban">
+        <h1>Heldfabodufbadfbla dasfbdksf af asdkflbdafkd alfd</h1>
+        <p>djafblkda l fjakdsl fadf kdf alkdf aldkf aldskf </p>
+        <div id="myKanban"></div>
+        <button id="addDefault">Add "Default" board</button>
+        <br>
+        <button id="addToDo">Add element in "To Do" Board</button>
+        <br>
+        <button id="removeBoard">Remove "Done" Board</button>
+        <br>
+        <button id="removeElement">Remove "My Task Test"</button>
+    </div>
+
+    <div id="timers" class="page_container modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <nav class="sub_nav">
+                        <ul class="nav_links">
+                            <li class="nav_item"><a href="#timers_p" class="active">Pomodoro Timer</a></li>
+                            <li class="nav_item"><a href="#timers_s">Stopwatch Timer</a></li>
+                        </ul>
+                    </nav>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="timers_p" class="sub_page_container">
+                        <h2>Pomodoro Timer</h2>
+                        <p>nothing inside</p>
+                    </div>
+                    <div id="timers_s" class="sub_page_container" style="ebb2fb29c2618bd63cae24192c6011e6">
+                        <h2>Stopwatch Timer</h2>
+                        <p>nothing inside 2</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+
+                </div>
+            </div>
+        </div>
+    </div>
+                
+    <div id="dictionary" class="page_container modal">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1>Search Box</h1>
+                </div>
+                <div class="modal-body">
+                    <h1>definition</h1>
+                    </div>
+                </div>
+                <div class="modal-footer">
+
+                </div>
+            </div>
+        </div>
+    
+
+    <div id="music_player" class="page_container modal">
+        <h1>Music Player</h1>
+    </div>
+
+    <script src="4e6340146f7d0152c44dbd6ccf58b0e0"></script>            
+    <script src="7f6f3b94ad5f90428e6b3a7312e4519b" crossorigin="anonymous"></script>
+    <script src="07985f7b483f43f6f99e8f78f7ddcc72" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+    <script src="6cf2d4613d86baa1545dcb24f357a431"></script>
+                
+</body>
+
+                
+</html>

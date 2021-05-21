@@ -1,0 +1,945 @@
+// modules are defined as an array
+// [ module function, map of requires ]
+//
+// map of requires is short require name -> numeric require
+//
+// anything defined in a previous bundle is accessed via the
+// orig method which is the require for previous bundles
+
+(function(modules, entry, mainEntry, parcelRequireName, globalName) {
+  /* eslint-disable no-undef */
+  var globalObject =
+    typeof globalThis !== 'undefined'
+      ? globalThis
+      : typeof self !== 'undefined'
+      ? self
+      : typeof window !== 'undefined'
+      ? window
+      : typeof global !== 'undefined'
+      ? global
+      : {};
+  /* eslint-enable no-undef */
+
+  // Save the require from previous bundle to this closure if any
+  var previousRequire =
+    typeof globalObject[parcelRequireName] === 'function' &&
+    globalObject[parcelRequireName];
+
+  var cache = previousRequire.cache || {};
+  // Do not use `require` to prevent Webpack from trying to bundle this call
+  var nodeRequire =
+    typeof module !== 'undefined' &&
+    typeof module.require === 'function' &&
+    module.require.bind(module);
+
+  function newRequire(name, jumped) {
+    if (!cache[name]) {
+      if (!modules[name]) {
+        // if we cannot find the module within our internal map or
+        // cache jump to the current global require ie. the last bundle
+        // that was added to the page.
+        var currentRequire =
+          typeof globalObject[parcelRequireName] === 'function' &&
+          globalObject[parcelRequireName];
+        if (!jumped && currentRequire) {
+          return currentRequire(name, true);
+        }
+
+        // If there are other bundles on this page the require from the
+        // previous one is saved to 'previousRequire'. Repeat this as
+        // many times as there are bundles until the module is found or
+        // we exhaust the require chain.
+        if (previousRequire) {
+          return previousRequire(name, true);
+        }
+
+        // Try the node require function if it exists.
+        if (nodeRequire && typeof name === 'string') {
+          return nodeRequire(name);
+        }
+
+        var err = new Error("Cannot find module '" + name + "'");
+        err.code = 'MODULE_NOT_FOUND';
+        throw err;
+      }
+
+      localRequire.resolve = resolve;
+      localRequire.cache = {};
+
+      var module = (cache[name] = new newRequire.Module(name));
+
+      modules[name][0].call(
+        module.exports,
+        localRequire,
+        module,
+        module.exports,
+        this
+      );
+    }
+
+    return cache[name].exports;
+
+    function localRequire(x) {
+      return newRequire(localRequire.resolve(x));
+    }
+
+    function resolve(x) {
+      return modules[name][1][x] || x;
+    }
+  }
+
+  function Module(moduleName) {
+    this.id = moduleName;
+    this.bundle = newRequire;
+    this.exports = {};
+  }
+
+  newRequire.isParcelRequire = true;
+  newRequire.Module = Module;
+  newRequire.modules = modules;
+  newRequire.cache = cache;
+  newRequire.parent = previousRequire;
+  newRequire.register = function(id, exports) {
+    modules[id] = [
+      function(require, module) {
+        module.exports = exports;
+      },
+      {},
+    ];
+  };
+
+  Object.defineProperty(newRequire, 'root', {
+    get: function() {
+      return globalObject[parcelRequireName];
+    },
+  });
+
+  globalObject[parcelRequireName] = newRequire;
+
+  for (var i = 0; i < entry.length; i++) {
+    newRequire(entry[i]);
+  }
+
+  if (mainEntry) {
+    // Expose entry point to Node, AMD or browser globals
+    // Based on https://github.com/ForbesLindesay/umd/blob/master/template.js
+    var mainExports = newRequire(mainEntry);
+
+    // CommonJS
+    if (typeof exports === 'object' && typeof module !== 'undefined') {
+      module.exports = mainExports;
+
+      // RequireJS
+    } else if (typeof define === 'function' && define.amd) {
+      define(function() {
+        return mainExports;
+      });
+
+      // <script>
+    } else if (globalName) {
+      this[globalName] = mainExports;
+    }
+  }
+})({"27Rzb":[function(require,module,exports) {
+var HMR_HOST = null;
+var HMR_PORT = 1234;
+var HMR_SECURE = false;
+var HMR_ENV_HASH = "d751713988987e9331980363e24189ce";
+module.bundle.HMR_BUNDLE_ID = "97912cc17f1f5bdf37964fbc8a5bc16d";
+// @flow
+/*global HMR_HOST, HMR_PORT, HMR_ENV_HASH, HMR_SECURE*/
+/*::
+import type {
+HMRAsset,
+HMRMessage,
+} from '@parcel/reporter-dev-server/src/HMRServer.js';
+interface ParcelRequire {
+(string): mixed;
+cache: {|[string]: ParcelModule|};
+hotData: mixed;
+Module: any;
+parent: ?ParcelRequire;
+isParcelRequire: true;
+modules: {|[string]: [Function, {|[string]: string|}]|};
+HMR_BUNDLE_ID: string;
+root: ParcelRequire;
+}
+interface ParcelModule {
+hot: {|
+data: mixed,
+accept(cb: (Function) => void): void,
+dispose(cb: (mixed) => void): void,
+// accept(deps: Array<string> | string, cb: (Function) => void): void,
+// decline(): void,
+_acceptCallbacks: Array<(Function) => void>,
+_disposeCallbacks: Array<(mixed) => void>,
+|};
+}
+declare var module: {bundle: ParcelRequire, ...};
+declare var HMR_HOST: string;
+declare var HMR_PORT: string;
+declare var HMR_ENV_HASH: string;
+declare var HMR_SECURE: boolean;
+*/
+var OVERLAY_ID = '__parcel__error__overlay__';
+var OldModule = module.bundle.Module;
+function Module(moduleName) {
+  OldModule.call(this, moduleName);
+  this.hot = {
+    data: module.bundle.hotData,
+    _acceptCallbacks: [],
+    _disposeCallbacks: [],
+    accept: function (fn) {
+      this._acceptCallbacks.push(fn || (function () {}));
+    },
+    dispose: function (fn) {
+      this._disposeCallbacks.push(fn);
+    }
+  };
+  module.bundle.hotData = undefined;
+}
+module.bundle.Module = Module;
+var checkedAssets, /*: {|[string]: boolean|}*/
+acceptedAssets, /*: {|[string]: boolean|}*/
+/*: {|[string]: boolean|}*/
+assetsToAccept;
+function getHostname() {
+  return HMR_HOST || (location.protocol.indexOf('http') === 0 ? location.hostname : 'localhost');
+}
+function getPort() {
+  return HMR_PORT || location.port;
+}
+// eslint-disable-next-line no-redeclare
+var parent = module.bundle.parent;
+if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
+  var hostname = getHostname();
+  var port = getPort();
+  var protocol = HMR_SECURE || location.protocol == 'https:' && !(/localhost|127.0.0.1|0.0.0.0/).test(hostname) ? 'wss' : 'ws';
+  var ws = new WebSocket(protocol + '://' + hostname + (port ? ':' + port : '') + '/');
+  // $FlowFixMe
+  ws.onmessage = function (event) /*: {data: string, ...}*/
+  {
+    checkedAssets = {
+      /*: {|[string]: boolean|}*/
+    };
+    acceptedAssets = {
+      /*: {|[string]: boolean|}*/
+    };
+    assetsToAccept = [];
+    var data = /*: HMRMessage*/
+    JSON.parse(event.data);
+    if (data.type === 'update') {
+      // Remove error overlay if there is one
+      removeErrorOverlay();
+      let assets = data.assets.filter(asset => asset.envHash === HMR_ENV_HASH);
+      // Handle HMR Update
+      var handled = false;
+      assets.forEach(asset => {
+        var didAccept = asset.type === 'css' || asset.type === 'js' && hmrAcceptCheck(module.bundle.root, asset.id, asset.depsByBundle);
+        if (didAccept) {
+          handled = true;
+        }
+      });
+      if (handled) {
+        console.clear();
+        assets.forEach(function (asset) {
+          hmrApply(module.bundle.root, asset);
+        });
+        for (var i = 0; i < assetsToAccept.length; i++) {
+          var id = assetsToAccept[i][1];
+          if (!acceptedAssets[id]) {
+            hmrAcceptRun(assetsToAccept[i][0], id);
+          }
+        }
+      } else {
+        window.location.reload();
+      }
+    }
+    if (data.type === 'error') {
+      // Log parcel errors to console
+      for (let ansiDiagnostic of data.diagnostics.ansi) {
+        let stack = ansiDiagnostic.codeframe ? ansiDiagnostic.codeframe : ansiDiagnostic.stack;
+        console.error('🚨 [parcel]: ' + ansiDiagnostic.message + '\n' + stack + '\n\n' + ansiDiagnostic.hints.join('\n'));
+      }
+      // Render the fancy html overlay
+      removeErrorOverlay();
+      var overlay = createErrorOverlay(data.diagnostics.html);
+      // $FlowFixMe
+      document.body.appendChild(overlay);
+    }
+  };
+  ws.onerror = function (e) {
+    console.error(e.message);
+  };
+  ws.onclose = function (e) {
+    if (undefined !== 'test') {
+      console.warn('[parcel] 🚨 Connection to the HMR server was lost');
+    }
+  };
+}
+function removeErrorOverlay() {
+  var overlay = document.getElementById(OVERLAY_ID);
+  if (overlay) {
+    overlay.remove();
+    console.log('[parcel] ✨ Error resolved');
+  }
+}
+function createErrorOverlay(diagnostics) {
+  var overlay = document.createElement('div');
+  overlay.id = OVERLAY_ID;
+  let errorHTML = '<div style="background: black; opacity: 0.85; font-size: 16px; color: white; position: fixed; height: 100%; width: 100%; top: 0px; left: 0px; padding: 30px; font-family: Menlo, Consolas, monospace; z-index: 9999;">';
+  for (let diagnostic of diagnostics) {
+    let stack = diagnostic.codeframe ? diagnostic.codeframe : diagnostic.stack;
+    errorHTML += `
+      <div>
+        <div style="font-size: 18px; font-weight: bold; margin-top: 20px;">
+          🚨 ${diagnostic.message}
+        </div>
+        <pre>
+          ${stack}
+        </pre>
+        <div>
+          ${diagnostic.hints.map(hint => '<div>' + hint + '</div>').join('')}
+        </div>
+      </div>
+    `;
+  }
+  errorHTML += '</div>';
+  overlay.innerHTML = errorHTML;
+  return overlay;
+}
+function getParents(bundle, id) /*: Array<[ParcelRequire, string]>*/
+{
+  var modules = bundle.modules;
+  if (!modules) {
+    return [];
+  }
+  var parents = [];
+  var k, d, dep;
+  for (k in modules) {
+    for (d in modules[k][1]) {
+      dep = modules[k][1][d];
+      if (dep === id || Array.isArray(dep) && dep[dep.length - 1] === id) {
+        parents.push([bundle, k]);
+      }
+    }
+  }
+  if (bundle.parent) {
+    parents = parents.concat(getParents(bundle.parent, id));
+  }
+  return parents;
+}
+function updateLink(link) {
+  var newLink = link.cloneNode();
+  newLink.onload = function () {
+    if (link.parentNode !== null) {
+      // $FlowFixMe
+      link.parentNode.removeChild(link);
+    }
+  };
+  newLink.setAttribute('href', // $FlowFixMe
+  link.getAttribute('href').split('?')[0] + '?' + Date.now());
+  // $FlowFixMe
+  link.parentNode.insertBefore(newLink, link.nextSibling);
+}
+var cssTimeout = null;
+function reloadCSS() {
+  if (cssTimeout) {
+    return;
+  }
+  cssTimeout = setTimeout(function () {
+    var links = document.querySelectorAll('link[rel="stylesheet"]');
+    for (var i = 0; i < links.length; i++) {
+      // $FlowFixMe[incompatible-type]
+      var href = /*: string*/
+      links[i].getAttribute('href');
+      var hostname = getHostname();
+      var servedFromHMRServer = hostname === 'localhost' ? new RegExp('^(https?:\\/\\/(0.0.0.0|127.0.0.1)|localhost):' + getPort()).test(href) : href.indexOf(hostname + ':' + getPort());
+      var absolute = (/^https?:\/\//i).test(href) && href.indexOf(window.location.origin) !== 0 && !servedFromHMRServer;
+      if (!absolute) {
+        updateLink(links[i]);
+      }
+    }
+    cssTimeout = null;
+  }, 50);
+}
+function hmrApply(bundle, /*: ParcelRequire*/
+asset) /*:  HMRAsset*/
+{
+  var modules = bundle.modules;
+  if (!modules) {
+    return;
+  }
+  if (asset.type === 'css') {
+    reloadCSS();
+    return;
+  }
+  let deps = asset.depsByBundle[bundle.HMR_BUNDLE_ID];
+  if (deps) {
+    var fn = new Function('require', 'module', 'exports', asset.output);
+    modules[asset.id] = [fn, deps];
+  } else if (bundle.parent) {
+    hmrApply(bundle.parent, asset);
+  }
+}
+function hmrAcceptCheck(bundle, /*: ParcelRequire*/
+id, /*: ParcelRequire*/
+/*: string*/
+depsByBundle) /*: ?{ [string]: { [string]: string } }*/
+{
+  var modules = bundle.modules;
+  if (!modules) {
+    return;
+  }
+  if (depsByBundle && !depsByBundle[bundle.HMR_BUNDLE_ID]) {
+    // If we reached the root bundle without finding where the asset should go,
+    // there's nothing to do. Mark as "accepted" so we don't reload the page.
+    if (!bundle.parent) {
+      return true;
+    }
+    return hmrAcceptCheck(bundle.parent, id, depsByBundle);
+  }
+  if (checkedAssets[id]) {
+    return;
+  }
+  checkedAssets[id] = true;
+  var cached = bundle.cache[id];
+  assetsToAccept.push([bundle, id]);
+  if (cached && cached.hot && cached.hot._acceptCallbacks.length) {
+    return true;
+  }
+  return getParents(module.bundle.root, id).some(function (v) {
+    return hmrAcceptCheck(v[0], v[1], null);
+  });
+}
+function hmrAcceptRun(bundle, /*: ParcelRequire*/
+id) /*: string*/
+{
+  var cached = bundle.cache[id];
+  bundle.hotData = {};
+  if (cached && cached.hot) {
+    cached.hot.data = bundle.hotData;
+  }
+  if (cached && cached.hot && cached.hot._disposeCallbacks.length) {
+    cached.hot._disposeCallbacks.forEach(function (cb) {
+      cb(bundle.hotData);
+    });
+  }
+  delete bundle.cache[id];
+  bundle(id);
+  cached = bundle.cache[id];
+  if (cached && cached.hot && cached.hot._acceptCallbacks.length) {
+    cached.hot._acceptCallbacks.forEach(function (cb) {
+      var assetsToAlsoAccept = cb(function () {
+        return getParents(module.bundle.root, id);
+      });
+      if (assetsToAlsoAccept && assetsToAccept.length) {
+        assetsToAccept.push.apply(assetsToAccept, assetsToAlsoAccept);
+      }
+    });
+  }
+  acceptedAssets[id] = true;
+}
+
+},{}],"4OAbU":[function(require,module,exports) {
+var _componentsNavigation = require('./components/navigation');
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+var _componentsNavigationDefault = _parcelHelpers.interopDefault(_componentsNavigation);
+require('./components/tasklist');
+// Navigation
+const links = document.querySelectorAll('.top_nav > ul > li > a');
+const pages = document.querySelectorAll('.page_container');
+var nav = new _componentsNavigationDefault.default(links, pages);
+// nav.getLinks();
+nav.links.forEach(function (link) {
+  link.addEventListener('click', function () {
+    let pageId = nav.getHash(link);
+    nav.setPage(pageId);
+  });
+});
+const subLinks = document.querySelectorAll('.sub_nav > ul > li > a');
+const subPages = document.querySelectorAll('.sub_page_container');
+var subNav = new _componentsNavigationDefault.default(subLinks, subPages);
+subNav.links.forEach(link => {
+  link.addEventListener('click', function () {
+    let pageId = subNav.getHash(link);
+    subNav.setPage(pageId);
+  });
+});
+
+},{"./components/navigation":"2K1cj","./components/tasklist":"Rj9Cl","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"2K1cj":[function(require,module,exports) {
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+class Navigation {
+  constructor(links, pages) {
+    this.links = links;
+    this.pages = pages;
+    this.currentPage = null;
+  }
+  getLinks() {
+    console.log(this.links);
+  }
+  getHash(link) {
+    return link.href.split("#")[1];
+  }
+  setPage(pageId) {
+    this.currentPage = pageId;
+    console.log(this.currentPage);
+    this.links.forEach(link => {
+      link.classList.remove('active');
+      if (this.getHash(link) === pageId) {
+        link.classList.add('active');
+      }
+    });
+    this.pages.forEach(page => {
+      page.style.display = 'none';
+    });
+    document.getElementById(pageId).style.display = "block";
+  }
+}
+exports.default = Navigation;
+
+},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"5gA8y":[function(require,module,exports) {
+"use strict";
+
+exports.interopDefault = function (a) {
+  return a && a.__esModule ? a : {
+    default: a
+  };
+};
+
+exports.defineInteropFlag = function (a) {
+  Object.defineProperty(a, '__esModule', {
+    value: true
+  });
+};
+
+exports.exportAll = function (source, dest) {
+  Object.keys(source).forEach(function (key) {
+    if (key === 'default' || key === '__esModule') {
+      return;
+    } // Skip duplicate re-exports when they have the same value.
+
+
+    if (key in dest && dest[key] === source[key]) {
+      return;
+    }
+
+    Object.defineProperty(dest, key, {
+      enumerable: true,
+      get: function () {
+        return source[key];
+      }
+    });
+  });
+  return dest;
+};
+
+exports.export = function (dest, destName, get) {
+  Object.defineProperty(dest, destName, {
+    enumerable: true,
+    get: get
+  });
+};
+},{}],"Rj9Cl":[function(require,module,exports) {
+var _localStorageJs = require('./localStorage.js');
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+var _localStorageJsDefault = _parcelHelpers.interopDefault(_localStorageJs);
+// Task list
+const taskWrapper = document.getElementById("taskWrapper");
+const taskAll = document.getElementById("taskgrid");
+const form = document.getElementById("taskForm");
+const tasks = document.getElementById("taskList");
+var taskDescription = document.getElementById("td");
+var dueDate = document.getElementById("dd");
+var completionTime = document.getElementById("ct");
+var priorityRating = document.getElementById("pr");
+var estimatedTime = document.getElementById("et");
+// var completionStatus = document.getElementById("cs");
+// var y = priorityRating.options;
+// var x = priorityRating.selectedIndex;
+// var prIndex = priorityRating.options[priorityRating.selectedIndex].index;
+const addBtn = document.getElementById('addBtn');
+const addPage = document.getElementById('addTask');
+const uploadBtn = document.getElementById('uploadBtn');
+const closeBtn = document.getElementById('closeAdd');
+let addOpen = false;
+// Add page open
+addBtn.addEventListener('click', () => {
+  if (!addOpen) {
+    addPage.classList.add('open');
+    addBtn.classList.add('open');
+    uploadBtn.classList.add('open');
+    addOpen = true;
+  } else {}
+});
+// Add Tasks
+uploadBtn.addEventListener("click", function (event) {
+  if (addOpen) {
+    event.preventDefault();
+    let td = taskDescription.value;
+    let dd = String(dueDate.value);
+    let ct = String(completionTime.value);
+    let pr = priorityRating.options[priorityRating.selectedIndex].value;
+    let prIndex = priorityRating.options[priorityRating.selectedIndex].index;
+    let et = estimatedTime.value;
+    let cs = false;
+    addTask(td, dd, ct, pr, prIndex, et, cs);
+    console.log(taskList);
+  }
+});
+// Close add page
+closeBtn.addEventListener('click', () => {
+  if (addOpen) {
+    addPage.classList.remove('open');
+    addBtn.classList.remove('open');
+    uploadBtn.classList.remove('open');
+    addOpen = false;
+  }
+});
+var taskList = [];
+function addTask(taskDescription, dueDate, completionTime, priorityRating, priorityRatingIndex, estimatedTime, completionStatus) {
+  let task = {
+    id: Date.now(),
+    taskDescription,
+    dueDate,
+    completionTime,
+    priorityRating,
+    priorityRatingIndex,
+    estimatedTime,
+    completionStatus
+  };
+  if (document.forms["taskForm"]["taskName"].value == "") {
+    alert("Task Description must be filled out");
+    return false;
+  } else {}
+}
+function showTask(task) {
+  // let item = document.createElement("ul");
+  // item.innerHTML  = "<p>" + task.taskDescription + "</p>";
+  // let itemDd = document.createElement("li");
+  // itemDd.innerHtml = "<h5>" + task.dueDate + "</h5>";
+  // let itemCt = document.createElement("li");
+  // itemCt.innerHTML = "<p>" + task.completionTime + "</p>";
+  // let itemPr = document.createElement("li");
+  // itemPr.innerHTML = "<p>" + task.priorityRating + "</p>";
+  // let itemEt = document.createElement("li");
+  // itemEt.innerHTML = "<p>" + task.estimatedTime + "</p>";
+  // let itemCs = document.createElement("li");
+  // itemCs.innerHTML = "<p>" + task.completionStatus + "</p>";
+  // Build the HTML structure into a single element
+  updateEmpty();
+  let item = document.createElement("div");
+  item.setAttribute('class', 'card');
+  item.classList.add('task_item');
+  item.setAttribute('data-id', task.id);
+  // item.innerHTML = "<li>" + task.taskDescription + "</li>" + "<li> Due Date:" + task.dueDate + "</li>" + "<li> Priority Rating: " + task.priorityRating + "</li>" + "<li> Estimated Time: " + task.estimatedTime + "</li>";
+  // item.classList.add('card');
+  let item_body = document.createElement('div');
+  item_body.setAttribute('class', 'card-body');
+  let item_title = document.createElement("h5");
+  item_title.setAttribute('class', 'card-title');
+  item_title.appendChild(document.createTextNode(task.taskDescription));
+  item_body.appendChild(item_title);
+  // add due date input when theres an input value
+  let ddInput = document.forms["taskForm"]["dueDate"].value;
+  if (ddInput !== "") {
+    let dd = document.createElement("div");
+    dd.setAttribute('class', 'task_details');
+    dd.innerHTML = '<i class="far fa-calendar"></i>';
+    let item_dd = document.createElement("p");
+    item_dd.setAttribute('class', 'card-text');
+    item_dd.appendChild(document.createTextNode(task.dueDate));
+    dd.appendChild(item_dd);
+    item_body.appendChild(dd);
+  }
+  // add priority rating input when theres an input value
+  let prInput = document.forms["taskForm"]["priorityRanking"].value;
+  if (prInput !== "") {
+    let pr = document.createElement("div");
+    pr.setAttribute('class', 'task_details');
+    if (prInput == "Low") {
+      pr.classList.add("low_pr");
+    } else if (prInput == "Medium") {
+      pr.classList.add("medium_pr");
+    } else if (prInput == "High") {
+      pr.classList.add("high_pr");
+    }
+    pr.innerHTML = '<i class="fas fa-flag"></i>';
+    let item_pr = document.createElement("p");
+    item_pr.setAttribute('class', 'card-text');
+    // item_pr.innerHTML('<i class="fas fa-flag"></i>');
+    item_pr.appendChild(document.createTextNode(task.priorityRating));
+    pr.appendChild(item_pr);
+    item_body.appendChild(pr);
+  }
+  // add estimated time input when theres an input value
+  let etInput = document.forms["taskForm"]["estimatedTime"].value;
+  if (etInput !== "") {
+    let et = document.createElement("div");
+    et.setAttribute('class', 'task_details');
+    et.innerHTML = '<i class="far fa-clock"></i>';
+    let item_et = document.createElement("p");
+    item_et.setAttribute('class', 'card-text');
+    item_et.appendChild(document.createTextNode(task.estimatedTime + " hours"));
+    et.appendChild(item_et);
+    item_body.appendChild(et);
+  }
+  item.appendChild(item_body);
+  // add Delete Button
+  let delButton = document.createElement("button");
+  let delButtonText = document.createTextNode("Delete");
+  delButton.appendChild(delButtonText);
+  delButton.setAttribute('class', "btn btn-outline-danger");
+  delButton.classList.add('deleteBtn');
+  delButton.addEventListener("click", function (event) {
+    event.preventDefault();
+    let id = event.target.parentElement.getAttribute('data-id');
+    let index = taskList.findIndex(task => task.id === Number(id));
+    removeItemFromArray(taskList, index);
+    console.log(taskList);
+    updateEmpty();
+    item.remove();
+  });
+  // add Move to Kanban Button
+  let moveButton = document.createElement("button");
+  let moveButtonText = document.createTextNode("Move");
+  moveButton.appendChild(moveButtonText);
+  // item.appendChild(itemDd);
+  // item.appendChild(itemCt);
+  // item.appendChild(itemPr);
+  // item.appendChild(itemEt);
+  // item.appendChild(itemCs);
+  item.appendChild(delButton);
+  tasks.appendChild(item);
+  form.reset();
+}
+function compareDueDate(a, b) {
+  if (a.dueDate < b.dueDate) {
+    return -1;
+  } else if (a.dueDate > b.dueDate) {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+function comparePriority(a, b) {
+  if (a.priorityRatingIndex < b.priorityRatingIndex) {
+    return -1;
+  } else if (a.priorityRatingIndex > b.priorityRatingIndex) {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+function compareEstimatedTime(a, b) {
+  if (a.estimatedTime < b.estimatedTime) {
+    return -1;
+  } else if (a.estimatedTime > b.estimatedTime) {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+function removeItemFromArray(arr, index) {
+  if (index > -1) {
+    arr.splice(index, 1);
+  }
+  return arr;
+}
+function updateEmpty() {
+  if (taskList.length > 0) {
+    document.getElementById('emptyTaskList').style.display = 'none';
+  } else {
+    document.getElementById('emptyTaskList').style.display = 'block';
+  }
+}
+const taskBtn = document.querySelector('.task_btn');
+const kanban = document.getElementById('kanban');
+let taskOpen = false;
+taskBtn.addEventListener('click', () => {
+  if (!taskOpen) {
+    taskBtn.classList.add('open');
+    taskAll.classList.add('open');
+    taskWrapper.classList.add('open');
+    kanban.classList.add('open');
+    taskOpen = true;
+  } else {
+    taskBtn.classList.remove('open');
+    taskAll.classList.remove('open');
+    taskWrapper.classList.remove('open');
+    kanban.classList.remove('open');
+    taskOpen = false;
+  }
+});
+// Local Storage
+const storage = new _localStorageJsDefault.default();
+const tasksStorage = storage.tasks;
+// Kanban Board
+// From jKanban example:
+var KanbanTest = new jKanban({
+  element: "#myKanban",
+  gutter: "10px",
+  widthBoard: "450px",
+  itemHandleOptions: {
+    enabled: true
+  },
+  click: function (el) {
+    console.log("Trigger on all items click!");
+  },
+  context: function (el, e) {
+    console.log("Trigger on all items right-click!");
+  },
+  dropEl: function (el, target, source, sibling) {
+    console.log(target.parentElement.getAttribute('data-id'));
+    console.log(el, target, source, sibling);
+  },
+  buttonClick: function (el, boardId) {
+    console.log(el);
+    console.log(boardId);
+    // create a form to enter element
+    var formItem = document.createElement("form");
+    formItem.setAttribute("class", "itemform");
+    formItem.innerHTML = '<div class="form-group"><textarea class="form-control" rows="2" autofocus></textarea></div><div class="form-group"><button type="submit" class="btn btn-primary btn-xs pull-right">Submit</button><button type="button" id="CancelBtn" class="btn btn-default btn-xs pull-right">Cancel</button></div>';
+    KanbanTest.addForm(boardId, formItem);
+    formItem.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var text = e.target[0].value;
+      KanbanTest.addElement(boardId, {
+        title: text
+      });
+      formItem.parentNode.removeChild(formItem);
+    });
+    document.getElementById("CancelBtn").onclick = function () {
+      formItem.parentNode.removeChild(formItem);
+    };
+  },
+  itemAddOptions: {
+    enabled: true,
+    content: '+ Add New Card',
+    class: 'custom-button',
+    footer: true
+  },
+  boards: [{
+    id: "_todo",
+    title: "To Do (Can drop item only in working)",
+    class: "info,good",
+    dragTo: ["_working"],
+    item: [{
+      id: "_test_delete",
+      title: "Try drag this (Look the console)",
+      drag: function (el, source) {
+        console.log("START DRAG: " + el.dataset.eid);
+      },
+      dragend: function (el) {
+        console.log("END DRAG: " + el.dataset.eid);
+      },
+      drop: function (el) {
+        console.log("DROPPED: " + el.dataset.eid);
+      }
+    }, {
+      title: "Try Click This!",
+      click: function (el) {
+        alert("click");
+      },
+      context: function (el, e) {
+        alert("right-click at (" + `${e.pageX}` + "," + `${e.pageX}` + ")");
+      },
+      class: ["peppe", "bello"]
+    }]
+  }, {
+    id: "_working",
+    title: "Working (Try drag me too)",
+    class: "warning",
+    item: [{
+      title: "Do Something!"
+    }, {
+      title: "Run?"
+    }]
+  }, {
+    id: "_done",
+    title: "Done (Can drop item only in working)",
+    class: "success",
+    dragTo: ["_working"],
+    item: [{
+      title: "All right"
+    }, {
+      title: "Ok!"
+    }]
+  }]
+});
+var toDoButton = document.getElementById("addToDo");
+toDoButton.addEventListener("click", function () {
+  KanbanTest.addElement("_todo", {
+    title: "Test Add"
+  });
+});
+var addBoardDefault = document.getElementById("addDefault");
+addBoardDefault.addEventListener("click", function () {
+  KanbanTest.addBoards([{
+    id: "_default",
+    title: "Kanban Default",
+    item: [{
+      title: "Default Item"
+    }, {
+      title: "Default Item 2"
+    }, {
+      title: "Default Item 3"
+    }]
+  }]);
+});
+var removeBoard = document.getElementById("removeBoard");
+removeBoard.addEventListener("click", function () {
+  KanbanTest.removeBoard("_done");
+});
+var removeElement = document.getElementById("removeElement");
+removeElement.addEventListener("click", function () {
+  KanbanTest.removeElement("_test_delete");
+});
+var allEle = KanbanTest.getBoardElements("_todo");
+allEle.forEach(function (item, index) {});
+
+},{"./localStorage.js":"3aDed","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"3aDed":[function(require,module,exports) {
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+class LocalStorage {
+  constructor() {
+    // if item by key `tasks` is not defined JSON.parse return null, so I use `or empty array`
+    this.tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+  }
+  create(data) {
+    data.token = this.token;
+    this.tasks.push(data);
+    localStorage.setItem('tasks', JSON.stringify(this.tasks));
+  }
+  getIndexByToken(token) {
+    for (let i = 0; i < this.tasks.length; i++) {
+      if (this.tasks[i].token === token) {
+        return i;
+      }
+    }
+    return -1;
+  }
+  get token() {
+    return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+  }
+  update(data) {
+    let index = this.getIndexByToken(data.token);
+    if (index !== -1) {
+      this.tasks[index] = data;
+      localStorage.setItem('tasks', JSON.stringify(this.tasks));
+    }
+  }
+  delete(data) {
+    let index = this.getIndexByToken(data.token);
+    if (index !== -1) {
+      this.tasks.splice(index, 1);
+      localStorage.setItem('tasks', JSON.stringify(this.tasks));
+    }
+  }
+}
+exports.default = LocalStorage;
+
+},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}]},["27Rzb","4OAbU"], "4OAbU", "parcelRequiref77e")
+
+//# sourceMappingURL=index.HASH_REF_97912cc17f1f5bdf37964fbc8a5bc16d.js.map

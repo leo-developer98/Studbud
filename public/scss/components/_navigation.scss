@@ -1,40 +1,72 @@
 nav {
     display: flex;
     position: sticky;
-    background-color: #43519D;
+    background-color: #43519d;
     color: white;
     justify-content: space-around;
 
     .task_btn {
         display: flex;
+        float: left;
+        cursor: pointer;
+        transition: all 0.3s ease-in-out;
+        color: white;
+        height: 56px;
+        width: 56px;
         justify-content: center;
         align-items: center;
-        float: left;
-        margin-left: 20px;
-        cursor: pointer;
-        transition: all .5s ease-in-out;
-        color: white;
+
+        &:hover {
+            background-color: #252e59;
+            border-color: #252e59;
+        }
+
         &.open {
-            color: lightgray;
+            color: whitesmoke;
+            background-color: #252e59;
+            border-color: #252e59;
         }
     }
-    
+
     .nav_links {
         list-style: none;
         display: flex;
-        
-        .nav_item a {
-            display: inline-block;
-            text-decoration: none;
-            color: white;
-            padding: 1em 2em;
 
-            &:hover {
-                color: lime;
+        .nav_item {
+            a {
+                display: inline-block;
+                text-decoration: none;
+                color: white;
+                padding: 1em 2em;
+                transition: all 0.3s ease-in-out;
+
+                &:hover {
+                    background-color: #252e59;
+                    border-color: #252e59;
+                }
+
+                &.active {
+                    font-weight: bold;
+                }
             }
 
-            &.active {
-                font-weight: bold;
+            .nav_btn {
+                display: inline-block;
+                text-decoration: none;
+                color: white;
+                padding: 1em 2em;
+                border: none;
+                border-radius: 0;
+                transition: all 0.3s ease-in-out;
+
+                &:hover {
+                    background-color: #252e59;
+                    border-color: #252e59;
+                }
+
+                &.active {
+                    font-weight: bold;
+                }
             }
         }
     }

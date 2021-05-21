@@ -4,90 +4,114 @@
     width: 270px;
     height: calc(100vh - 56px);
     transition: all 0.35s ease-in-out;
-    background-color: rgb(212,212,212);
+    background-color: rgb(212, 212, 212);
     left: -270px;
 
     &.open {
         transition: all 0.35s ease-in-out;
         left: 0px;
     }
-}
 
-#taskgrid {
-    display: block;
-
-    h3 {
-        margin: 10px 20px;
-    }
-
-    #taskList {
+    #taskgrid {
         display: block;
-        background-color: rgb(212,212,212);
-        height: 630px;
-        width: 100%;
-        overflow-y: scroll;
-        overflow-x: hidden;
 
-        p {
-            margin: 0 20px;
+        h3 {
+            margin: 10px 20px;
         }
 
+        #taskList {
+            display: block;
+            background-color: rgb(212, 212, 212);
+            height: 630px;
+            width: 100%;
+            overflow-y: scroll;
+            overflow-x: hidden;
+            transition: all 0.35s ease-in-out;
 
-        .task_item {
-            display: flex;
-            margin: 0 20px 10px 20px;
-            width: 100px;
-            height: 75px;
-            border-radius: 8px;
-            background-color: whitesmoke;
-            list-style: none;
+            &.open {
+                background-color: rgb(56, 56, 56);
+            }
+
+            #emptyTaskList {
+                margin: 0 20px;
+            }
+
+            .task_item {
+                display: flex;
+                margin: 0 5px 10px 10px;
+                border-radius: 8px;
+                background-color: whitesmoke;
+                list-style: none;
+
+                .card-text {
+                    margin-left: 10px;
+                }
+
+                .task_details {
+                    // display: inline-block;
+                    color: rgb(56, 56, 56);
+
+                    &.low_pr {
+                        color: rgb(41, 62, 255);
+                    }
+
+                    &.medium_pr {
+                        color: rgb(252, 181, 0);
+                    }
+
+                    &.high_pr {
+                        color: rgb(201, 20, 0);
+                    }
+
+                    i {
+                        display: inline-block;
+                    }
+
+                    p {
+                        display: inline-block;
+                        color: rgb(56, 56, 56);
+                    }
+                }
+
+                .deleteBtn {
+                    margin: 5px;
+                    display: inline-block;
+                }
+            }
+        }
+    }
+
+    #addTask {
+        display: block;
+        position: absolute;
+        width: 270px;
+        height: 500px;
+        background-color: whitesmoke;
+        bottom: calc(56px - 500px);
+        border-radius: 10px 10px 0 0;
+        padding: 10px;
+        overflow: hidden;
+        transition: all 0.5s ease-in-out;
+
+        &.open {
+            bottom: 56px;
+            transition: all 0.5s ease-in-out;
         }
 
-        .card {
-            display: flex;
-            margin: 0 5px 10px 10px;
+        label {
+            margin-top: 5px;
+            span {
+                margin-left: 7px;
+            }
         }
     }
 }
 
-
-#addTask {
-    display: block;
-    position: absolute;
-    width: 270px;
-    height: 450px;
-    background-color: whitesmoke;
-    bottom: calc(56px - 450px);
-    border-radius: 10px 10px 0 0;
-    padding: 10px;
-    overflow: hidden;
-    transition: all 0.5s ease-in-out;
-
-    &.open {
-        bottom: 56px;
-        transition: all 0.5s ease-in-out;
-    }
-
-    #taskform {
-        width: 270px;
-        margin: 0 auto;
-        justify-content: left;
-        position: absolute;
-    
-        label {
-            display: flex;
-            width: 100%;
-            float: left;
-        }
-    } 
-} 
-
-
-#addWrapper {
+#uploadBtnContainer {
     display: flex;
     width: 270px;
     position: absolute;
-    z-index: 9999;
+    z-index: 1;
     bottom: 26px;
     justify-content: center;
     align-items: center;
@@ -96,7 +120,7 @@
         display: inline-block;
         justify-content: center;
         align-items: center;
-        color: #748AFF;
+        color: #748aff;
         cursor: pointer;
         padding: 0 4px;
         background-color: white;
@@ -104,8 +128,8 @@
         border: 10px solid white;
 
         &:hover {
-            background-color: #748AFF;
-            border: 10px solid #748AFF;
+            background-color: #748aff;
+            border: 10px solid #748aff;
             color: white;
         }
 
@@ -121,7 +145,7 @@
             display: inline-block;
             justify-content: center;
             align-items: center;
-            color: #748AFF;
+            color: #748aff;
             cursor: pointer;
             background-color: white;
             padding: 0 4px;
@@ -129,8 +153,8 @@
             border: 10px solid white;
 
             &:hover {
-                background-color: #748AFF;
-                border: 10px solid #748AFF;
+                background-color: #748aff;
+                border: 10px solid #748aff;
                 color: white;
             }
         }
@@ -143,36 +167,15 @@
     height: 56px;
     width: 270px;
     bottom: 0;
-    background-color: #43519D;
+    background-color: #43519d;
     align-items: center;
 
-    .more_btn {
-        display: inline-block;
-        color: white;
-        cursor: pointer;
-        margin: 5px;
+    #moreBtn {
+        margin-left: 170px;
+        background-color: #43519d;
+        border: none;
+        height: 100%;
     }
-}
-
-
-#kanban {
-    left: 0;
-    padding: 10px;
-    width: 100%;
-    height: calc(100vh - 56px);
-    background-color: #fff;
-    transition: all 0.35s ease-in-out;
-
-    &.open {
-        margin-left: 270px;
-        width: calc(100vw - 270px);
-        transition: all 0.35s ease-in-out;
-    }
-}
-
-
-.icons {
-    display: inline-block;
 }
 
 #taskList::-webkit-scrollbar {
@@ -188,10 +191,23 @@
     border-radius: 5px;
 }
 
+// Kanban Board
 
+#kanban {
+    left: 0;
+    padding: 10px;
+    width: 100%;
+    height: calc(100vh - 56px);
+    background-color: whitesmoke;
+    transition: all 0.35s ease-in-out;
 
-
-
+    &.open {
+        margin-left: 270px;
+        width: calc(100vw - 270px);
+        transition: all 0.35s ease-in-out;
+        background-color: rgb(56, 56, 56);
+    }
+}
 
 @media only screen and (max-width: 450px) {
     #kanban {
@@ -199,14 +215,61 @@
     }
 
     #taskWrapper {
+        left:0;
         width: 100%;
+        height: 100%;
 
         #addTask {
             width: 100%;
+            bottom: -500px;
+
+            &.open {
+                bottom: 0;
+            }
         }
 
         #task_bottom {
             width: 100%;
+            display: none;
+        }
+
+        #uploadBtnContainer {
+            width: 100%;
         }
     }
+}
+
+// From jKanban example:
+
+#myKanban {
+    overflow-x: auto;
+    padding: 20px 0;
+}
+
+.success {
+    background: #00b961;
+}
+
+.info {
+    background: #2a92bf;
+}
+
+.warning {
+    background: #f4ce46;
+}
+
+.error {
+    background: #fb7d44;
+}
+
+.custom-button {
+    background-color: #4caf50;
+    border: none;
+    color: white;
+    padding: 7px 15px;
+    margin: 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
 }

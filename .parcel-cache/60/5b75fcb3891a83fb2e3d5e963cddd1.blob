@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+            
+<html lang="en">
+
+                
+<head>
+                
+    <title>StudBud</title>
+
+                
+    <meta charset="UTF-8">               
+    <meta name="viewport" content="width=device-width,initial-scale=1">            
+    <meta name="description" content="">            
+    <link href="/index.HASH_REF_80038805bd6829e42a01d0f20c72b7db.css" rel="stylesheet" type="text/css">  
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link rel="stylesheet" href="/index.HASH_REF_f88f1e12e5717f079c963f068f5d1396.css">
+</head>
+
+                
+<body class="app_container" id="home">
+    <nav class="top_nav">
+        <div class="task_btn"><i class="fas fa-list"></i></div>
+        <ul class="nav_links">
+            <li class="nav_item"><a href="#home" class="active">Home</a></li>
+            <li class="nav_item"><button type="button" class="btn nav_btn" data-bs-toggle="modal" data-bs-target="#timers">Timers</button></li>
+            <li class="nav_item"><button type="button" class="btn nav_btn" data-bs-toggle="modal" data-bs-target="#dictionary">Dictionary</button></li>
+            <li class="nav_item"><button type="button" class="btn nav_btn">Music Player</button></li>
+            <li class="nav_item"><button type="button" class="btn nav_btn">Reading List</button></li>
+        </ul>
+    </nav>
+
+    <div id="taskWrapper">
+        <div id="taskgrid">
+            <h3>Task List:</h3>
+            <div id="taskList">
+                <p id="emptyTaskList">You haven't added any tasks yet.</p>
+            </div>
+        </div>
+        <div id="addTask">
+            <form id="taskForm">
+                <h3 class="headings">Add Task</h3>
+                <button type="button" class="btn-close" aria-label="Close" id="closeAdd"></button>
+                <label for="taskName" class="form-label"><i class="far fa-clipboard"></i><span>Task Description:</span></label>
+                <input type="text" name="taskName" id="td" class="form-control form-control-sm" placeholder="Enter task name" required="">
+        
+                <!-- <div class="icons"><i class="far fa-calendar"></i></div> -->
+                <label for="dueDate" class="form-label"><i class="far fa-calendar"></i><span>Due Date:</span></label>
+                <input type="date" name="dueDate" id="dd" class="form-control form-control-sm">
+        
+                <!-- <div class="icons"><i class="far fa-clock"></i></div> -->
+                <label for="completionTime" class="form-label"><i class="far fa-clock"></i><span>Completion Time:</span></label>
+                <input type="time" name="completionTime" id="ct" class="form-control form-control-sm">
+        
+                <!-- <div class="icons"><i class="fas fa-flag"></i></div> -->
+                <label for="priorityRanking" class="form-label"><i class="fas fa-flag"></i><span>Priority Ranking:</span></label>
+                <select name="priorityRanking" id="pr" class="form-select form-select-sm">
+                <option value="">Select from below:</option>
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+                </select>
+                
+                <!-- <div class="icons"><i class="far fa-clock"></i><span>Estimated Time (hours):</span></div> -->
+                <label for="estimatedTime" class="form-label"><i class="far fa-clock"></i><span>Estimated Time (hours):</span></label>
+                <input type="number" name="estimatedTime" id="et" min="0" step="0.5" class="form-control form-control-sm">
+            </form>
+        </div>
+        <div id="uploadBtnContainer">
+            <div id="addBtn"><i class="fas fa-plus fa-2x"></i></div>
+            <div id="uploadBtn" type="submit"><i class="fas fa-arrow-up fa-2x"></i></div>
+        </div>
+        <div id="task_bottom">
+            <div class="dropdown">
+                <button type="button" id="moreBtn" class="btn btn-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Sort tasks</button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                  <li><a class="dropdown-item" href="#">Sort by date created</a></li>
+                  <li><a class="dropdown-item" href="#">Sort by due date</a></li>
+                  <li><a class="dropdown-item" href="#">Sort by priority rating</a></li>
+                  <li><a class="dropdown-item" href="#">Sort by estimated time</a></li>
+                </ul>
+              </div>
+        </div>
+    </div>
+    <div id="kanban">
+        <h1>Heldfabodufbadfbla dasfbdksf af asdkflbdafkd alfd</h1>
+        <p>djafblkda l fjakdsl fadf kdf alkdf aldkf aldskf </p>
+        <div id="myKanban"></div>
+        <button id="addDefault">Add "Default" board</button>
+        <br>
+        <button id="addToDo">Add element in "To Do" Board</button>
+        <br>
+        <button id="removeBoard">Remove "Done" Board</button>
+        <br>
+        <button id="removeElement">Remove "My Task Test"</button>
+    </div>
+
+    <div id="timers" class="page_container modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <nav class="sub_nav">
+                        <ul class="nav_links">
+                            <li class="nav_item"><a href="#timers_p" class="active">Pomodoro Timer</a></li>
+                            <li class="nav_item"><a href="#timers_s">Stopwatch Timer</a></li>
+                        </ul>
+                    </nav>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="timers_p" class="sub_page_container">
+                        <h2>Pomodoro Timer</h2>
+                        <p>nothing inside</p>
+                    </div>
+                    <div id="timers_s" class="sub_page_container" style="display: none;
+">
+                        <h2>Stopwatch Timer</h2>
+                        <p>nothing inside 2</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+
+                </div>
+            </div>
+        </div>
+    </div>
+                
+    <div id="dictionary" class="page_container modal">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <form id="searchForm">
+                        <h1>Search Box</h1>
+                        <input type="search" name="searchBox" id="searchBox" placeholder="Word to Search">
+                        <input type="button" name="submit" value="submit" onclick="">
+                    </form>
+                </div>
+                <div class="modal-body">
+                    <h1>definition</h1>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <h1>synonyms and antonyms</h1>
+                </div>
+            </div>
+        </div>
+    
+
+    <div id="music_player" class="page_container modal">
+        <h1>Music Player</h1>
+    </div>
+
+    <script src="/index.HASH_REF_97912cc17f1f5bdf37964fbc8a5bc16d.js"></script>            
+    <script src="https://kit.fontawesome.com/c7000e5e13.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+    <script src="/index.HASH_REF_97912cc17f1f5bdf37964fbc8a5bc16d.js"></script>
+                
+</body>
+
+                
+</html>
