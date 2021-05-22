@@ -1,2 +1,2 @@
 # Studbud
-# DECO 2017 Web Application
+DECO 2017 Web Application
