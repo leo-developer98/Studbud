@@ -674,6 +674,35 @@ const labelList = labelStorage.labels;
 taskList.forEach(element => {
   showTask(element);
 });
+const labelDropdown = document.getElementById('taskLabelDropdown');
+function updateLabelDropdown() {
+  labelList.forEach(element => {
+    let labelSelect = document.createElement('li');
+    let labelBtn = document.createElement('button');
+    labelBtn.classList.add('btn');
+    labelBtn.classList.add('nav_btn');
+    labelBtn.classList.add('dropdown-item');
+    labelBtn.classList.add('label_btns');
+    labelBtn.innerHTML = element.name.toString();
+    // add Delete Button
+    let delButton = document.createElement("button");
+    // // let delButtonText = document.createTextNode("X");
+    // delButton.appendChild(delButtonText);
+    delButton.setAttribute('class', "btn-close");
+    delButton.classList.add('deleteBtn');
+    delButton.addEventListener("click", function (event) {
+      event.preventDefault();
+      if (confirm('Are you sure you want to delete this label from task labels?')) {
+        labelStorage.delete(element);
+        labelSelect.remove();
+      }
+    });
+    labelSelect.appendChild(labelBtn);
+    labelSelect.appendChild(delButton);
+    labelDropdown.appendChild(labelSelect);
+  });
+}
+updateLabelDropdown();
 function addTask(taskDescription, dueDate, completionTime, priorityRating, priorityRatingIndex, estimatedTime, completionStatus, label) {
   let task = {
     id: Date.now(),
@@ -689,7 +718,35 @@ function addTask(taskDescription, dueDate, completionTime, priorityRating, prior
   if (document.forms["taskForm"]["taskName"].value == "") {
     alert("Task Description must be filled out");
     return false;
-  } else {
+      // else if (labelStorage.labelIsNew(task.label)) {
+    // let key = (task.taskDescription).toString();
+    // // let value = JSON.stringify(task);
+    // // if (localStorage.getItem(key) === null) {
+    // //   localStorage.setItem(key, value);
+    // //   showTask(task);
+    // if (taskStorage.getIndexByName(key)  === -1) {
+    // taskStorage.create(task, key);
+    // showTask(task);
+    // // updateLabelDropdown();
+    // } else {
+    // alert("Task " + key + " is already exists in the list")
+    // }
+    // }
+} else // else if (labelStorage.labelIsNew(task.label)) {
+  // let key = (task.taskDescription).toString();
+  // // let value = JSON.stringify(task);
+  // // if (localStorage.getItem(key) === null) {
+  // //   localStorage.setItem(key, value);
+  // //   showTask(task);
+  // if (taskStorage.getIndexByName(key)  === -1) {
+  // taskStorage.create(task, key);
+  // showTask(task);
+  // // updateLabelDropdown();
+  // } else {
+  // alert("Task " + key + " is already exists in the list")
+  // }
+  // }
+  {
     let key = task.taskDescription.toString();
     // let value = JSON.stringify(task);
     // if (localStorage.getItem(key) === null) {
@@ -711,30 +768,6 @@ function updateEmpty() {
   }
 }
 // Add created labels in LabelStorage to dropdown list
-const labelDropdown = document.getElementById('taskLabelDropdown');
-labelList.forEach(element => {
-  let labelSelect = document.createElement('li');
-  let labelBtn = document.createElement('button');
-  labelBtn.classList.add('btn');
-  labelBtn.classList.add('nav_btn');
-  labelBtn.classList.add('dropdown-item');
-  labelBtn.classList.add('label_btns');
-  labelBtn.innerHTML = element.name.toString();
-  // add Delete Button
-  let delButton = document.createElement("button");
-  // // let delButtonText = document.createTextNode("X");
-  // delButton.appendChild(delButtonText);
-  delButton.setAttribute('class', "btn-close");
-  delButton.classList.add('deleteBtn');
-  delButton.addEventListener("click", function (event) {
-    event.preventDefault();
-    labelStorage.delete(element);
-    labelSelect.remove();
-  });
-  labelSelect.appendChild(labelBtn);
-  labelSelect.appendChild(delButton);
-  labelDropdown.appendChild(labelSelect);
-});
 // Event Listener for label buttons in dropdown list
 const labelBtns = document.querySelectorAll(".label_btns");
 for (let i = 0; i < labelBtns.length; i++) {
@@ -757,32 +790,25 @@ for (let i = 0; i < labelBtns.length; i++) {
 // labelDropdown.appendChild(labelSelect);
 // }
 function showTask(task) {
-  // let item = document.createElement("ul");
-  // item.innerHTML  = "<p>" + task.taskDescription + "</p>";
-  // let itemDd = document.createElement("li");
-  // itemDd.innerHtml = "<h5>" + task.dueDate + "</h5>";
-  // let itemCt = document.createElement("li");
-  // itemCt.innerHTML = "<p>" + task.completionTime + "</p>";
-  // let itemPr = document.createElement("li");
-  // itemPr.innerHTML = "<p>" + task.priorityRating + "</p>";
-  // let itemEt = document.createElement("li");
-  // itemEt.innerHTML = "<p>" + task.estimatedTime + "</p>";
-  // let itemCs = document.createElement("li");
-  // itemCs.innerHTML = "<p>" + task.completionStatus + "</p>";
-  // Build the HTML structure into a single element
   updateEmpty();
   let item = document.createElement("div");
   item.setAttribute('class', 'card');
   item.classList.add('task_item');
   item.setAttribute('data-id', task.id);
-  // item.innerHTML = "<li>" + task.taskDescription + "</li>" + "<li> Due Date:" + task.dueDate + "</li>" + "<li> Priority Rating: " + task.priorityRating + "</li>" + "<li> Estimated Time: " + task.estimatedTime + "</li>";
-  // item.classList.add('card');
   let item_body = document.createElement('div');
   item_body.setAttribute('class', 'card-body');
+  let item_top = document.createElement("div");
   let item_title = document.createElement("h5");
   item_title.setAttribute('class', 'card-title');
+  item_title.setAttribute('style', 'inline-block');
   item_title.appendChild(document.createTextNode(task.taskDescription));
-  item_body.appendChild(item_title);
+  let doneBtn = document.createElement('button');
+  doneBtn.setAttribute('type', 'button');
+  doneBtn.classList.add('btn');
+  doneBtn.classList.add('btn-outline-success');
+  item_top.appendChild(doneBtn);
+  item_top.appendChild(item_title);
+  item_body.appendChild(item_top);
   // Add details only when they exist
   if (task.hasOwnProperty('label') && task['label']) {
     // let lb = document.createElement("div");
@@ -852,6 +878,11 @@ function showTask(task) {
     item_body.appendChild(et);
   }
   item.appendChild(item_body);
+  let buttons = document.createElement("div");
+  buttons.classList.add("btn-group");
+  buttons.classList.add("btn-group-sm");
+  buttons.classList.add("task_buttons");
+  buttons.setAttribute("role", "group");
   // add Delete Button
   let delButton = document.createElement("button");
   let delButtonText = document.createTextNode("Delete");
@@ -864,21 +895,35 @@ function showTask(task) {
     // let index = taskList.findIndex(task => task.id === Number(id));
     // removeItemFromArray(taskList, index);
     // console.log(taskList);
-    // localStorage.removeItem(task.taskDescription.toString());
-    taskStorage.delete(task.taskDescription.toString());
-    item.remove();
-    updateEmpty();
+    if (confirm('Are you sure you want to delete this task from task list?')) {
+      // localStorage.removeItem(task.taskDescription.toString());
+      taskStorage.delete(task.taskDescription.toString());
+      item.remove();
+      updateEmpty();
+    }
   });
   // Create "Move to Kanban" Button
   let moveButton = document.createElement("button");
-  let moveButtonText = document.createTextNode("Move");
+  let moveButtonText = document.createTextNode("To Do");
   moveButton.appendChild(moveButtonText);
+  moveButton.setAttribute('class', "btn btn-outline-primary");
+  moveButton.classList.add("moveBtn");
+  moveButton.addEventListener("click", function (event) {
+    event.preventDefault();
+    let element = {
+      id: task.taskDescription,
+      title: task.taskDescription
+    };
+    kanbanBoard.addElement("toDo", element);
+  });
   // item.appendChild(itemDd);
   // item.appendChild(itemCt);
   // item.appendChild(itemPr);
   // item.appendChild(itemEt);
   // item.appendChild(itemCs);
-  item.appendChild(delButton);
+  buttons.appendChild(moveButton);
+  buttons.appendChild(delButton);
+  item.appendChild(buttons);
   tasks.appendChild(item);
   form.reset();
 }
@@ -916,8 +961,189 @@ function removeItemFromArray(arr, index) {
   }
   return arr;
 }
+// Kanban Board
+var columns = [{
+  id: 'toDo',
+  title: "To Do",
+  item: []
+}, {
+  id: 'inProgress',
+  title: "In Progress",
+  item: []
+}, {
+  id: 'done',
+  title: "Done",
+  item: []
+}];
+var kanbanBoard = new jKanban({
+  element: '#myKanban',
+  // selector of the kanban container
+  // gutter           : '15px',                                       // gutter of the board
+  // widthBoard       : '250px',                                      // width of the board
+  responsivePercentage: true,
+  // if it is true I use percentage in the width of the boards and it is not necessary gutter and widthBoard
+  dragItems: true,
+  // if false, all items are not draggable
+  boards: columns,
+  // json of boards
+  dragBoards: true,
+  // the boards are draggable, if false only item can be dragged
+  itemAddOptions: {
+    enabled: false,
+    // add a button to board for easy item creation
+    content: '+',
+    // text or html content of the board button
+    class: 'kanban-title-button btn btn-default btn-xs',
+    // default class of the button
+    footer: false
+  },
+  itemHandleOptions: {
+    enabled: false,
+    // if board item handle is enabled or not
+    handleClass: "item_handle",
+    // css class for your custom item handle
+    customCssHandler: "drag_handler",
+    // when customHandler is undefined, jKanban will use this property to set main handler class
+    customCssIconHandler: "drag_handler_icon",
+    // when customHandler is undefined, jKanban will use this property to set main icon handler class. If you want, you can use font icon libraries here
+    customHandler: "<span class='item_handle'>+</span> %title% "
+  },
+  click: function (el) {},
+  // callback when any board's item are clicked
+  context: function (el, event) {},
+  // callback when any board's item are right clicked
+  dragEl: function (el, source) {},
+  // callback when any board's item are dragged
+  dragendEl: function (el) {},
+  // callback when any board's item stop drag
+  dropEl: function (el, target, source, sibling) {},
+  // callback when any board's item drop in a board
+  dragBoard: function (el, source) {},
+  // callback when any board stop drag
+  dragendBoard: function (el) {},
+  // callback when any board stop drag
+  buttonClick: function (el, boardId) {}
+});
 
-},{"../libraries/jkanban.min.js":"3IAxf","./taskStorage.js":"3WapR","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","./labelStorage.js":"BKomJ"}],"3IAxf":[function(require,module,exports) {
+},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","./taskStorage.js":"3WapR","./labelStorage.js":"BKomJ","../libraries/jkanban.min.js":"3IAxf"}],"3WapR":[function(require,module,exports) {
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+class TaskStorage {
+  constructor() {
+    // if item by key `tasks` is not defined JSON.parse return null, so I use `or empty array`
+    this.tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+  }
+  create(item, name) {
+    item.name = name;
+    let index = this.getIndexByName(name);
+    if (index === -1) {
+      this.tasks.push(item);
+      localStorage.setItem('tasks', JSON.stringify(this.tasks));
+    } else {
+      console.log("Task already exist in the list");
+    }
+  }
+  getIndexByName(name) {
+    for (let i = 0; i < this.tasks.length; i++) {
+      if (this.tasks[i].name == name) {
+        return i;
+      }
+    }
+    return -1;
+  }
+  update(name) {
+    let index = this.getIndexByName(name);
+    if (index !== -1) {
+      this.tasks[index] = item;
+      localStorage.setItem('tasks', JSON.stringify(this.tasks));
+    } else {
+      console.log("Task doesn't exist in the list");
+    }
+  }
+  delete(name) {
+    let index = this.getIndexByName(name);
+    if (index !== -1) {
+      this.tasks.splice(index, 1);
+      localStorage.setItem('tasks', JSON.stringify(this.tasks));
+    } else {
+      console.log("Task doesn't exist in the list");
+    }
+  }
+}
+exports.default = TaskStorage;
+
+},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"BKomJ":[function(require,module,exports) {
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+class LabelStorage {
+  constructor() {
+    // if item by key `tasks` is not defined JSON.parse return null, so I use `or empty array`
+    this.labels = JSON.parse(localStorage.getItem('labels')) || [];
+  }
+  create(label, name, colour) {
+    label.name = name;
+    label.colour = colour;
+    let index = this.getIndex(label);
+    if (index === -1) {
+      this.labels.push(label);
+      localStorage.setItem('labels', JSON.stringify(this.labels));
+    } else {
+      console.log("Label already exist in the list");
+    }
+  }
+  getIndex(label) {
+    for (let i = 0; i < this.labels.length; i++) {
+      if (this.labels[i].colour == label.colour) {
+        return i;
+      } else if (this.labels[i].name == label.name) {
+        return i;
+      }
+    }
+    return -1;
+  }
+  getColour(name) {
+    for (let i = 0; i < this.labels.length; i++) {
+      if (this.labels[i].name == name) {
+        return this.labels[i].colour.toString();
+      }
+    }
+    // return -1;
+    console.log("cannot find the label: " + name.toString());
+  }
+  labelIsNew(label) {
+    for (let i = 0; i < this.labels.length; i++) {
+      if (this.labels[i].name == label.name) {
+        alert("Label name already exists");
+        return false;
+      } else if (this.labels[i].colour == label.colour) {
+        alert("Label colour already exists");
+        return false;
+      }
+    }
+    return true;
+  }
+  update(label) {
+    let index = this.getIndex(label);
+    if (index !== -1) {
+      this.labels[index] = label;
+      localStorage.setItem('labels', JSON.stringify(this.labels));
+    } else {
+      console.log("Label doesn't exist in the list");
+    }
+  }
+  delete(label) {
+    let index = this.getIndex(label);
+    if (index !== -1) {
+      this.labels.splice(index, 1);
+      localStorage.setItem('labels', JSON.stringify(this.labels));
+    } else {
+      console.log("Label doesn't exist in the list");
+    }
+  }
+}
+exports.default = LabelStorage;
+
+},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"3IAxf":[function(require,module,exports) {
 var global = arguments[3];
 !(function () {
   return function e(t, n, o) {
@@ -1704,113 +1930,7 @@ var global = arguments[3];
   }]
 }, {}, [1]);
 
-},{}],"3WapR":[function(require,module,exports) {
-var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
-_parcelHelpers.defineInteropFlag(exports);
-class TaskStorage {
-  constructor() {
-    // if item by key `tasks` is not defined JSON.parse return null, so I use `or empty array`
-    this.tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-  }
-  create(item, name) {
-    item.name = name;
-    let index = this.getIndexByName(name);
-    if (index === -1) {
-      this.tasks.push(item);
-      localStorage.setItem('tasks', JSON.stringify(this.tasks));
-    } else {
-      console.log("Task already exist in the list");
-    }
-  }
-  getIndexByName(name) {
-    for (let i = 0; i < this.tasks.length; i++) {
-      if (this.tasks[i].name == name) {
-        return i;
-      }
-    }
-    return -1;
-  }
-  update(name) {
-    let index = this.getIndexByName(name);
-    if (index !== -1) {
-      this.tasks[index] = item;
-      localStorage.setItem('tasks', JSON.stringify(this.tasks));
-    } else {
-      console.log("Task doesn't exist in the list");
-    }
-  }
-  delete(name) {
-    let index = this.getIndexByName(name);
-    if (index !== -1) {
-      this.tasks.splice(index, 1);
-      localStorage.setItem('tasks', JSON.stringify(this.tasks));
-    } else {
-      console.log("Task doesn't exist in the list");
-    }
-  }
-}
-exports.default = TaskStorage;
-
-},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"BKomJ":[function(require,module,exports) {
-var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
-_parcelHelpers.defineInteropFlag(exports);
-class LabelStorage {
-  constructor() {
-    // if item by key `tasks` is not defined JSON.parse return null, so I use `or empty array`
-    this.labels = JSON.parse(localStorage.getItem('labels')) || [];
-  }
-  create(label, name, colour) {
-    label.name = name;
-    label.colour = colour;
-    let index = this.getIndex(label);
-    if (index === -1) {
-      this.labels.push(label);
-      localStorage.setItem('labels', JSON.stringify(this.labels));
-    } else {
-      console.log("Label already exist in the list");
-    }
-  }
-  getIndex(label) {
-    for (let i = 0; i < this.labels.length; i++) {
-      if (this.labels[i].colour == label.colour) {
-        return i;
-      } else if (this.labels[i].name == label.name) {
-        return i;
-      }
-    }
-    return -1;
-  }
-  getColour(name) {
-    for (let i = 0; i < this.labels.length; i++) {
-      if (this.labels[i].name == name) {
-        return this.labels[i].colour.toString();
-      }
-    }
-    // return -1;
-    console.log("cannot find the label: " + name.toString());
-  }
-  update(label) {
-    let index = this.getIndex(label);
-    if (index !== -1) {
-      this.labels[index] = label;
-      localStorage.setItem('labels', JSON.stringify(this.labels));
-    } else {
-      console.log("Label doesn't exist in the list");
-    }
-  }
-  delete(label) {
-    let index = this.getIndex(label);
-    if (index !== -1) {
-      this.labels.splice(index, 1);
-      localStorage.setItem('labels', JSON.stringify(this.labels));
-    } else {
-      console.log("Label doesn't exist in the list");
-    }
-  }
-}
-exports.default = LabelStorage;
-
-},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"1ujtl":[function(require,module,exports) {
+},{}],"1ujtl":[function(require,module,exports) {
 // MIT License
 
 // Copyright (c) 2017 Thiago Santos

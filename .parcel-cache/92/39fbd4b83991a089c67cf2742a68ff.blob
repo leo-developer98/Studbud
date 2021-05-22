@@ -1,0 +1,29 @@
+var _componentsNavigation = require('./components/navigation');
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+var _componentsNavigationDefault = _parcelHelpers.interopDefault(_componentsNavigation);
+require('./components/tasklist');
+require('./components/timers');
+require('./components/readinglist');
+require('./components/dictionary');
+require('./components/musicplayer');
+require('./libraries/jkan');
+// Navigation
+const links = document.querySelectorAll('.top_nav > ul > li > a');
+const pages = document.querySelectorAll('.page_container');
+var nav = new _componentsNavigationDefault.default(links, pages);
+// nav.getLinks();
+nav.links.forEach(function (link) {
+  link.addEventListener('click', function () {
+    let pageId = nav.getHash(link);
+    nav.setPage(pageId);
+  });
+});
+const subLinks = document.querySelectorAll('.sub_nav > ul > li > a');
+const subPages = document.querySelectorAll('.sub_page_container');
+var subNav = new _componentsNavigationDefault.default(subLinks, subPages);
+subNav.links.forEach(link => {
+  link.addEventListener('click', function () {
+    let pageId = subNav.getHash(link);
+    subNav.setPage(pageId);
+  });
+});

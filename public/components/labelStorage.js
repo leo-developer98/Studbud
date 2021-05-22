@@ -31,14 +31,28 @@ export default class LabelStorage {
     }
 
     getColour(name) {
-        for (let i = 0; i < this.labels.length; i++) {
-            if (this.labels[i].name == name) {
-              return this.labels[i].colour.toString();
-            } 
-          }
+      for (let i = 0; i < this.labels.length; i++) {
+        if (this.labels[i].name == name) {
+          return this.labels[i].colour.toString();
+        } 
+      }
       
         // return -1;
         console.log("cannot find the label: " + name.toString());
+    }
+
+    labelIsNew(label) {
+      for (let i = 0; i < this.labels.length; i++) {
+        if (this.labels[i].name == label.name) {
+          alert("Label name already exists");
+          return false;
+        } else if (this.labels[i].colour == label.colour) {
+          alert("Label colour already exists");
+          return false;
+        }
+      }
+
+      return true;
     }
   
     update(label) {
