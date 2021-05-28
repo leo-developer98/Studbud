@@ -1,0 +1,53 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+class KanbanStorage {
+  constructor() {
+    // if item by key `tasks` is not defined JSON.parse return null, so I use `or empty array`
+    this.columns = JSON.parse(localStorage.getItem('kanban')) || [];
+  }
+  update(column) {
+    let index = this.getIndex(column);
+    if (index !== -1) {
+      this.columns[index] = column;
+      localStorage.setItem('kanban', JSON.stringify(this.columns));
+    } else {
+      console.log("Column doesn't exist in the list");
+    }
+  }
+  getColumnIndex(column) {
+    for (let i = 0; i < this.columns.length; i++) {
+      if (this.columns[i].id == column.id) {
+        return i;
+      }
+    }
+    return -1;
+  }
+  getItemIndex(column) {
+    for (let i = 0; i < this.columns.length; i++) {
+      if (this.columns[i].id == column.id) {
+        return i;
+      }
+    }
+    return -1;
+  }
+  addElement(element, column) {}
+  addColumn(column) {
+    let index = this.getIndex(column);
+    if (index === -1) {
+      this.columns.push(column);
+      localStorage.setItem('kanban', JSON.stringify(this.columns));
+    } else {
+      console.log("Column already exist in the list");
+    }
+  }
+  deleteColumn(column) {
+    let index = this.getIndex(column);
+    if (index !== -1) {
+      this.columns.splice(index, 1);
+      localStorage.setItem('kanban', JSON.stringify(this.columns));
+    } else {
+      console.log("Column doesn't exist in the list");
+    }
+  }
+}
+exports.default = KanbanStorage;

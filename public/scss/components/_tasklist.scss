@@ -261,11 +261,23 @@
             // border: 10px solid #b8ff9c;
             background-color: #A9E5BB;
         }
+
+        .kanban-item {
+            justify-content: center;
+            align-items: center;
+        }
     }
 
 }
 
-@media only screen and (max-width: 450px) {
+.kanbanItemBtn {
+    border: none;
+    display: flex;
+    float: right;
+    margin:auto;
+}
+
+@media only screen and (max-width: 500px) {
     #kanban {
         display: none;
     }

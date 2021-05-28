@@ -599,7 +599,7 @@ taskBtn.addEventListener('click', () => {
   }
 });
 // close Task List when main page is clicked
-kanban.onclick = function () {
+kanban.addEventListener('click', function () {
   if (taskOpen) {
     taskBtn.classList.remove('open');
     taskAll.classList.remove('open');
@@ -607,7 +607,13 @@ kanban.onclick = function () {
     kanban.classList.remove('open');
     taskOpen = false;
   }
-};
+});
+// document.querySelectorAll('.kanban-board').forEach(element => {
+// element.addEventListener('click', function (event){
+// event.stopPropagation();
+// console.log ('Inner div clicked!');
+// });
+// })
 // close Add Tasks when Task Grid is clicked
 taskAll.onclick = function () {
   if (addOpen) {
@@ -771,6 +777,9 @@ for (let i = 0; i < labelBtns.length; i++) {
 // labelSelect.appendChild(labelBtn);
 // labelDropdown.appendChild(labelSelect);
 // }
+// Kanban Storage
+const kanbanStorage = new _kanbanStorageJsDefault.default();
+const kanbanColumns = kanbanStorage.columns;
 function showTask(task) {
   updateEmpty();
   let item = document.createElement("div");
@@ -784,6 +793,7 @@ function showTask(task) {
   let item_title = document.createElement("h5");
   item_title.setAttribute('class', 'card-title');
   item_title.appendChild(document.createTextNode(task.taskDescription));
+  // Create a checkbox that moves the task to the Kanban "Done" column
   let doneBtn = document.createElement('button');
   doneBtn.innerHTML = "<i class='fas fa-check fa-xs'></i>";
   doneBtn.setAttribute('type', 'button');
@@ -793,13 +803,18 @@ function showTask(task) {
   doneBtn.addEventListener('click', () => {
     let element = {
       id: task.taskDescription,
-      title: task.taskDescription
+      title: task.taskDescription + "<button type='button' class='btn btn-outline-danger btn-sm kanbanItemBtn' id=" + task.taskDescription + "><i class='fas fa-trash-alt'></i></button>"
     };
     kanbanBoard.addElement("done", element);
+    // kanbanStorage.addItem("done", element);
+    document.querySelectorAll('.kanbanItemBtn').forEach(button => {
+      button.addEventListener("click", () => {
+        kanbanBoard.removeElement(button.id);
+      });
+    });
   });
   item_top.appendChild(doneBtn);
   item_top.appendChild(item_title);
-  // item_title.appendChild(doneBtn);
   item_body.appendChild(item_top);
   // Add details only when they exist
   if (task.hasOwnProperty('label') && task['label']) {
@@ -897,20 +912,25 @@ function showTask(task) {
     }
   });
   // Create "Move to Kanban" Button
-  let moveButton = document.createElement("button");
-  let moveButtonText = document.createTextNode("To Do");
-  moveButton.appendChild(moveButtonText);
-  moveButton.setAttribute('class', "btn btn-outline-primary");
-  moveButton.classList.add("moveBtn");
-  moveButton.addEventListener("click", function (event) {
+  let toDoButton = document.createElement("button");
+  let toDoButtonText = document.createTextNode("To Do");
+  toDoButton.appendChild(toDoButtonText);
+  toDoButton.setAttribute('class', "btn btn-outline-primary");
+  toDoButton.classList.add("moveBtn");
+  toDoButton.addEventListener("click", function (event) {
     event.preventDefault();
     let element = {
       id: task.taskDescription,
-      title: task.taskDescription
+      title: task.taskDescription + "<button type='button' class='btn btn-outline-danger btn-sm kanbanItemBtn' id=" + task.taskDescription + "><i class='fas fa-trash-alt'></i></button>"
     };
     kanbanBoard.addElement("toDo", element);
+    document.querySelectorAll('.kanbanItemBtn').forEach(button => {
+      button.addEventListener("click", () => {
+        kanbanBoard.removeElement(button.id);
+      });
+    });
   });
-  buttons.appendChild(moveButton);
+  buttons.appendChild(toDoButton);
   buttons.appendChild(delButton);
   item.appendChild(buttons);
   tasks.appendChild(item);
@@ -950,9 +970,6 @@ function removeItemFromArray(arr, index) {
   }
   return arr;
 }
-// Kanban Board
-const kanbanStorage = new _kanbanStorageJsDefault.default();
-const kanbanColumns = kanbanStorage.columns;
 // kanbanColumns.forEach((element) => {
 // kanbanBoard.addBoards(columns);
 // })
@@ -1934,7 +1951,7 @@ class KanbanStorage {
     // if item by key `tasks` is not defined JSON.parse return null, so I use `or empty array`
     this.columns = JSON.parse(localStorage.getItem('kanban')) || [];
   }
-  update(column) {
+  updateColumn(column) {
     let index = this.getIndex(column);
     if (index !== -1) {
       this.columns[index] = column;
@@ -1943,7 +1960,7 @@ class KanbanStorage {
       console.log("Column doesn't exist in the list");
     }
   }
-  getIndex(column) {
+  getColumnIndex(column) {
     for (let i = 0; i < this.columns.length; i++) {
       if (this.columns[i].id == column.id) {
         return i;
@@ -1951,7 +1968,46 @@ class KanbanStorage {
     }
     return -1;
   }
-  add(column) {
+  getItemIndex(item, column) {
+    let columnIndex = this.getColumnIndex(column);
+    if (columnIndex === -1) {
+      console.log("column doesn't exist");
+    } else {
+      for (let i = 0; i < this.columns[columnIndex].length; i++) {
+        if (this.columns[columnIndex][i].id == item.id) {
+          return i;
+        }
+      }
+      return -1;
+    }
+  }
+  addItem(item, column) {
+    let columnIndex = this.getColumnIndex(column);
+    let itemIndex = this.getItemIndex(item, column);
+    if (itemIndex !== -1 && columnIndex !== -1) {
+      this.columns[columnIndex].push(item);
+      this.updateColumn(column);
+    } else {
+      console.log("Column doesn't exist or item already exists");
+    }
+  }
+  removeItem(item) {
+    // let columnIndex = this.getColumnIndex(column);
+    // let itemIndex = this.getItemIndex(item, column);
+    // if (itemIndex !== -1 && columnIndex !== -1) {
+    // this.columns[columnIndex].remove(item);
+    // this.updateColumn(column);
+    // } else {
+    // console.log("Column doesn't exist or item doesn't exists");
+    // }
+    for (let i = 0; i < this.columns.length; i++) {
+      if (this.getItemIndex()) {
+        return i;
+      }
+    }
+    return -1;
+  }
+  addColumn(column) {
     let index = this.getIndex(column);
     if (index === -1) {
       this.columns.push(column);
@@ -1960,7 +2016,7 @@ class KanbanStorage {
       console.log("Column already exist in the list");
     }
   }
-  delete(column) {
+  deleteColumn(column) {
     let index = this.getIndex(column);
     if (index !== -1) {
       this.columns.splice(index, 1);
@@ -2030,29 +2086,34 @@ $('#sw-startBtn').click(function () {
   swPauseBtn.classList.add("running");
 });
 $('#sw-pauseBtn').click(function () {
-  stopWatch.pause({
-    precision: 'seconds'
-  });
+  stopWatch.pause();
+  swResetBtn.classList.add("running");
+  swLapBtn.classList.remove("running");
+  swPauseBtn.classList.remove("running");
+  swStartBtn.classList.add("running");
+});
+$('#sw-stopBtn').click(function () {
+  stopWatch.stop();
   swResetBtn.classList.add("running");
   swLapBtn.classList.remove("running");
   swPauseBtn.classList.remove("running");
   swStartBtn.classList.add("running");
 });
 $('#sw-resetBtn').click(function () {
-  stopWatch.reset({
-    precision: 'seconds'
-  });
-  stopWatch.pause({
-    precision: 'seconds'
-  });
+  stopWatch.reset();
+  stopWatch.pause();
   swResetBtn.classList.add("running");
   swLapBtn.classList.remove("running");
+  lapList.innerHTML = "";
+  lapNum = 1;
 });
+var lapNum = 1;
 $('#sw-lapBtn').click(function () {
   let time = stopWatch.getTimeValues().toString(['minutes', 'seconds']);
   let lap = document.createElement('li');
-  lap.innerHTML = time;
+  lap.innerHTML = "Lap " + lapNum + " " + time;
   lapList.appendChild(lap);
+  lapNum = lapNum + 1;
 });
 stopWatch.addEventListener('secondsUpdated', function (e) {
   $('#stopwatchTime').html(stopWatch.getTimeValues().toString(['minutes', 'seconds']));
@@ -2064,17 +2125,20 @@ stopWatch.addEventListener('reset', function (e) {
   $('#stopwatchTime').html(stopWatch.getTimeValues().toString(['minutes', 'seconds']));
 });
 // var study = 25;
-var study = 1;
+var study = 10;
 var shortBreak = 5;
-var longBreak = 30;
-var loop = 0;
+var longBreak = 15;
+var loop = 1;
+var pomodoroLoop = 4;
+var isBreak = false;
+// study: mode 0, short break: mode 1, long break: mode 2
 // Pomodoro
-var pomodoroStudy = new Timer();
+var pomodoro = new Timer();
 $('#pomo-startBtn').click(function () {
-  pomodoroStudy.start({
+  pomodoro.start({
     countdown: true,
     startValues: {
-      minutes: study
+      seconds: study
     },
     target: {
       minutes: 0
@@ -2084,76 +2148,76 @@ $('#pomo-startBtn').click(function () {
   pomoPauseBtn.classList.add("running");
 });
 $('#pomo-pauseBtn').click(function () {
-  pomodoroStudy.pause();
+  pomodoro.pause();
   pomoPauseBtn.classList.remove("running");
   pomoStartBtn.classList.add("running");
 });
 $('#pomo-resetBtn').click(function () {
-  pomodoroStudy.reset();
-  pomodoroStudy.pause();
+  loop = 1;
+  isBreak = false;
+  pomodoro.reset();
+  pomodoro.pause();
   pomoPauseBtn.classList.remove("running");
   pomoStartBtn.classList.add("running");
-});
-pomodoroStudy.addEventListener('secondsUpdated', function (e) {
-  $('#pomodoroTime .minutes').html(pomodoroStudy.getTimeValues().minutes);
-});
-pomodoroStudy.addEventListener('started', function (e) {
-  $('#pomodoroTime .minutes').html(pomodoroStudy.getTimeValues().minutes);
-});
-pomodoroStudy.addEventListener('reset', function (e) {
-  $('#pomodoroTime .minutes').html(pomodoroStudy.getTimeValues().minutes);
-});
-pomodoroStudy.addEventListener('targetAchieved', function (e) {
-  pomodoroBreak.start({
-    countdown: true,
-    startValues: {
-      minutes: shortBreak
-    },
-    target: {
-      minutes: 0
-    }
-  });
-});
-// Pomodoro Break
-var pomodoroBreak = new Timer();
-$('#pomo-startBtn').click(function () {
-  pomodoroBreak.start({
-    countdown: true,
-    startValues: {
-      minutes: shortBreak
-    },
-    target: {
-      minutes: 0
-    }
-  });
 });
 $('#pomo-stopBtn').click(function () {
-  pomodoroBreak.pause();
+  pomodoro.stop();
+  pomoPauseBtn.classList.remove("running");
+  pomoStartBtn.classList.add("running");
 });
-$('#pomo-resetBtn').click(function () {
-  pomodoroBreak.reset();
-  pomodoroBreak.pause();
+pomodoro.addEventListener('secondsUpdated', function (e) {
+  $('#pomodoroTime .minutes').html(pomodoro.getTimeValues().minutes);
+  $('#pomodoroTime .seconds').html(pomodoro.getTimeValues().seconds);
+  $('#pomodoroLoop').html(loop);
 });
-pomodoroBreak.addEventListener('secondsUpdated', function (e) {
-  $('#pomodoroTime .minutes').html(pomodoroBreak.getTimeValues().minutes);
+pomodoro.addEventListener('started', function (e) {
+  $('#pomodoroTime .minutes').html(pomodoro.getTimeValues().minutes);
+  $('#pomodoroTime .seconds').html(pomodoro.getTimeValues().seconds);
+  $('#pomodoroLoop').html(loop);
 });
-pomodoroBreak.addEventListener('started', function (e) {
-  $('#pomodoroTime .minutes').html(pomodoroBreak.getTimeValues().minutes);
+pomodoro.addEventListener('reset', function (e) {
+  $('#pomodoroTime .minutes').html(pomodoro.getTimeValues().minutes);
+  $('#pomodoroTime .seconds').html(pomodoro.getTimeValues().seconds);
+  $('#pomodoroLoop').html(loop);
 });
-pomodoroBreak.addEventListener('reset', function (e) {
-  $('#pomodoroTime .minutes').html(pomodoroBreak.getTimeValues().minutes);
-});
-pomodoroBreak.addEventListener('targetAchieved', function (e) {
-  pomodoroStudy.start({
-    countdown: true,
-    startValues: {
-      minutes: shortBreak
-    },
-    target: {
-      minutes: 0
+pomodoro.addEventListener('targetAchieved', function (e) {
+  if (isBreak) {
+    loop = loop + 1;
+    pomodoro.start({
+      countdown: true,
+      startValues: {
+        seconds: study
+      },
+      target: {
+        minutes: 0
+      }
+    });
+    isBreak = false;
+  } else {
+    if (loop % pomodoroLoop === 0) {
+      pomodoro.start({
+        countdown: true,
+        startValues: {
+          seconds: longBreak
+        },
+        target: {
+          minutes: 0
+        }
+      });
+      isBreak = true;
+    } else {
+      pomodoro.start({
+        countdown: true,
+        startValues: {
+          seconds: shortBreak
+        },
+        target: {
+          minutes: 0
+        }
+      });
+      isBreak = true;
     }
-  });
-  loop = loop + 1;
+  }
 });
 
 },{"../libraries/easytimer.js/dist/easytimer.min.js":"4Dhzm","../libraries/easytimer.js/dist/easytimer":"2zh7Q"}],"4Dhzm":[function(require,module,exports) {

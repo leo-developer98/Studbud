@@ -1,0 +1,190 @@
+require('../libraries/easytimer.js/dist/easytimer.min.js');
+// MIT License
+// Copyright (c) 2018 Albert González
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+$(document).ready(function () {
+  $('input[id="tabP"]').click(function () {
+    timerP.classList.add("active");
+    timerS.classList.remove('active');
+  });
+  $('input[id="tabS"]').click(function () {
+    timerP.classList.remove("active");
+    timerS.classList.add('active');
+  });
+});
+const tabP = document.getElementById('tabP');
+const tabS = document.getElementById('tabS');
+const timerP = document.getElementById('timers_p');
+const timerS = document.getElementById('timers_s');
+const pomoStartBtn = document.getElementById("pomo-startBtn");
+const pomoPauseBtn = document.getElementById("pomo-pauseBtn");
+const pomoStopBtn = document.getElementById("pomo-stopBtn");
+const pomoResetBtn = document.getElementById("pomo-resetBtn");
+const swStartBtn = document.getElementById("sw-startBtn");
+const swPauseBtn = document.getElementById("sw-pauseBtn");
+const swStopBtn = document.getElementById("sw-stopBtn");
+const swResetBtn = document.getElementById("sw-resetBtn");
+const swLapBtn = document.getElementById("sw-lapBtn");
+const lapList = document.getElementById("lapTimeList");
+const pomodoroDisplay = document.getElementById("pomodoroTime");
+const stopwatchDisplay = document.getElementById("stopwatchTime");
+var {Timer} = require('../libraries/easytimer.js/dist/easytimer');
+// Stopwatch
+var stopWatch = new Timer();
+$('#sw-startBtn').click(function () {
+  stopWatch.start({
+    precision: 'seconds'
+  });
+  swResetBtn.classList.remove("running");
+  swLapBtn.classList.add("running");
+  swStartBtn.classList.remove("running");
+  swPauseBtn.classList.add("running");
+});
+$('#sw-pauseBtn').click(function () {
+  stopWatch.pause();
+  swResetBtn.classList.add("running");
+  swLapBtn.classList.remove("running");
+  swPauseBtn.classList.remove("running");
+  swStartBtn.classList.add("running");
+});
+$('#sw-stopBtn').click(function () {
+  stopWatch.stop();
+  swResetBtn.classList.add("running");
+  swLapBtn.classList.remove("running");
+  swPauseBtn.classList.remove("running");
+  swStartBtn.classList.add("running");
+});
+$('#sw-resetBtn').click(function () {
+  stopWatch.reset();
+  stopWatch.pause();
+  swResetBtn.classList.add("running");
+  swLapBtn.classList.remove("running");
+});
+var lapNum = 1;
+$('#sw-lapBtn').click(function () {
+  let time = stopWatch.getTimeValues().toString(['minutes', 'seconds']);
+  let lap = document.createElement('li');
+  lap.innerHTML = "Lap " + lapNum + " " + time;
+  lapList.appendChild(lap);
+  lapNum = lap;
+});
+stopWatch.addEventListener('secondsUpdated', function (e) {
+  $('#stopwatchTime').html(stopWatch.getTimeValues().toString(['minutes', 'seconds']));
+});
+stopWatch.addEventListener('started', function (e) {
+  $('#stopwatchTime').html(stopWatch.getTimeValues().toString(['minutes', 'seconds']));
+});
+stopWatch.addEventListener('reset', function (e) {
+  $('#stopwatchTime').html(stopWatch.getTimeValues().toString(['minutes', 'seconds']));
+});
+// var study = 25;
+var study = 1;
+var shortBreak = 5;
+var longBreak = 30;
+var loop = 0;
+// Pomodoro
+var pomodoroStudy = new Timer();
+$('#pomo-startBtn').click(function () {
+  pomodoroStudy.start({
+    countdown: true,
+    startValues: {
+      minutes: study
+    },
+    target: {
+      minutes: 0
+    }
+  });
+  pomoStartBtn.classList.remove("running");
+  pomoPauseBtn.classList.add("running");
+});
+$('#pomo-pauseBtn').click(function () {
+  pomodoroStudy.pause();
+  pomoPauseBtn.classList.remove("running");
+  pomoStartBtn.classList.add("running");
+});
+$('#pomo-resetBtn').click(function () {
+  pomodoroStudy.reset();
+  pomodoroStudy.pause();
+  pomoPauseBtn.classList.remove("running");
+  pomoStartBtn.classList.add("running");
+});
+$('#pomo-stopBtn').click(function () {
+  pomodoroStudy.stop();
+  pomoPauseBtn.classList.remove("running");
+  pomoStartBtn.classList.add("running");
+});
+pomodoroStudy.addEventListener('secondsUpdated', function (e) {
+  $('#pomodoroTime .minutes').html(pomodoroStudy.getTimeValues().minutes);
+});
+pomodoroStudy.addEventListener('started', function (e) {
+  $('#pomodoroTime .minutes').html(pomodoroStudy.getTimeValues().minutes);
+});
+pomodoroStudy.addEventListener('reset', function (e) {
+  $('#pomodoroTime .minutes').html(pomodoroStudy.getTimeValues().minutes);
+});
+pomodoroStudy.addEventListener('targetAchieved', function (e) {
+  pomodoroBreak.start({
+    countdown: true,
+    startValues: {
+      minutes: shortBreak
+    },
+    target: {
+      minutes: 0
+    }
+  });
+});
+// Pomodoro Break
+var pomodoroBreak = new Timer();
+$('#pomo-startBtn').click(function () {
+  pomodoroBreak.start({
+    countdown: true,
+    startValues: {
+      minutes: shortBreak
+    },
+    target: {
+      minutes: 0
+    }
+  });
+});
+$('#pomo-stopBtn').click(function () {
+  pomodoroBreak.pause();
+});
+$('#pomo-resetBtn').click(function () {
+  pomodoroBreak.reset();
+  pomodoroBreak.pause();
+});
+pomodoroBreak.addEventListener('secondsUpdated', function (e) {
+  $('#pomodoroTime .minutes').html(pomodoroBreak.getTimeValues().minutes);
+});
+pomodoroBreak.addEventListener('started', function (e) {
+  $('#pomodoroTime .minutes').html(pomodoroBreak.getTimeValues().minutes);
+});
+pomodoroBreak.addEventListener('reset', function (e) {
+  $('#pomodoroTime .minutes').html(pomodoroBreak.getTimeValues().minutes);
+});
+pomodoroBreak.addEventListener('targetAchieved', function (e) {
+  pomodoroStudy.start({
+    countdown: true,
+    startValues: {
+      minutes: shortBreak
+    },
+    target: {
+      minutes: 0
+    }
+  });
+  loop = loop + 1;
+});

@@ -4,7 +4,7 @@ export default class KanbanStorage {
       this.columns = JSON.parse(localStorage.getItem('kanban')) || [];
     }
 
-    update(column) {
+    updateColumn(column) {
         let index = this.getIndex(column);
     
         if (index !== -1) {
@@ -16,7 +16,7 @@ export default class KanbanStorage {
         }
     }
   
-    getIndex(column) {
+    getColumnIndex(column) {
       for (let i = 0; i < this.columns.length; i++) {
         if (this.columns[i].id == column.id) {
           return i;
@@ -25,7 +25,49 @@ export default class KanbanStorage {
       return -1;
     }
 
-    add(column) {
+    getItemIndex(item, column) {
+      let columnIndex = this.getColumnIndex(column);
+      if (columnIndex === -1) {
+        console.log("column doesn't exist");
+      } else {
+        for (let i = 0; i < this.columns[columnIndex].length; i++) {
+          if (this.columns[columnIndex][i].id == item.id) {
+            return i;
+          } 
+        }
+        return -1;
+      }
+    }
+
+    addItem(item, column) {
+      let columnIndex = this.getColumnIndex(column);
+      let itemIndex = this.getItemIndex(item, column);
+      if (itemIndex !== -1 && columnIndex !== -1) {
+        this.columns[columnIndex].push(item);
+        this.updateColumn(column);
+      } else {
+        console.log("Column doesn't exist or item already exists");
+      }
+    }
+
+    removeItem(item) {
+      // let columnIndex = this.getColumnIndex(column);
+      // let itemIndex = this.getItemIndex(item, column);
+      // if (itemIndex !== -1 && columnIndex !== -1) {
+      //   this.columns[columnIndex].remove(item);
+      //   this.updateColumn(column);
+      // } else {
+      //   console.log("Column doesn't exist or item doesn't exists");
+      // }
+      for (let i = 0; i < this.columns.length; i++) {
+        if (this.getItemIndex()) {
+          return i;
+        } 
+      }
+      return -1;
+    }
+
+    addColumn(column) {
         let index = this.getIndex(column);
     
         if (index === -1) {
@@ -37,7 +79,7 @@ export default class KanbanStorage {
       }
   
   
-    delete(column) {
+    deleteColumn(column) {
       let index = this.getIndex(column);
   
       if (index !== -1) {

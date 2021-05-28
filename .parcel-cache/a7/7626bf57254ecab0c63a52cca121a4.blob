@@ -429,8 +429,19 @@ nav .nav_links .nav_item .nav_btn.active {
 #kanban .kanban-board[data-id=done] {
   background-color: #A9E5BB;
 }
+#kanban .kanban-board .kanban-item {
+  justify-content: center;
+  align-items: center;
+}
 
-@media only screen and (max-width: 450px) {
+.kanbanItemBtn {
+  border: none;
+  display: flex;
+  float: right;
+  margin: auto;
+}
+
+@media only screen and (max-width: 500px) {
   #kanban {
     display: none;
   }

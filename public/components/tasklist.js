@@ -60,7 +60,7 @@ taskBtn.addEventListener('click', () => {
 })
 
 // close Task List when main page is clicked
-kanban.onclick = function () {
+kanban.addEventListener('click', function () {
   if (taskOpen) {
     taskBtn.classList.remove('open');
     taskAll.classList.remove('open');
@@ -68,7 +68,14 @@ kanban.onclick = function () {
     kanban.classList.remove('open');
     taskOpen = false;
   }
-}
+})
+
+// document.querySelectorAll('.kanban-board').forEach(element => {
+//   element.addEventListener('click', function (event){
+//     event.stopPropagation();
+//     console.log ('Inner div clicked!');
+//   });
+// })
 
 // close Add Tasks when Task Grid is clicked
 taskAll.onclick = function () {
@@ -273,6 +280,12 @@ for (let i=0; i < labelBtns.length; i++) {
 //     labelDropdown.appendChild(labelSelect);
 // }
 
+
+// Kanban Storage
+
+const kanbanStorage = new KanbanStorage();
+const kanbanColumns = kanbanStorage.columns;
+
 function showTask(task) {
   updateEmpty();
 
@@ -291,6 +304,8 @@ function showTask(task) {
   item_title.setAttribute('class', 'card-title');
   item_title.appendChild(document.createTextNode(task.taskDescription));
 
+  // Create a checkbox that moves the task to the Kanban "Done" column
+
   let doneBtn = document.createElement('button');
   doneBtn.innerHTML = "<i class='fas fa-check fa-xs'></i>"
   doneBtn.setAttribute('type', 'button');
@@ -301,17 +316,23 @@ function showTask(task) {
   doneBtn.addEventListener('click', () => {
     let element = {
       id: task.taskDescription,
-      title: task.taskDescription
+      title: task.taskDescription + "<button type='button' class='btn btn-outline-danger btn-sm kanbanItemBtn' id=" + task.taskDescription + "><i class='fas fa-trash-alt'></i></button>"
     }
 
     kanbanBoard.addElement("done", element);
+    // kanbanStorage.addItem("done", element);
 
+    document.querySelectorAll('.kanbanItemBtn').forEach((button) => {
+      button.addEventListener("click", () => {
+        kanbanBoard.removeElement(button.id);
+        // kanbanStorage.removeItem()
+      })
+    })
   })
+
 
   item_top.appendChild(doneBtn);
   item_top.appendChild(item_title);
-
-  // item_title.appendChild(doneBtn);
 
   item_body.appendChild(item_top);
 
@@ -374,7 +395,6 @@ function showTask(task) {
     item_body.appendChild(pr);
   }
 
-
   // add estimated time input when theres an input value
   // let etInput = document.forms["taskForm"]["estimatedTime"].value;
   // if (etInput !== "") {
@@ -402,7 +422,6 @@ function showTask(task) {
     et.appendChild(item_et);
     item_body.appendChild(et);
   }
-  
 
   item.appendChild(item_body);
 
@@ -437,24 +456,31 @@ function showTask(task) {
   })
 
   // Create "Move to Kanban" Button
-  let moveButton = document.createElement("button");
-  let moveButtonText = document.createTextNode("To Do");
-  moveButton.appendChild(moveButtonText);
+  let toDoButton = document.createElement("button");
+  let toDoButtonText = document.createTextNode("To Do");
+  toDoButton.appendChild(toDoButtonText);
 
-  moveButton.setAttribute('class', "btn btn-outline-primary");
-  moveButton.classList.add("moveBtn");
+  toDoButton.setAttribute('class', "btn btn-outline-primary");
+  toDoButton.classList.add("moveBtn");
 
-  moveButton.addEventListener("click", function(event) {
+  toDoButton.addEventListener("click", function(event) {
     event.preventDefault();
     let element = {
       id: task.taskDescription,
-      title: task.taskDescription
+      title: task.taskDescription + "<button type='button' class='btn btn-outline-danger btn-sm kanbanItemBtn' id=" + task.taskDescription + "><i class='fas fa-trash-alt'></i></button>"
     }
-
     kanbanBoard.addElement("toDo", element);
+
+
+
+    document.querySelectorAll('.kanbanItemBtn').forEach((button) => {
+      button.addEventListener("click", () => {
+        kanbanBoard.removeElement(button.id);
+      })
+    })
   })
 
-  buttons.appendChild(moveButton);
+  buttons.appendChild(toDoButton);
   buttons.appendChild(delButton);
   item.appendChild(buttons);
 
@@ -503,11 +529,6 @@ function removeItemFromArray(arr, index) {
 
   return arr;
 }
-
-// Kanban Board
-
-const kanbanStorage = new KanbanStorage();
-const kanbanColumns = kanbanStorage.columns;
 
 // kanbanColumns.forEach((element) => {
 //   kanbanBoard.addBoards(columns);
