@@ -1,0 +1,35 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+class KanbanStorage {
+  constructor() {
+    // if item by key `tasks` is not defined JSON.parse return null, so I use `or empty array`
+    this.columns = JSON.parse(localStorage.getItem('kanban')) || [];
+  }
+  update(column) {
+    let index = this.getIndex(column);
+    if (index !== -1) {
+      this.columns[index] = column;
+      localStorage.setItem('labels', JSON.stringify(this.labels));
+    } else {
+      console.log("Column doesn't exist in the list");
+    }
+  }
+  getIndex(column) {
+    for (let i = 0; i < this.columns.length; i++) {
+      if (this.columns[i].id == column.id) {
+        return i;
+      }
+    }
+    return -1;
+  }
+  add(column) {
+    let index = this.getIndex(label);
+    if (index === -1) {
+      this.labels.push(label);
+      localStorage.setItem('kanbanColumns', JSON.stringify(this.columns));
+    } else {
+      console.log("Label already exist in the list");
+    }
+  }
+}
+exports.default = KanbanStorage;

@@ -1,16 +1,14 @@
 
-
 #taskWrapper {
     display: block;
     position: absolute;
     width: 270px;
     height: calc(100vh - 56px);
-    transition: all 0.35s ease-in-out;
+    transition: all 0.25s ease-in-out;
     background-color: rgb(212, 212, 212);
     left: -270px;
 
     &.open {
-        transition: all 0.35s ease-in-out;
         left: 0px;
     }
 
@@ -28,7 +26,7 @@
             width: 100%;
             overflow-y: scroll;
             overflow-x: hidden;
-            transition: all 0.35s ease-in-out;
+            // transition: all 0.25s ease-in-out;
 
             &.open {
                 background-color: rgb(56, 56, 56);
@@ -44,6 +42,30 @@
                 border-radius: 8px;
                 background-color: whitesmoke;
                 list-style: none;
+
+                .item_top {
+                    justify-content: center;
+                    align-items: center;
+                    .card-title {
+                        margin-left: 5px;
+                        display: inline-block;
+                    }
+    
+                    .checkBtn {
+                        display: flex;
+                        padding: 0;
+                        width: 18px;
+                        height: 18px;
+                        border-radius: 100%;
+                        justify-content: center;
+                        align-items: center;
+
+                        i {
+                            border-radius: 100%;
+                        }
+                    }
+                }
+
 
                 .card-text {
                     margin-left: 10px;
@@ -92,11 +114,10 @@
         border-radius: 10px 10px 0 0;
         padding: 10px;
         overflow: hidden;
-        transition: all 0.5s ease-in-out;
+        transition: all 0.4s ease-in-out;
 
         &.open {
             bottom: 56px;
-            transition: all 0.5s ease-in-out;
         }
 
         label {
@@ -117,6 +138,7 @@
                 display: inline-block;
                 margin: 5px;
             }
+        
         }
     }
 }
@@ -213,14 +235,34 @@
     width: 100%;
     height: calc(100vh - 56px);
     background-color: whitesmoke;
-    transition: all 0.35s ease-in-out;
+    transition: all 0.25s ease-in-out;
 
     &.open {
         margin-left: 270px;
         width: calc(100vw - 270px);
-        transition: all 0.35s ease-in-out;
-        background-color: rgb(56, 56, 56);
+        background-color: whitesmoke;
     }
+
+    .kanban-board {
+        height: 600px;
+        box-shadow:5px 5px 5px rgb(158, 158, 158);
+
+        &[data-id="toDo"] {
+            // border: 10px solid #6b86ff;
+            background-color: #BFDBF7;
+        }
+
+        &[data-id="inProgress"] {
+            // border: 10px solid #ffc43b;
+            background-color: #ffe293;
+        }
+
+        &[data-id="done"] {
+            // border: 10px solid #b8ff9c;
+            background-color: #A9E5BB;
+        }
+    }
+
 }
 
 @media only screen and (max-width: 450px) {

@@ -1,0 +1,1000 @@
+// modules are defined as an array
+// [ module function, map of requires ]
+//
+// map of requires is short require name -> numeric require
+//
+// anything defined in a previous bundle is accessed via the
+// orig method which is the require for previous bundles
+
+(function(modules, entry, mainEntry, parcelRequireName, globalName) {
+  /* eslint-disable no-undef */
+  var globalObject =
+    typeof globalThis !== 'undefined'
+      ? globalThis
+      : typeof self !== 'undefined'
+      ? self
+      : typeof window !== 'undefined'
+      ? window
+      : typeof global !== 'undefined'
+      ? global
+      : {};
+  /* eslint-enable no-undef */
+
+  // Save the require from previous bundle to this closure if any
+  var previousRequire =
+    typeof globalObject[parcelRequireName] === 'function' &&
+    globalObject[parcelRequireName];
+
+  var cache = previousRequire.cache || {};
+  // Do not use `require` to prevent Webpack from trying to bundle this call
+  var nodeRequire =
+    typeof module !== 'undefined' &&
+    typeof module.require === 'function' &&
+    module.require.bind(module);
+
+  function newRequire(name, jumped) {
+    if (!cache[name]) {
+      if (!modules[name]) {
+        // if we cannot find the module within our internal map or
+        // cache jump to the current global require ie. the last bundle
+        // that was added to the page.
+        var currentRequire =
+          typeof globalObject[parcelRequireName] === 'function' &&
+          globalObject[parcelRequireName];
+        if (!jumped && currentRequire) {
+          return currentRequire(name, true);
+        }
+
+        // If there are other bundles on this page the require from the
+        // previous one is saved to 'previousRequire'. Repeat this as
+        // many times as there are bundles until the module is found or
+        // we exhaust the require chain.
+        if (previousRequire) {
+          return previousRequire(name, true);
+        }
+
+        // Try the node require function if it exists.
+        if (nodeRequire && typeof name === 'string') {
+          return nodeRequire(name);
+        }
+
+        var err = new Error("Cannot find module '" + name + "'");
+        err.code = 'MODULE_NOT_FOUND';
+        throw err;
+      }
+
+      localRequire.resolve = resolve;
+      localRequire.cache = {};
+
+      var module = (cache[name] = new newRequire.Module(name));
+
+      modules[name][0].call(
+        module.exports,
+        localRequire,
+        module,
+        module.exports,
+        this
+      );
+    }
+
+    return cache[name].exports;
+
+    function localRequire(x) {
+      return newRequire(localRequire.resolve(x));
+    }
+
+    function resolve(x) {
+      return modules[name][1][x] || x;
+    }
+  }
+
+  function Module(moduleName) {
+    this.id = moduleName;
+    this.bundle = newRequire;
+    this.exports = {};
+  }
+
+  newRequire.isParcelRequire = true;
+  newRequire.Module = Module;
+  newRequire.modules = modules;
+  newRequire.cache = cache;
+  newRequire.parent = previousRequire;
+  newRequire.register = function(id, exports) {
+    modules[id] = [
+      function(require, module) {
+        module.exports = exports;
+      },
+      {},
+    ];
+  };
+
+  Object.defineProperty(newRequire, 'root', {
+    get: function() {
+      return globalObject[parcelRequireName];
+    },
+  });
+
+  globalObject[parcelRequireName] = newRequire;
+
+  for (var i = 0; i < entry.length; i++) {
+    newRequire(entry[i]);
+  }
+
+  if (mainEntry) {
+    // Expose entry point to Node, AMD or browser globals
+    // Based on https://github.com/ForbesLindesay/umd/blob/master/template.js
+    var mainExports = newRequire(mainEntry);
+
+    // CommonJS
+    if (typeof exports === 'object' && typeof module !== 'undefined') {
+      module.exports = mainExports;
+
+      // RequireJS
+    } else if (typeof define === 'function' && define.amd) {
+      define(function() {
+        return mainExports;
+      });
+
+      // <script>
+    } else if (globalName) {
+      this[globalName] = mainExports;
+    }
+  }
+})({"4lRCc":[function(require,module,exports) {
+var HMR_HOST = null;
+var HMR_PORT = 1234;
+var HMR_SECURE = false;
+var HMR_ENV_HASH = "d751713988987e9331980363e24189ce";
+module.bundle.HMR_BUNDLE_ID = "2b7ef9888cefd4836afd7fa74d413c1c";
+// @flow
+/*global HMR_HOST, HMR_PORT, HMR_ENV_HASH, HMR_SECURE*/
+/*::
+import type {
+HMRAsset,
+HMRMessage,
+} from '@parcel/reporter-dev-server/src/HMRServer.js';
+interface ParcelRequire {
+(string): mixed;
+cache: {|[string]: ParcelModule|};
+hotData: mixed;
+Module: any;
+parent: ?ParcelRequire;
+isParcelRequire: true;
+modules: {|[string]: [Function, {|[string]: string|}]|};
+HMR_BUNDLE_ID: string;
+root: ParcelRequire;
+}
+interface ParcelModule {
+hot: {|
+data: mixed,
+accept(cb: (Function) => void): void,
+dispose(cb: (mixed) => void): void,
+// accept(deps: Array<string> | string, cb: (Function) => void): void,
+// decline(): void,
+_acceptCallbacks: Array<(Function) => void>,
+_disposeCallbacks: Array<(mixed) => void>,
+|};
+}
+declare var module: {bundle: ParcelRequire, ...};
+declare var HMR_HOST: string;
+declare var HMR_PORT: string;
+declare var HMR_ENV_HASH: string;
+declare var HMR_SECURE: boolean;
+*/
+var OVERLAY_ID = '__parcel__error__overlay__';
+var OldModule = module.bundle.Module;
+function Module(moduleName) {
+  OldModule.call(this, moduleName);
+  this.hot = {
+    data: module.bundle.hotData,
+    _acceptCallbacks: [],
+    _disposeCallbacks: [],
+    accept: function (fn) {
+      this._acceptCallbacks.push(fn || (function () {}));
+    },
+    dispose: function (fn) {
+      this._disposeCallbacks.push(fn);
+    }
+  };
+  module.bundle.hotData = undefined;
+}
+module.bundle.Module = Module;
+var checkedAssets, /*: {|[string]: boolean|}*/
+acceptedAssets, /*: {|[string]: boolean|}*/
+/*: {|[string]: boolean|}*/
+assetsToAccept;
+function getHostname() {
+  return HMR_HOST || (location.protocol.indexOf('http') === 0 ? location.hostname : 'localhost');
+}
+function getPort() {
+  return HMR_PORT || location.port;
+}
+// eslint-disable-next-line no-redeclare
+var parent = module.bundle.parent;
+if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
+  var hostname = getHostname();
+  var port = getPort();
+  var protocol = HMR_SECURE || location.protocol == 'https:' && !(/localhost|127.0.0.1|0.0.0.0/).test(hostname) ? 'wss' : 'ws';
+  var ws = new WebSocket(protocol + '://' + hostname + (port ? ':' + port : '') + '/');
+  // $FlowFixMe
+  ws.onmessage = function (event) /*: {data: string, ...}*/
+  {
+    checkedAssets = {
+      /*: {|[string]: boolean|}*/
+    };
+    acceptedAssets = {
+      /*: {|[string]: boolean|}*/
+    };
+    assetsToAccept = [];
+    var data = /*: HMRMessage*/
+    JSON.parse(event.data);
+    if (data.type === 'update') {
+      // Remove error overlay if there is one
+      removeErrorOverlay();
+      let assets = data.assets.filter(asset => asset.envHash === HMR_ENV_HASH);
+      // Handle HMR Update
+      var handled = false;
+      assets.forEach(asset => {
+        var didAccept = asset.type === 'css' || asset.type === 'js' && hmrAcceptCheck(module.bundle.root, asset.id, asset.depsByBundle);
+        if (didAccept) {
+          handled = true;
+        }
+      });
+      if (handled) {
+        console.clear();
+        assets.forEach(function (asset) {
+          hmrApply(module.bundle.root, asset);
+        });
+        for (var i = 0; i < assetsToAccept.length; i++) {
+          var id = assetsToAccept[i][1];
+          if (!acceptedAssets[id]) {
+            hmrAcceptRun(assetsToAccept[i][0], id);
+          }
+        }
+      } else {
+        window.location.reload();
+      }
+    }
+    if (data.type === 'error') {
+      // Log parcel errors to console
+      for (let ansiDiagnostic of data.diagnostics.ansi) {
+        let stack = ansiDiagnostic.codeframe ? ansiDiagnostic.codeframe : ansiDiagnostic.stack;
+        console.error('🚨 [parcel]: ' + ansiDiagnostic.message + '\n' + stack + '\n\n' + ansiDiagnostic.hints.join('\n'));
+      }
+      // Render the fancy html overlay
+      removeErrorOverlay();
+      var overlay = createErrorOverlay(data.diagnostics.html);
+      // $FlowFixMe
+      document.body.appendChild(overlay);
+    }
+  };
+  ws.onerror = function (e) {
+    console.error(e.message);
+  };
+  ws.onclose = function (e) {
+    if (undefined !== 'test') {
+      console.warn('[parcel] 🚨 Connection to the HMR server was lost');
+    }
+  };
+}
+function removeErrorOverlay() {
+  var overlay = document.getElementById(OVERLAY_ID);
+  if (overlay) {
+    overlay.remove();
+    console.log('[parcel] ✨ Error resolved');
+  }
+}
+function createErrorOverlay(diagnostics) {
+  var overlay = document.createElement('div');
+  overlay.id = OVERLAY_ID;
+  let errorHTML = '<div style="background: black; opacity: 0.85; font-size: 16px; color: white; position: fixed; height: 100%; width: 100%; top: 0px; left: 0px; padding: 30px; font-family: Menlo, Consolas, monospace; z-index: 9999;">';
+  for (let diagnostic of diagnostics) {
+    let stack = diagnostic.codeframe ? diagnostic.codeframe : diagnostic.stack;
+    errorHTML += `
+      <div>
+        <div style="font-size: 18px; font-weight: bold; margin-top: 20px;">
+          🚨 ${diagnostic.message}
+        </div>
+        <pre>
+          ${stack}
+        </pre>
+        <div>
+          ${diagnostic.hints.map(hint => '<div>' + hint + '</div>').join('')}
+        </div>
+      </div>
+    `;
+  }
+  errorHTML += '</div>';
+  overlay.innerHTML = errorHTML;
+  return overlay;
+}
+function getParents(bundle, id) /*: Array<[ParcelRequire, string]>*/
+{
+  var modules = bundle.modules;
+  if (!modules) {
+    return [];
+  }
+  var parents = [];
+  var k, d, dep;
+  for (k in modules) {
+    for (d in modules[k][1]) {
+      dep = modules[k][1][d];
+      if (dep === id || Array.isArray(dep) && dep[dep.length - 1] === id) {
+        parents.push([bundle, k]);
+      }
+    }
+  }
+  if (bundle.parent) {
+    parents = parents.concat(getParents(bundle.parent, id));
+  }
+  return parents;
+}
+function updateLink(link) {
+  var newLink = link.cloneNode();
+  newLink.onload = function () {
+    if (link.parentNode !== null) {
+      // $FlowFixMe
+      link.parentNode.removeChild(link);
+    }
+  };
+  newLink.setAttribute('href', // $FlowFixMe
+  link.getAttribute('href').split('?')[0] + '?' + Date.now());
+  // $FlowFixMe
+  link.parentNode.insertBefore(newLink, link.nextSibling);
+}
+var cssTimeout = null;
+function reloadCSS() {
+  if (cssTimeout) {
+    return;
+  }
+  cssTimeout = setTimeout(function () {
+    var links = document.querySelectorAll('link[rel="stylesheet"]');
+    for (var i = 0; i < links.length; i++) {
+      // $FlowFixMe[incompatible-type]
+      var href = /*: string*/
+      links[i].getAttribute('href');
+      var hostname = getHostname();
+      var servedFromHMRServer = hostname === 'localhost' ? new RegExp('^(https?:\\/\\/(0.0.0.0|127.0.0.1)|localhost):' + getPort()).test(href) : href.indexOf(hostname + ':' + getPort());
+      var absolute = (/^https?:\/\//i).test(href) && href.indexOf(window.location.origin) !== 0 && !servedFromHMRServer;
+      if (!absolute) {
+        updateLink(links[i]);
+      }
+    }
+    cssTimeout = null;
+  }, 50);
+}
+function hmrApply(bundle, /*: ParcelRequire*/
+asset) /*:  HMRAsset*/
+{
+  var modules = bundle.modules;
+  if (!modules) {
+    return;
+  }
+  if (asset.type === 'css') {
+    reloadCSS();
+    return;
+  }
+  let deps = asset.depsByBundle[bundle.HMR_BUNDLE_ID];
+  if (deps) {
+    var fn = new Function('require', 'module', 'exports', asset.output);
+    modules[asset.id] = [fn, deps];
+  } else if (bundle.parent) {
+    hmrApply(bundle.parent, asset);
+  }
+}
+function hmrAcceptCheck(bundle, /*: ParcelRequire*/
+id, /*: ParcelRequire*/
+/*: string*/
+depsByBundle) /*: ?{ [string]: { [string]: string } }*/
+{
+  var modules = bundle.modules;
+  if (!modules) {
+    return;
+  }
+  if (depsByBundle && !depsByBundle[bundle.HMR_BUNDLE_ID]) {
+    // If we reached the root bundle without finding where the asset should go,
+    // there's nothing to do. Mark as "accepted" so we don't reload the page.
+    if (!bundle.parent) {
+      return true;
+    }
+    return hmrAcceptCheck(bundle.parent, id, depsByBundle);
+  }
+  if (checkedAssets[id]) {
+    return;
+  }
+  checkedAssets[id] = true;
+  var cached = bundle.cache[id];
+  assetsToAccept.push([bundle, id]);
+  if (cached && cached.hot && cached.hot._acceptCallbacks.length) {
+    return true;
+  }
+  return getParents(module.bundle.root, id).some(function (v) {
+    return hmrAcceptCheck(v[0], v[1], null);
+  });
+}
+function hmrAcceptRun(bundle, /*: ParcelRequire*/
+id) /*: string*/
+{
+  var cached = bundle.cache[id];
+  bundle.hotData = {};
+  if (cached && cached.hot) {
+    cached.hot.data = bundle.hotData;
+  }
+  if (cached && cached.hot && cached.hot._disposeCallbacks.length) {
+    cached.hot._disposeCallbacks.forEach(function (cb) {
+      cb(bundle.hotData);
+    });
+  }
+  delete bundle.cache[id];
+  bundle(id);
+  cached = bundle.cache[id];
+  if (cached && cached.hot && cached.hot._acceptCallbacks.length) {
+    cached.hot._acceptCallbacks.forEach(function (cb) {
+      var assetsToAlsoAccept = cb(function () {
+        return getParents(module.bundle.root, id);
+      });
+      if (assetsToAlsoAccept && assetsToAccept.length) {
+        assetsToAccept.push.apply(assetsToAccept, assetsToAlsoAccept);
+      }
+    });
+  }
+  acceptedAssets[id] = true;
+}
+
+},{}],"2zh7Q":[function(require,module,exports) {
+var define;
+/**
+* easytimer.js
+* Generated: 2021-03-16
+* Version: 4.3.4
+*/
+(function (global, factory) {
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) : typeof define === 'function' && define.amd ? define(['exports'], factory) : (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.easytimer = {}));
+})(this, function (exports) {
+  "use strict";
+  function _typeof(obj) {
+    "@babel/helpers - typeof";
+    if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+      _typeof = function (obj) {
+        return typeof obj;
+      };
+    } else {
+      _typeof = function (obj) {
+        return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+      };
+    }
+    return _typeof(obj);
+  }
+  function _defineProperty(obj, key, value) {
+    if ((key in obj)) {
+      Object.defineProperty(obj, key, {
+        value: value,
+        enumerable: true,
+        configurable: true,
+        writable: true
+      });
+    } else {
+      obj[key] = value;
+    }
+    return obj;
+  }
+  function ownKeys(object, enumerableOnly) {
+    var keys = Object.keys(object);
+    if (Object.getOwnPropertySymbols) {
+      var symbols = Object.getOwnPropertySymbols(object);
+      if (enumerableOnly) symbols = symbols.filter(function (sym) {
+        return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+      });
+      keys.push.apply(keys, symbols);
+    }
+    return keys;
+  }
+  function _objectSpread2(target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i] != null ? arguments[i] : {};
+      if (i % 2) {
+        ownKeys(Object(source), true).forEach(function (key) {
+          _defineProperty(target, key, source[key]);
+        });
+      } else if (Object.getOwnPropertyDescriptors) {
+        Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
+      } else {
+        ownKeys(Object(source)).forEach(function (key) {
+          Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+        });
+      }
+    }
+    return target;
+  }
+  function leftPadding(string, padLength, character) {
+    var i;
+    var characters = '';
+    string = typeof string === 'number' ? String(string) : string;
+    if (string.length > padLength) {
+      return string;
+    }
+    for (i = 0; i < padLength; i = i + 1) {
+      characters += String(character);
+    }
+    return (characters + string).slice(-characters.length);
+  }
+  function TimeCounter() {
+    this.reset();
+  }
+  /**
+  * [toString convert the counted values on a string]
+  * @param  {array} units           [array with the units to display]
+  * @param  {string} separator       [separator of the units]
+  * @param  {number} leftZeroPadding [number of zero padding]
+  * @return {string}                 [result string]
+  */
+  TimeCounter.prototype.toString = function () {
+    var units = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : ['hours', 'minutes', 'seconds'];
+    var separator = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : ':';
+    var leftZeroPadding = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 2;
+    units = units || ['hours', 'minutes', 'seconds'];
+    separator = separator || ':';
+    leftZeroPadding = leftZeroPadding || 2;
+    var arrayTime = [];
+    var i;
+    for (i = 0; i < units.length; i = i + 1) {
+      if (this[units[i]] !== undefined) {
+        if (units[i] === 'secondTenths') {
+          arrayTime.push(this[units[i]]);
+        } else {
+          arrayTime.push(leftPadding(this[units[i]], leftZeroPadding, '0'));
+        }
+      }
+    }
+    return arrayTime.join(separator);
+  };
+  /**
+  * [reset reset counter]
+  */
+  TimeCounter.prototype.reset = function () {
+    this.secondTenths = 0;
+    this.seconds = 0;
+    this.minutes = 0;
+    this.hours = 0;
+    this.days = 0;
+  };
+  function EventEmitter() {
+    this.events = {};
+  }
+  EventEmitter.prototype.on = function (event, listener) {
+    var _this = this;
+    if (!Array.isArray(this.events[event])) {
+      this.events[event] = [];
+    }
+    this.events[event].push(listener);
+    return function () {
+      return _this.removeListener(event, listener);
+    };
+  };
+  EventEmitter.prototype.removeListener = function (event, listener) {
+    if (Array.isArray(this.events[event])) {
+      var eventIndex = this.events[event].indexOf(listener);
+      if (eventIndex > -1) {
+        this.events[event].splice(eventIndex, 1);
+      }
+    }
+  };
+  EventEmitter.prototype.emit = function (event) {
+    var _this2 = this;
+    for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+      args[_key - 1] = arguments[_key];
+    }
+    if (Array.isArray(this.events[event])) {
+      this.events[event].forEach(function (listener) {
+        return listener.apply(_this2, args);
+      });
+    }
+  };
+  /*
+  * General functions, variables and constants
+  */
+  var SECOND_TENTHS_PER_SECOND = 10;
+  var SECONDS_PER_MINUTE = 60;
+  var MINUTES_PER_HOUR = 60;
+  var HOURS_PER_DAY = 24;
+  var SECOND_TENTHS_POSITION = 0;
+  var SECONDS_POSITION = 1;
+  var MINUTES_POSITION = 2;
+  var HOURS_POSITION = 3;
+  var DAYS_POSITION = 4;
+  var SECOND_TENTHS = 'secondTenths';
+  var SECONDS = 'seconds';
+  var MINUTES = 'minutes';
+  var HOURS = 'hours';
+  var DAYS = 'days';
+  var VALID_INPUT_VALUES = [SECOND_TENTHS, SECONDS, MINUTES, HOURS, DAYS];
+  var unitsInMilliseconds = {
+    secondTenths: 100,
+    seconds: 1000,
+    minutes: 60000,
+    hours: 3600000,
+    days: 86400000
+  };
+  var groupedUnits = {
+    secondTenths: SECOND_TENTHS_PER_SECOND,
+    seconds: SECONDS_PER_MINUTE,
+    minutes: MINUTES_PER_HOUR,
+    hours: HOURS_PER_DAY
+  };
+  function mod(number, module) {
+    return (number % module + module) % module;
+  }
+  /**
+  * [Timer Timer/Chronometer/Countdown compatible with AMD and NodeJS.
+  * Can update time values with different time intervals: tenth of seconds,
+  * seconds, minutes and hours.]
+  */
+  function Timer() {
+    var defaultParams = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+    /*
+    * PRIVATE variables and Functions
+    */
+    var counters = new TimeCounter();
+    var totalCounters = new TimeCounter();
+    var intervalId;
+    var eventEmitter = new EventEmitter();
+    var running = false;
+    var paused = false;
+    var precision;
+    var timerTypeFactor;
+    var customCallback;
+    var timerConfig = {};
+    var currentParams;
+    var targetValues;
+    var startValues;
+    var countdown;
+    var startingDate;
+    var targetDate;
+    var eventData = {
+      detail: {
+        timer: this
+      }
+    };
+    setParams(defaultParams);
+    function updateCounters(precision, roundedValue) {
+      var unitsPerGroup = groupedUnits[precision];
+      totalCounters[precision] = roundedValue;
+      if (precision === DAYS) {
+        counters[precision] = Math.abs(roundedValue);
+      } else if (roundedValue >= 0) {
+        counters[precision] = mod(roundedValue, unitsPerGroup);
+      } else {
+        counters[precision] = mod(unitsPerGroup - mod(roundedValue, unitsPerGroup), unitsPerGroup);
+      }
+    }
+    function updateDays(value) {
+      return updateUnitByPrecision(value, DAYS);
+    }
+    function updateHours(value) {
+      return updateUnitByPrecision(value, HOURS);
+    }
+    function updateMinutes(value) {
+      return updateUnitByPrecision(value, MINUTES);
+    }
+    function updateSeconds(value) {
+      return updateUnitByPrecision(value, SECONDS);
+    }
+    function updateSecondTenths(value) {
+      return updateUnitByPrecision(value, SECOND_TENTHS);
+    }
+    function updateUnitByPrecision(value, precision) {
+      var previousValue = totalCounters[precision];
+      updateCounters(precision, calculateIntegerUnitQuotient(value, unitsInMilliseconds[precision]));
+      return totalCounters[precision] !== previousValue;
+    }
+    function stopTimerAndResetCounters() {
+      stopTimer();
+      resetCounters();
+    }
+    function stopTimer() {
+      clearInterval(intervalId);
+      intervalId = undefined;
+      running = false;
+      paused = false;
+    }
+    function setParamsAndStartTimer(params) {
+      if (!isPaused()) {
+        setParams(params);
+      } else {
+        startingDate = calculateStartingDate();
+        targetValues = setTarget(currentParams.target);
+      }
+      startTimer();
+    }
+    function startTimer() {
+      var interval = unitsInMilliseconds[precision];
+      if (isTargetAchieved(roundTimestamp(Date.now()))) {
+        return;
+      }
+      intervalId = setInterval(updateTimerAndDispatchEvents, interval);
+      running = true;
+      paused = false;
+    }
+    function calculateStartingDate() {
+      return roundTimestamp(Date.now()) - totalCounters.secondTenths * unitsInMilliseconds[SECOND_TENTHS] * timerTypeFactor;
+    }
+    function updateTimerAndDispatchEvents() {
+      var currentTime = roundTimestamp(Date.now());
+      var valuesUpdated = updateTimer();
+      dispatchEvents(valuesUpdated);
+      customCallback(eventData.detail.timer);
+      if (isTargetAchieved(currentTime)) {
+        stop();
+        dispatchEvent('targetAchieved', eventData);
+      }
+    }
+    function updateTimer() {
+      var currentTime = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : roundTimestamp(Date.now());
+      var elapsedTime = timerTypeFactor > 0 ? currentTime - startingDate : startingDate - currentTime;
+      var valuesUpdated = {};
+      valuesUpdated[SECOND_TENTHS] = updateSecondTenths(elapsedTime);
+      valuesUpdated[SECONDS] = updateSeconds(elapsedTime);
+      valuesUpdated[MINUTES] = updateMinutes(elapsedTime);
+      valuesUpdated[HOURS] = updateHours(elapsedTime);
+      valuesUpdated[DAYS] = updateDays(elapsedTime);
+      return valuesUpdated;
+    }
+    function roundTimestamp(timestamp) {
+      return Math.floor(timestamp / unitsInMilliseconds[precision]) * unitsInMilliseconds[precision];
+    }
+    function dispatchEvents(valuesUpdated) {
+      if (valuesUpdated[SECOND_TENTHS]) {
+        dispatchEvent('secondTenthsUpdated', eventData);
+      }
+      if (valuesUpdated[SECONDS]) {
+        dispatchEvent('secondsUpdated', eventData);
+      }
+      if (valuesUpdated[MINUTES]) {
+        dispatchEvent('minutesUpdated', eventData);
+      }
+      if (valuesUpdated[HOURS]) {
+        dispatchEvent('hoursUpdated', eventData);
+      }
+      if (valuesUpdated[DAYS]) {
+        dispatchEvent('daysUpdated', eventData);
+      }
+    }
+    function isTargetAchieved(currentDate) {
+      return targetValues instanceof Array && currentDate >= targetDate;
+    }
+    function resetCounters() {
+      counters.reset();
+      totalCounters.reset();
+    }
+    function setParams(params) {
+      params = params || ({});
+      precision = checkPrecision(params.precision);
+      customCallback = typeof params.callback === 'function' ? params.callback : function () {};
+      countdown = params.countdown === true;
+      timerTypeFactor = countdown === true ? -1 : 1;
+      if (_typeof(params.startValues) === 'object') {
+        setStartValues(params.startValues);
+      } else {
+        startValues = null;
+      }
+      startingDate = calculateStartingDate();
+      updateTimer();
+      if (_typeof(params.target) === 'object') {
+        targetValues = setTarget(params.target);
+      } else if (countdown) {
+        params.target = {
+          seconds: 0
+        };
+        targetValues = setTarget(params.target);
+      } else {
+        targetValues = null;
+      }
+      timerConfig = {
+        precision: precision,
+        callback: customCallback,
+        countdown: _typeof(params) === 'object' && params.countdown === true,
+        target: targetValues,
+        startValues: startValues
+      };
+      currentParams = params;
+    }
+    function checkPrecision(precision) {
+      precision = typeof precision === 'string' ? precision : SECONDS;
+      if (!isValidInputValue(precision)) {
+        throw new Error(("Error in precision parameter: ").concat(precision, " is not a valid value"));
+      }
+      return precision;
+    }
+    function isValidInputValue(value) {
+      return VALID_INPUT_VALUES.indexOf(value) >= 0;
+    }
+    function configInputValues(inputValues) {
+      var values;
+      if (_typeof(inputValues) === 'object') {
+        if (inputValues instanceof Array) {
+          if (inputValues.length !== 5) {
+            throw new Error('Array size not valid');
+          }
+          values = inputValues;
+        } else {
+          for (var value in inputValues) {
+            if (VALID_INPUT_VALUES.indexOf(value) < 0) {
+              throw new Error(("Error in startValues or target parameter: ").concat(value, " is not a valid input value"));
+            }
+          }
+          values = [inputValues.secondTenths || 0, inputValues.seconds || 0, inputValues.minutes || 0, inputValues.hours || 0, inputValues.days || 0];
+        }
+      }
+      var secondTenths = values[SECOND_TENTHS_POSITION];
+      var seconds = values[SECONDS_POSITION] + calculateIntegerUnitQuotient(secondTenths, SECOND_TENTHS_PER_SECOND);
+      var minutes = values[MINUTES_POSITION] + calculateIntegerUnitQuotient(seconds, SECONDS_PER_MINUTE);
+      var hours = values[HOURS_POSITION] + calculateIntegerUnitQuotient(minutes, MINUTES_PER_HOUR);
+      var days = values[DAYS_POSITION] + calculateIntegerUnitQuotient(hours, HOURS_PER_DAY);
+      values[SECOND_TENTHS_POSITION] = secondTenths % SECOND_TENTHS_PER_SECOND;
+      values[SECONDS_POSITION] = seconds % SECONDS_PER_MINUTE;
+      values[MINUTES_POSITION] = minutes % MINUTES_PER_HOUR;
+      values[HOURS_POSITION] = hours % HOURS_PER_DAY;
+      values[DAYS_POSITION] = days;
+      return values;
+    }
+    function calculateIntegerUnitQuotient(unit, divisor) {
+      var quotient = unit / divisor;
+      return quotient < 0 ? Math.ceil(quotient) : Math.floor(quotient);
+    }
+    function setTarget(inputTarget) {
+      if (!inputTarget) {
+        return;
+      }
+      targetValues = configInputValues(inputTarget);
+      var targetCounter = calculateTotalCounterFromValues(targetValues);
+      targetDate = startingDate + targetCounter.secondTenths * unitsInMilliseconds[SECOND_TENTHS] * timerTypeFactor;
+      return targetValues;
+    }
+    function setStartValues(inputStartValues) {
+      startValues = configInputValues(inputStartValues);
+      counters.secondTenths = startValues[SECOND_TENTHS_POSITION];
+      counters.seconds = startValues[SECONDS_POSITION];
+      counters.minutes = startValues[MINUTES_POSITION];
+      counters.hours = startValues[HOURS_POSITION];
+      counters.days = startValues[DAYS_POSITION];
+      totalCounters = calculateTotalCounterFromValues(startValues, totalCounters);
+    }
+    function calculateTotalCounterFromValues(values, outputCounter) {
+      var total = outputCounter || ({});
+      total.days = values[DAYS_POSITION];
+      total.hours = total.days * HOURS_PER_DAY + values[HOURS_POSITION];
+      total.minutes = total.hours * MINUTES_PER_HOUR + values[MINUTES_POSITION];
+      total.seconds = total.minutes * SECONDS_PER_MINUTE + values[SECONDS_POSITION];
+      total.secondTenths = total.seconds * SECOND_TENTHS_PER_SECOND + values[[SECOND_TENTHS_POSITION]];
+      return total;
+    }
+    /*
+    * PUBLIC functions
+    */
+    /**
+    * [stop stops the timer and resets the counters. Dispatch stopped event]
+    */
+    function stop() {
+      stopTimerAndResetCounters();
+      dispatchEvent('stopped', eventData);
+    }
+    /**
+    * [stop stops and starts the timer. Dispatch stopped event]
+    */
+    function reset() {
+      stopTimerAndResetCounters();
+      setParamsAndStartTimer(currentParams);
+      dispatchEvent('reset', eventData);
+    }
+    /**
+    * [start starts the timer configured by the params object. Dispatch started event]
+    * @param  {object} params [Configuration parameters]
+    */
+    function start() {
+      var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+      params = _objectSpread2(_objectSpread2({}, defaultParams), params);
+      if (isRunning()) {
+        return;
+      }
+      setParamsAndStartTimer(params);
+      dispatchEvent('started', eventData);
+    }
+    /**
+    * [pause stops the timer without resetting the counters. The timer it can be restarted with start function.
+    * Dispatch paused event]
+    * @return {type} [description]
+    */
+    function pause() {
+      stopTimer();
+      paused = true;
+      dispatchEvent('paused', eventData);
+    }
+    /**
+    * [addEventListener Adds event listener to the timer]
+    * @param {string} eventType      [event to listen]
+    * @param {function} listener   [the event listener function]
+    */
+    function addEventListener(eventType, listener) {
+      eventEmitter.on(eventType, listener);
+    }
+    /**
+    * [removeEventListener Removes event listener to the timer]
+    * @param  {string} eventType    [event to remove listener]
+    * @param  {function} listener [listener to remove]
+    */
+    function removeEventListener(eventType, listener) {
+      eventEmitter.removeListener(eventType, listener);
+    }
+    /**
+    * [dispatchEvent dispatches an event]
+    * @param  {string} eventType [event to dispatch]
+    * @param data
+    */
+    function dispatchEvent(eventType, data) {
+      eventEmitter.emit(eventType, data);
+    }
+    /**
+    * [isRunning return true if the timer is running]
+    * @return {Boolean}
+    */
+    function isRunning() {
+      return running;
+    }
+    /**
+    * [isPaused returns true if the timer is paused]
+    * @return {Boolean}
+    */
+    function isPaused() {
+      return paused;
+    }
+    /**
+    * [getTimeValues returns the counter with the current timer values]
+    * @return {TimeCounter}
+    */
+    function getTimeValues() {
+      return counters;
+    }
+    /**
+    * [getTotalTimeValues returns the counter with the current timer total values]
+    * @return {TimeCounter}
+    */
+    function getTotalTimeValues() {
+      return totalCounters;
+    }
+    /**
+    * [getConfig returns the configuration parameters]
+    * @return {type}
+    */
+    function getConfig() {
+      return timerConfig;
+    }
+    /**
+    * Public API
+    * Definition of Timer instance public functions
+    */
+    if (typeof this !== 'undefined') {
+      this.start = start;
+      this.pause = pause;
+      this.stop = stop;
+      this.reset = reset;
+      this.isRunning = isRunning;
+      this.isPaused = isPaused;
+      this.getTimeValues = getTimeValues;
+      this.getTotalTimeValues = getTotalTimeValues;
+      this.getConfig = getConfig;
+      this.addEventListener = addEventListener;
+      this.on = addEventListener;
+      this.removeEventListener = removeEventListener;
+      this.off = removeEventListener;
+    }
+  }
+  exports.Timer = Timer;
+  exports.default = Timer;
+  Object.defineProperty(exports, '__esModule', {
+    value: true
+  });
+});
+
+},{}]},["4lRCc","2zh7Q"], "2zh7Q", "parcelRequiref77e")
+
+//# sourceMappingURL=index.4d413c1c.js.map

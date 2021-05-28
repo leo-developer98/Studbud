@@ -5,7 +5,6 @@ import './components/readinglist';
 import './components/dictionary';
 import './components/musicplayer';
 
-
 // Navigation
 
 const links = document.querySelectorAll('.top_nav > ul > li > a');

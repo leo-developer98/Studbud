@@ -1,81 +1,51 @@
-// export default class KanbanStorage {
-//     constructor() {
-//       // if item by key `tasks` is not defined JSON.parse return null, so I use `or empty array`
-//       this.columns = JSON.parse(localStorage.getItem('kanbanColumns')) || [];
-//     }
-  
-//     create(label, name, colour) {
-//       label.name = name;
-//       label.colour = colour;
+export default class KanbanStorage {
+    constructor() {
+      // if item by key `tasks` is not defined JSON.parse return null, so I use `or empty array`
+      this.columns = JSON.parse(localStorage.getItem('kanban')) || [];
+    }
 
-//       let index = this.getIndex(label);
+    update(column) {
+        let index = this.getIndex(column);
+    
+        if (index !== -1) {
+          this.columns[index] = column;
+    
+          localStorage.setItem('kanban', JSON.stringify(this.columns));
+        } else {
+          console.log("Column doesn't exist in the list")
+        }
+    }
   
-//       if (index === -1) {
-//         this.labels.push(label);
-//         localStorage.setItem('kanbanColumns', JSON.stringify(this.columns));
-//       } else {
-//         console.log("Label already exist in the list")
-//       }
-//     }
-  
-//     getIndex(label) {
-//       for (let i = 0; i < this.labels.length; i++) {
-//         if (this.labels[i].colour == label.colour) {
-//           return i;
-//         } else if (this.labels[i].name == label.name) {
-//           return i;
-//         }
-//       }
-  
-//       return -1;
-//     }
+    getIndex(column) {
+      for (let i = 0; i < this.columns.length; i++) {
+        if (this.columns[i].id == column.id) {
+          return i;
+        } 
+      }
+      return -1;
+    }
 
-//     getColour(name) {
-//       for (let i = 0; i < this.labels.length; i++) {
-//         if (this.labels[i].name == name) {
-//           return this.labels[i].colour.toString();
-//         } 
-//       }
-      
-//         // return -1;
-//         console.log("cannot find the label: " + name.toString());
-//     }
-
-//     labelIsNew(label) {
-//       for (let i = 0; i < this.labels.length; i++) {
-//         if (this.labels[i].name == label.name) {
-//           alert("Label name already exists");
-//           return false;
-//         } else if (this.labels[i].colour == label.colour) {
-//           alert("Label colour already exists");
-//           return false;
-//         }
-//       }
-
-//       return true;
-//     }
+    add(column) {
+        let index = this.getIndex(column);
+    
+        if (index === -1) {
+          this.columns.push(column);
+          localStorage.setItem('kanban', JSON.stringify(this.columns));
+        } else {
+          console.log("Column already exist in the list")
+        }
+      }
   
-//     update(label) {
-//       let index = this.getIndex(label);
   
-//       if (index !== -1) {
-//         this.labels[index] = label;
+    delete(column) {
+      let index = this.getIndex(column);
   
-//         localStorage.setItem('labels', JSON.stringify(this.labels));
-//       } else {
-//         console.log("Label doesn't exist in the list")
-//       }
-//     }
+      if (index !== -1) {
+        this.columns.splice(index, 1);
   
-//     delete(label) {
-//       let index = this.getIndex(label);
-  
-//       if (index !== -1) {
-//         this.labels.splice(index, 1);
-  
-//         localStorage.setItem('labels', JSON.stringify(this.labels));
-//       } else {
-//         console.log("Label doesn't exist in the list")
-//       }
-//     }
-//   }
+        localStorage.setItem('kanban', JSON.stringify(this.columns));
+      } else {
+        console.log("Column doesn't exist in the list")
+      }
+    }
+  }

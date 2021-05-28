@@ -3,11 +3,11 @@
 @import "_layout";
 @import "_typography";
 
-@import "components/navigation";
-@import "components/tasklist";
-@import "components/timers";
-@import "components/dictionary";
+@import "components/_navigation";
+@import "components/_tasklist";
+@import "components/_timers";
+@import "components/_dictionary";
 @import "components/_readinglist";
-@import "components/musicplayer";
+@import "components/_musicplayer";
 
 @import "../libraries/jkanban.min.css";

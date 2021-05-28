@@ -1,0 +1,90 @@
+require('../libraries/easytimer.js/dist/easytimer.min.js');
+// MIT License
+// Copyright (c) 2018 Albert González
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+$(document).ready(function () {
+  $('input[id="tabP"]').click(function () {
+    timerP.classList.add("active");
+    timerS.classList.remove('active');
+  });
+  $('input[id="tabS"]').click(function () {
+    timerP.classList.remove("active");
+    timerS.classList.add('active');
+  });
+});
+const tabP = document.getElementById('tabP');
+const tabS = document.getElementById('tabS');
+const timerP = document.getElementById('timers_p');
+const timerS = document.getElementById('timers_s');
+const pomoStartBtn = document.getElementById("pomo-startBtn");
+const pomoStopBtn = document.getElementById("pomo-stopBtn");
+const pomoResetBtn = document.getElementById("pomo-resetBtn");
+const swStartBtn = document.getElementById("sw-startBtn");
+const swStopBtn = document.getElementById("sw-stopBtn");
+const swResetBtn = document.getElementById("sw-resetBtn");
+const swLapBtn = document.getElementById("sw-lapBtn");
+const pomodoroDisplay = document.getElementById("pomodoroTime");
+const stopwatchDisplay = document.getElementById("stopwatchTime");
+var {Timer} = require('../libraries/easytimer.js/dist/easytimer');
+var timer = new Timer();
+$('#sw-startBtn').click(function () {
+  timer.start({
+    precision: 'seconds'
+  });
+  swResetBtn.classList.remove("active");
+  swLapBtn.classList.add("active");
+});
+$('#sw-stopBtn').click(function () {
+  timer.pause({
+    precision: 'seconds'
+  });
+  swResetBtn.classList.add("active");
+  swLapBtn.classList.remove("active");
+});
+$('#sw-resetBtn').click(function () {
+  timer.reset({
+    precision: 'seconds'
+  });
+  timer.pause({
+    precision: 'seconds'
+  });
+  swResetBtn.classList.add("active");
+  swLapBtn.classList.remove("active");
+});
+timer.addEventListener('secondsUpdated', function (e) {
+  $('#stopwatchTime').html(timer.getTimeValues().toString(['hours', 'minutes', 'seconds']));
+});
+timer.addEventListener('started', function (e) {
+  $('#stopwatchTime').html(timer.getTimeValues().toString(['hours', 'minutes', 'seconds']));
+});
+timer.addEventListener('reset', function (e) {
+  $('#stopwatchTime').html(timer.getTimeValues().toString(['hours', 'minutes', 'seconds']));
+});
+var pomotimer = new Timer();
+pomotimer.start({
+  countdown: true,
+  startValues: {
+    seconds: 50
+  }
+});
+$('#pomodoroTime').html(timer.getTimeValues().toString());
+pomoimer.addEventListener('secondsUpdated', function (e) {
+  $('#pomodoroTime').html(timer.getTimeValues().toString());
+});
+pomotimer.addEventListener('targetAchieved', function (e) {
+  $('#pomodoroTime').html('KABOOM!!');
+});

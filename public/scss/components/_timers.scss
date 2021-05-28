@@ -79,16 +79,116 @@
 
         #timers_p {
             display: none;
+            margin: 20px;
+
             &.active {
                 display: block;
             }
+
+            &>.row {
+                height: 100%;
+            }
+
         }
 
         #timers_s {
             display: none;
+            margin: 20px;
+
             &.active {
                 display: block;
             }
+
+            &>.row {
+                height: 100%;
+            }
+
+            #stopwatchTime {
+                font-size: 100px;
+            }
+
+            #lapTime {
+                display: block;
+                overflow: scroll;
+                height: 90%;
+                border-top: 3px solid darkgray;
+                border-bottom: 3px solid darkgray;
+
+                #lapTimeList {
+                    list-style: none;
+
+                }
+            }
+        }
+
+        .timerBtns {
+            width: 80px;
+            height: 80px;
+            border-radius: 100%;
+
+            &#sw-resetBtn {
+                display: none;
+                &.running {
+                    display: block
+                }
+            }
+
+            &#sw-lapBtn {
+                display: none;
+
+                &.running {
+                    display: block
+                }
+            }
+
+            &#pomo-startBtn {
+                display: none;
+
+                &.running {
+                    display: block
+                }
+            }
+            &#pomo-pauseBtn {
+                display: none;
+
+                &.running {
+                    display: block
+                }
+            }
+            &#sw-startBtn {
+                display: none;
+
+                &.running {
+                    display: block
+                }
+            }
+            &#sw-pauseBtn {
+                display: none;
+
+                &.running {
+                    display: block
+                }
+            }
+        }
+
+        .timerBtnContainer {
+            .row {
+                height: 33%;
+                align-items: center;
+            }
         }
     }
+}
+
+#lapTime::-webkit-scrollbar {
+    width: 8px;
+}
+
+#lapTime::-webkit-scrollbar-track {
+    display: none;
+}
+
+#lapTime::-webkit-scrollbar-thumb {
+    background-color: #4e4e4e;
+    border-radius: 5px;
 }

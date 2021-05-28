@@ -109,6 +109,9 @@ select {
   background-color: rgba(0, 0, 0, 0.4);
   /* Black w/ opacity */
 }
+.modal-backdrop {
+  z-index: -1;
+}
 html {
   font-size: 100%;
 }
@@ -196,12 +199,11 @@ nav .nav_links .nav_item .nav_btn.active {
   position: absolute;
   width: 270px;
   height: calc(100vh - 56px);
-  transition: all 0.35s ease-in-out;
+  transition: all 0.25s ease-in-out;
   background-color: #d4d4d4;
   left: -270px;
 }
 #taskWrapper.open {
-  transition: all 0.35s ease-in-out;
   left: 0px;
 }
 #taskWrapper #taskgrid {
@@ -217,7 +219,6 @@ nav .nav_links .nav_item .nav_btn.active {
   width: 100%;
   overflow-y: scroll;
   overflow-x: hidden;
-  transition: all 0.35s ease-in-out;
 }
 #taskWrapper #taskgrid #taskList.open {
   background-color: #383838;
@@ -231,6 +232,26 @@ nav .nav_links .nav_item .nav_btn.active {
   border-radius: 8px;
   background-color: whitesmoke;
   list-style: none;
+}
+#taskWrapper #taskgrid #taskList .task_item .item_top {
+  justify-content: center;
+  align-items: center;
+}
+#taskWrapper #taskgrid #taskList .task_item .item_top .card-title {
+  margin-left: 5px;
+  display: inline-block;
+}
+#taskWrapper #taskgrid #taskList .task_item .item_top .checkBtn {
+  display: flex;
+  padding: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: 100%;
+  justify-content: center;
+  align-items: center;
+}
+#taskWrapper #taskgrid #taskList .task_item .item_top .checkBtn i {
+  border-radius: 100%;
 }
 #taskWrapper #taskgrid #taskList .task_item .card-text {
   margin-left: 10px;
@@ -267,11 +288,10 @@ nav .nav_links .nav_item .nav_btn.active {
   border-radius: 10px 10px 0 0;
   padding: 10px;
   overflow: hidden;
-  transition: all 0.5s ease-in-out;
+  transition: all 0.4s ease-in-out;
 }
 #taskWrapper #addTask.open {
   bottom: 56px;
-  transition: all 0.5s ease-in-out;
 }
 #taskWrapper #addTask label {
   margin-top: 5px;
@@ -366,13 +386,25 @@ nav .nav_links .nav_item .nav_btn.active {
   width: 100%;
   height: calc(100vh - 56px);
   background-color: whitesmoke;
-  transition: all 0.35s ease-in-out;
+  transition: all 0.25s ease-in-out;
 }
 #kanban.open {
   margin-left: 270px;
   width: calc(100vw - 270px);
-  transition: all 0.35s ease-in-out;
-  background-color: #383838;
+  background-color: whitesmoke;
+}
+#kanban .kanban-board {
+  height: 600px;
+  box-shadow: 5px 5px 5px #9e9e9e;
+}
+#kanban .kanban-board[data-id=toDo] {
+  background-color: #BFDBF7;
+}
+#kanban .kanban-board[data-id=inProgress] {
+  background-color: #ffe293;
+}
+#kanban .kanban-board[data-id=done] {
+  background-color: #A9E5BB;
 }
 @media only screen and (max-width: 450px) {
   #kanban {
@@ -490,13 +522,26 @@ nav .nav_links .nav_item .nav_btn.active {
 }
 #timers .modal-body #timers_p {
   display: none;
+  margin: 20px;
 }
 #timers .modal-body #timers_p.active {
   display: block;
 }
+#timers .modal-body #timers_p > .row {
+  height: 100%;
+}
 #timers .modal-body #timers_s {
   display: none;
+  margin: 20px;
 }
 #timers .modal-body #timers_s.active {
   display: block;
+}
+#timers .modal-body #timers_s > .row {
+  height: 100%;
+}
+#timers .modal-body .timerBtns {
+  width: 80px;
+  height: 80px;
+  border-radius: 100%;
 }

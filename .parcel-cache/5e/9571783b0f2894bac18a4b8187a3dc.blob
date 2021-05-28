@@ -1,0 +1,58 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+class KanbanStorage {
+  constructor() {
+    // if item by key `tasks` is not defined JSON.parse return null, so I use `or empty array`
+    this.columns = JSON.parse(localStorage.getItem('kanban')) || [];
+  }
+  update(column) {
+    let index = this.getIndex(column);
+    if (index !== -1) {
+      this.columns[index] = column;
+      localStorage.setItem('labels', JSON.stringify(this.labels));
+    } else {
+      console.log("Column doesn't exist in the list");
+    }
+  }
+  create(column) {
+    let index = this.getIndex(label);
+    if (index === -1) {
+      this.labels.push(label);
+      localStorage.setItem('kanbanColumns', JSON.stringify(this.columns));
+    } else {
+      console.log("Label already exist in the list");
+    }
+  }
+  getIndex(label) {
+    for (let i = 0; i < this.columns.length; i++) {
+      if (this.columns[i].colour == label.colour) {
+        return i;
+      } else if (this.labels[i].name == label.name) {
+        return i;
+      }
+    }
+    return -1;
+  }
+  getColour(name) {
+    for (let i = 0; i < this.labels.length; i++) {
+      if (this.labels[i].name == name) {
+        return this.labels[i].colour.toString();
+      }
+    }
+    // return -1;
+    console.log("cannot find the label: " + name.toString());
+  }
+  labelIsNew(label) {
+    for (let i = 0; i < this.labels.length; i++) {
+      if (this.labels[i].name == label.name) {
+        alert("Label name already exists");
+        return false;
+      } else if (this.labels[i].colour == label.colour) {
+        alert("Label colour already exists");
+        return false;
+      }
+    }
+    return true;
+  }
+}
+exports.default = KanbanStorage;

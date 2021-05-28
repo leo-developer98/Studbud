@@ -1,0 +1,23 @@
+const tabP = document.getElementById('tabP');
+const tabS = document.getElementById('tabS');
+const timerP = document.getElementById('timers_p');
+const timerS = document.getElementById('timers_s');
+
+const pomoStartBtn = document.getElementById("pomo-startBtn");
+const pomoStopBtn = document.getElementById("pomo-stopBtn");
+const pomoResetBtn = document.getElementById("pomo-resetBtn");
+const pomodoroDisplay = document.getElementById("pomodoroTime");
+
+// Pomodoro
+var timer = new Timer();
+timer.start({countdown: true, startValues: {seconds: 50}});
+
+$('#pomodoroTime').html(timer.getTimeValues().toString());
+
+po,otimer.addEventListener('secondsUpdated', function (e) {
+    $('#pomodoroTime').html(timer.getTimeValues().toString());
+});
+
+pomotimer.addEventListener('targetAchieved', function (e) {
+    $('#pomodoroTime').html('KABOOM!!');
+});

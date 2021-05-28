@@ -1,5 +1,6 @@
 import TaskStorage from './taskStorage.js';
 import LabelStorage from './labelStorage.js';
+import KanbanStorage from './kanbanStorage.js';
 import '../libraries/jkanban.min.js';
 
 const taskWrapper = document.getElementById("taskWrapper");
@@ -14,6 +15,7 @@ var priorityRating = document.getElementById("pr");
 var estimatedTime = document.getElementById("et");
 var labelName = document.getElementById("newLabelInput");
 var labelColour = document.getElementById("labelColourInput");
+
 // var completionStatus = document.getElementById("cs");
 
 // var y = priorityRating.options;
@@ -25,6 +27,8 @@ Date.prototype.toDateInputValue = (function () {
   local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
   return local.toJSON().slice(0, 10);
 });
+
+
 
 // dueDate.value = new Date().toDateInputValue();
 
@@ -165,11 +169,8 @@ function updateLabelDropdown() {
     labelBtn.classList.add('label_btns');
     labelBtn.innerHTML = element.name.toString();
   
-    // add Delete Button
+    // add Delete Button for Labels
     let delButton = document.createElement("button");
-    // // let delButtonText = document.createTextNode("X");
-    // delButton.appendChild(delButtonText);
-  
     delButton.setAttribute('class', "btn-close");
     delButton.classList.add('deleteBtn');
   
@@ -178,6 +179,12 @@ function updateLabelDropdown() {
       if (confirm('Are you sure you want to delete this label from task labels?')) {
         labelStorage.delete(element);
         labelSelect.remove();
+      }
+
+      if (labelList.length > 0) {
+        document.getElementById('noLabels').style.display = "none";
+      } else {
+        document.getElementById('noLabels').style.display = "block";
       }
     })
   
@@ -207,23 +214,6 @@ function addTask(taskDescription, dueDate, completionTime, priorityRating, prior
     return false;
   } 
   
-  // else if (labelStorage.labelIsNew(task.label)) {
-
-  //   let key = (task.taskDescription).toString();
-  //   // let value = JSON.stringify(task);
-
-  //   // if (localStorage.getItem(key) === null) {
-  //   //   localStorage.setItem(key, value);
-  //   //   showTask(task);
-  //   if (taskStorage.getIndexByName(key)  === -1) {
-  //     taskStorage.create(task, key);
-  //     showTask(task);
-  //     // updateLabelDropdown();
-  //   } else {
-  //     alert("Task " + key + " is already exists in the list")
-  //   }
-  
-  // }
    else {
     let key = (task.taskDescription).toString();
     // let value = JSON.stringify(task);
@@ -237,8 +227,15 @@ function addTask(taskDescription, dueDate, completionTime, priorityRating, prior
       // updateLabelDropdown();
     } else {
       alert("Task " + key + " is already exists in the list")
+      }
     }
-  }
+    updateLabelDropdown();
+
+    if (labelList.length > 0) {
+      document.getElementById('noLabels').style.display = "none";
+    }
+
+    closeBtn.click();
 }
 
 function updateEmpty() {
@@ -288,19 +285,33 @@ function showTask(task) {
   item_body.setAttribute('class', 'card-body');
 
   let item_top = document.createElement("div");
+  item_top.classList.add('item_top');
 
   let item_title = document.createElement("h5");
   item_title.setAttribute('class', 'card-title');
-  item_title.setAttribute('style', 'inline-block');
   item_title.appendChild(document.createTextNode(task.taskDescription));
 
   let doneBtn = document.createElement('button');
+  doneBtn.innerHTML = "<i class='fas fa-check fa-xs'></i>"
   doneBtn.setAttribute('type', 'button');
   doneBtn.classList.add('btn');
   doneBtn.classList.add('btn-outline-success');
+  doneBtn.classList.add('checkBtn');
+
+  doneBtn.addEventListener('click', () => {
+    let element = {
+      id: task.taskDescription,
+      title: task.taskDescription
+    }
+
+    kanbanBoard.addElement("done", element);
+
+  })
 
   item_top.appendChild(doneBtn);
   item_top.appendChild(item_title);
+
+  // item_title.appendChild(doneBtn);
 
   item_body.appendChild(item_top);
 
@@ -313,15 +324,17 @@ function showTask(task) {
     // if (labelStorage.getIndex(task.label) !== -1) {
     //   alert("Choose another label")
     // } else {
-      labelStorage.create(task.label, task.label.name, task.label.colour);
-      let labelName = task.label.name;
-      let labelNameString = labelName.toString();
-      let item_tag = document.createElement('span');
-      item_tag.setAttribute('class', 'badge');
-      item_tag.setAttribute('id', labelNameString);
-      item_tag.appendChild(document.createTextNode(labelName));
-      item_tag.style.backgroundColor = task.label.colour;
-      item_body.appendChild(item_tag);
+      if (task.label.name !== "") {
+        labelStorage.create(task.label, task.label.name, task.label.colour);
+        let labelName = task.label.name;
+        let labelNameString = labelName.toString();
+        let item_tag = document.createElement('span');
+        item_tag.setAttribute('class', 'badge');
+        item_tag.setAttribute('id', labelNameString);
+        item_tag.appendChild(document.createTextNode(labelName));
+        item_tag.style.backgroundColor = task.label.colour;
+        item_body.appendChild(item_tag);
+      }
   }
 
   if (task.hasOwnProperty('dueDate') && task['dueDate']) {
@@ -441,12 +454,6 @@ function showTask(task) {
     kanbanBoard.addElement("toDo", element);
   })
 
-
-  // item.appendChild(itemDd);
-  // item.appendChild(itemCt);
-  // item.appendChild(itemPr);
-  // item.appendChild(itemEt);
-  // item.appendChild(itemCs);
   buttons.appendChild(moveButton);
   buttons.appendChild(delButton);
   item.appendChild(buttons);
@@ -499,11 +506,22 @@ function removeItemFromArray(arr, index) {
 
 // Kanban Board
 
+const kanbanStorage = new KanbanStorage();
+const kanbanColumns = kanbanStorage.columns;
+
+// kanbanColumns.forEach((element) => {
+//   kanbanBoard.addBoards(columns);
+// })
+
 var columns = [
   {id: 'toDo', title: "To Do", item: []},
   {id: 'inProgress', title:"In Progress", item: []},
   {id: 'done', title: "Done", item: []}
 ];
+
+// for (let i=0; i < columns.length; i++) {
+
+// }
 
 var kanbanBoard = new jKanban({
   element          : '#myKanban',                                           // selector of the kanban container
