@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/leo-developer98/Studbud#readme",
   "dependencies": {
+    "@mougli/circular-slider": "^1.0.0",
     "easytimer.js": "^4.3.4",
     "express": "^4.17.1",
     "jquery": "^3.6.0",

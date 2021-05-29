@@ -22,10 +22,11 @@
         #taskList {
             display: block;
             background-color: rgb(212, 212, 212);
-            height: 630px;
+            height: 650px;
             width: 100%;
             overflow-y: scroll;
             overflow-x: hidden;
+            margin-top: 10px;
             // transition: all 0.25s ease-in-out;
 
             &.open {
@@ -44,36 +45,45 @@
                 list-style: none;
 
                 .item_top {
-                    justify-content: center;
+                    display:block;
+                    // justify-content: center;
                     align-items: center;
+                    margin-bottom: 10px;
+
+                    .task-labels {
+                        display: flex;
+                        float: right;
+                    }
+
                     .card-title {
-                        margin-left: 5px;
                         display: inline-block;
+                        margin-left: 10px;
+                        margin-bottom: 0;
                     }
     
                     .checkBtn {
-                        display: flex;
+                        display: inline-block;
                         padding: 0;
-                        width: 18px;
-                        height: 18px;
+                        width: 20px;
+                        height: 20px;
                         border-radius: 100%;
                         justify-content: center;
                         align-items: center;
 
                         i {
+                            display: block;
                             border-radius: 100%;
                         }
                     }
                 }
 
-
-                .card-text {
-                    margin-left: 10px;
-                }
-
                 .task_details {
                     // display: inline-block;
                     color: rgb(56, 56, 56);
+
+                    .card-text {
+                        margin-left: 10px;
+                    }
 
                     &.low_pr {
                         color: rgb(41, 62, 255);
@@ -98,7 +108,8 @@
                 }
 
                 .task_buttons {
-                    margin: 5px;
+                    margin-top: 10px;
+                    width: 100%;
                 }
             }
         }
@@ -128,17 +139,15 @@
         }
 
         #taskLabelDropdown {
-            .label_btns {
-                display: flex;
-                width: 75%;
-                float: left;
-            }
-
-            .deleteBtn {
-                display: inline-block;
-                margin: 5px;
-            }
-        
+            .btn-group {
+                width: 100%;
+                .label_btns {
+                    display: block;
+                }
+                .label-deleteBtn {
+                    display: block;
+                }
+            }        
         }
     }
 }
@@ -206,12 +215,17 @@
     background-color: #43519d;
     align-items: center;
 
-    #moreBtn {
-        margin-left: 170px;
+    #sortTasksBtn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
         background-color: #43519d;
+        color: white;
         border: none;
-        height: 100%;
+        height: 60%;
+        float: right;
     }
+
 }
 
 #taskList::-webkit-scrollbar {
@@ -237,44 +251,58 @@
     background-color: whitesmoke;
     transition: all 0.25s ease-in-out;
 
+    #myKanban {
+        #kanbanBtn-container {
+            margin: 15px;
+        }
+    }
+
     &.open {
         margin-left: 270px;
         width: calc(100vw - 270px);
         background-color: whitesmoke;
     }
 
-    .kanban-board {
-        height: 600px;
-        box-shadow:5px 5px 5px rgb(158, 158, 158);
+}
 
-        &[data-id="toDo"] {
-            // border: 10px solid #6b86ff;
-            background-color: #BFDBF7;
-        }
+.kanban-board {
+    height: 600px;
+    box-shadow:5px 5px 5px rgb(158, 158, 158);
 
-        &[data-id="inProgress"] {
-            // border: 10px solid #ffc43b;
-            background-color: #ffe293;
-        }
+    .kanban-title-board {
+        color: white;
+    }
 
-        &[data-id="done"] {
-            // border: 10px solid #b8ff9c;
-            background-color: #A9E5BB;
-        }
-
-        .kanban-item {
-            justify-content: center;
-            align-items: center;
+    &[data-id="toDo"] {
+        // border: 10px solid #6b86ff;
+        .kanban-board-header {
+            background-color: #178bff;
         }
     }
 
-}
+    &[data-id="inProgress"] {
+        .kanban-board-header {
+            background-color: #ffc31e;
+        }
+        // border: 10px solid #ffc43b;
+    }
 
-.kanbanItemBtn {
-    border: none;
-    display: flex;
-    float: right;
-    margin:auto;
+    &[data-id="done"] {
+        .kanban-board-header {
+            background-color: #3dd66b;
+        }
+        // border: 10px solid #b8ff9c;
+    }
+}
+.kanban-item {
+    justify-content: center;
+    align-items: center;
+    .kanbanItemBtn {
+        border: none;
+        display: flex;
+        float: right;
+        margin:auto;
+    }
 }
 
 @media only screen and (max-width: 500px) {

@@ -1,0 +1,637 @@
+.kanban-container{position:relative;box-sizing:border-box;width:auto}.kanban-container *{box-sizing:border-box}.kanban-container:after{clear:both;display:block;content:""}.kanban-board{position:relative;float:left;background:#e2e4e6;transition:all .3s cubic-bezier(.23,1,.32,1)}.kanban-board.disabled-board{opacity:.3}.kanban-board.is-moving.gu-mirror{transform:rotate(3deg)}.kanban-board.is-moving.gu-mirror .kanban-drag{overflow:hidden;padding-right:50px}.kanban-board header{font-size:16px;padding:15px}.kanban-board header .kanban-title-board{font-weight:700;margin:0;padding:0;display:inline}.kanban-board header .kanban-title-button{float:right}.kanban-board .kanban-drag{min-height:200px;padding:20px}.kanban-board:after{clear:both;display:block;content:""}.kanban-item{background:#fff;padding:15px;margin-bottom:20px;transition:all .3s cubic-bezier(.23,1,.32,1)}.kanban-item:hover{cursor:move}.kanban-item:last-child{margin:0}.kanban-item.is-moving.gu-mirror{transform:rotate(3deg);height:auto!important}.gu-mirror{position:fixed!important;margin:0!important;z-index:9999!important}.gu-hide{display:none!important}.gu-unselectable{-webkit-user-select:none!important;-moz-user-select:none!important;-ms-user-select:none!important;user-select:none!important}.gu-transit{opacity:.2!important;transform:rotate(0)!important}.drag_handler{background:#fff;border-radius:50%;width:24px;height:24px;position:relative;float:left;top:-3px;margin-right:4px}.drag_handler:hover{cursor:move}.drag_handler_icon{position:relative;display:block;background:#000;width:24px;height:2px;top:12px;transition:.5s ease-in-out}.drag_handler_icon:after,.drag_handler_icon:before{background:#000;content:'';display:block;width:100%;height:100%;position:absolute;transition:.5s ease-in-out}.drag_handler_icon:before{top:6px}.drag_handler_icon:after{bottom:6px}
+/* Box sizing rules */
+@import url("https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100;0,200;0,300;0,400;1,100&display=swap");
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+/* Remove default padding */
+ul[class],
+ol[class] {
+  padding: 0;
+}
+/* Remove default margin */
+body,
+h1,
+h2,
+h3,
+h4,
+p,
+ul[class],
+ol[class],
+li,
+figure,
+figcaption,
+blockquote,
+dl,
+dd {
+  margin: 0;
+}
+/* Set core body defaults */
+body {
+  min-height: 100vh;
+  scroll-behavior: smooth;
+  text-rendering: optimizeSpeed;
+  line-height: 1.5;
+}
+/* Remove list styles on ul, ol elements with a class attribute */
+ul[class],
+ol[class] {
+  list-style: none;
+}
+/* A elements that don't have a class get default styles */
+a:not([class]) {
+  -webkit-text-decoration-skip: ink;
+          text-decoration-skip-ink: auto;
+}
+/* Make images easier to work with */
+img {
+  max-width: 100%;
+  display: block;
+}
+/* Natural flow and rhythm in articles by default */
+article > * + * {
+  margin-top: 1em;
+}
+/* Inherit fonts for inputs and buttons */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+/* Remove all animations and transitions for people that prefer not to see them */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    -webkit-animation-duration: 0.01ms !important;
+            animation-duration: 0.01ms !important;
+    -webkit-animation-iteration-count: 1 !important;
+            animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+.app_container {
+  background-color: #43519d;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+.page_container#home {
+  display: block;
+}
+.page_container:not(#home) {
+  display: none;
+}
+.headings {
+  display: inline-block;
+}
+.btn-close {
+  float: right;
+}
+.modal {
+  display: none;
+  /* Hidden by default */
+  position: fixed;
+  /* Stay in place */
+  z-index: 1;
+  /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%;
+  /* Full width */
+  height: 100%;
+  /* Full height */
+  overflow: auto;
+  /* Enable scroll if needed */
+  background-color: black;
+  /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4);
+  /* Black w/ opacity */
+}
+.modal-backdrop {
+  z-index: -1;
+}
+html {
+  font-size: 100%;
+}
+/*16px*/
+body {
+  background: white;
+  font-family: "Raleway", sans-serif;
+  color: #000000;
+}
+nav {
+  display: flex;
+  position: sticky;
+  background-color: #43519d;
+  color: white;
+  justify-content: space-around;
+}
+nav .task_btn {
+  display: flex;
+  float: left;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  color: white;
+  height: 56px;
+  width: 56px;
+  justify-content: center;
+  align-items: center;
+}
+nav .task_btn:hover {
+  background-color: #252e59;
+  border-color: #252e59;
+}
+nav .task_btn.open {
+  color: whitesmoke;
+  background-color: #252e59;
+  border-color: #252e59;
+}
+nav .nav_links {
+  list-style: none;
+  display: flex;
+}
+nav .nav_links .nav_item a {
+  display: inline-block;
+  text-decoration: none;
+  color: white;
+  padding: 1em 2em;
+  transition: all 0.3s ease-in-out;
+}
+nav .nav_links .nav_item a:hover {
+  background-color: #252e59;
+  border-color: #252e59;
+}
+nav .nav_links .nav_item a.active {
+  font-weight: bold;
+}
+nav .nav_links .nav_item .nav_btn {
+  display: inline-block;
+  text-decoration: none;
+  color: white;
+  padding: 1em 2em;
+  border: none;
+  border-radius: 0;
+  transition: all 0.3s ease-in-out;
+}
+nav .nav_links .nav_item .nav_btn:hover {
+  background-color: #252e59;
+  border-color: #252e59;
+}
+nav .nav_links .nav_item .nav_btn.active {
+  font-weight: bold;
+}
+.top_nav {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+@media only screen and (max-width: 450px) {
+  .top_nav {
+    display: none;
+  }
+}
+#taskWrapper {
+  display: block;
+  position: absolute;
+  width: 270px;
+  height: calc(100vh - 56px);
+  transition: all 0.25s ease-in-out;
+  background-color: #d4d4d4;
+  left: -270px;
+}
+#taskWrapper.open {
+  left: 0px;
+}
+#taskWrapper #taskgrid {
+  display: block;
+}
+#taskWrapper #taskgrid h3 {
+  margin: 10px 20px;
+}
+#taskWrapper #taskgrid #taskList {
+  display: block;
+  background-color: #d4d4d4;
+  height: 630px;
+  width: 100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+#taskWrapper #taskgrid #taskList.open {
+  background-color: #383838;
+}
+#taskWrapper #taskgrid #taskList #emptyTaskList {
+  margin: 0 20px;
+}
+#taskWrapper #taskgrid #taskList .task_item {
+  display: flex;
+  margin: 0 5px 10px 10px;
+  border-radius: 8px;
+  background-color: whitesmoke;
+  list-style: none;
+}
+#taskWrapper #taskgrid #taskList .task_item .item_top {
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+}
+#taskWrapper #taskgrid #taskList .task_item .item_top .card-title {
+  display: inline-block;
+  margin-left: 5px;
+  margin-bottom: 0;
+  padding: 5px;
+}
+#taskWrapper #taskgrid #taskList .task_item .item_top .checkBtn {
+  display: inline-block;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 100%;
+  justify-content: center;
+  align-items: center;
+}
+#taskWrapper #taskgrid #taskList .task_item .item_top .checkBtn i {
+  display: block;
+  border-radius: 100%;
+}
+#taskWrapper #taskgrid #taskList .task_item .card-text {
+  margin-left: 10px;
+}
+#taskWrapper #taskgrid #taskList .task_item .task_details {
+  color: #383838;
+}
+#taskWrapper #taskgrid #taskList .task_item .task_details.low_pr {
+  color: #293eff;
+}
+#taskWrapper #taskgrid #taskList .task_item .task_details.medium_pr {
+  color: #fcb500;
+}
+#taskWrapper #taskgrid #taskList .task_item .task_details.high_pr {
+  color: #c91400;
+}
+#taskWrapper #taskgrid #taskList .task_item .task_details i {
+  display: inline-block;
+}
+#taskWrapper #taskgrid #taskList .task_item .task_details p {
+  display: inline-block;
+  color: #383838;
+}
+#taskWrapper #taskgrid #taskList .task_item .task_buttons {
+  margin: 5px;
+}
+#taskWrapper #addTask {
+  display: block;
+  position: absolute;
+  width: 270px;
+  height: 500px;
+  background-color: whitesmoke;
+  bottom: calc(56px - 500px);
+  border-radius: 10px 10px 0 0;
+  padding: 10px;
+  overflow: hidden;
+  transition: all 0.4s ease-in-out;
+}
+#taskWrapper #addTask.open {
+  bottom: 56px;
+}
+#taskWrapper #addTask label {
+  margin-top: 5px;
+}
+#taskWrapper #addTask label span {
+  margin-left: 7px;
+}
+#taskWrapper #addTask #taskLabelDropdown .label_btns {
+  display: flex;
+  width: 100%;
+  float: left;
+}
+#uploadBtnContainer {
+  display: flex;
+  width: 270px;
+  position: absolute;
+  z-index: 1;
+  bottom: 26px;
+  justify-content: center;
+  align-items: center;
+}
+#uploadBtnContainer #addBtn {
+  display: inline-block;
+  justify-content: center;
+  align-items: center;
+  color: #748aff;
+  cursor: pointer;
+  padding: 0 4px;
+  background-color: white;
+  border-radius: 50%;
+  border: 10px solid white;
+}
+#uploadBtnContainer #addBtn:hover {
+  background-color: #748aff;
+  border: 10px solid #748aff;
+  color: white;
+}
+#uploadBtnContainer #addBtn.open {
+  display: none;
+}
+#uploadBtnContainer #uploadBtn {
+  display: none;
+}
+#uploadBtnContainer #uploadBtn.open {
+  display: inline-block;
+  justify-content: center;
+  align-items: center;
+  color: #748aff;
+  cursor: pointer;
+  background-color: white;
+  padding: 0 4px;
+  border-radius: 50%;
+  border: 10px solid white;
+}
+#uploadBtnContainer #uploadBtn.open:hover {
+  background-color: #748aff;
+  border: 10px solid #748aff;
+  color: white;
+}
+#task_bottom {
+  display: flex;
+  position: absolute;
+  height: 56px;
+  width: 270px;
+  bottom: 0;
+  background-color: #43519d;
+  align-items: center;
+}
+#task_bottom #moreBtn {
+  margin-left: 170px;
+  background-color: #43519d;
+  border: none;
+  height: 100%;
+}
+#taskList::-webkit-scrollbar {
+  width: 8px;
+}
+#taskList::-webkit-scrollbar-track {
+  display: none;
+}
+#taskList::-webkit-scrollbar-thumb {
+  background-color: #4e4e4e;
+  border-radius: 5px;
+}
+#kanban {
+  left: 0;
+  padding: 10px;
+  width: 100%;
+  height: calc(100vh - 56px);
+  background-color: whitesmoke;
+  transition: all 0.25s ease-in-out;
+}
+#kanban.open {
+  margin-left: 270px;
+  width: calc(100vw - 270px);
+  background-color: whitesmoke;
+}
+#kanban .kanban-board {
+  height: 600px;
+  box-shadow: 5px 5px 5px #9e9e9e;
+}
+#kanban .kanban-board[data-id=toDo] {
+  background-color: #BFDBF7;
+}
+#kanban .kanban-board[data-id=inProgress] {
+  background-color: #ffe293;
+}
+#kanban .kanban-board[data-id=done] {
+  background-color: #A9E5BB;
+}
+#kanban .kanban-board .kanban-item {
+  justify-content: center;
+  align-items: center;
+}
+.kanbanItemBtn {
+  border: none;
+  display: flex;
+  float: right;
+  margin: auto;
+}
+@media only screen and (max-width: 500px) {
+  #kanban {
+    display: none;
+  }
+
+  #taskWrapper {
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+  #taskWrapper #addTask {
+    width: 100%;
+    bottom: -500px;
+  }
+  #taskWrapper #addTask.open {
+    bottom: 0;
+  }
+  #taskWrapper #task_bottom {
+    width: 100%;
+    display: none;
+  }
+  #taskWrapper #uploadBtnContainer {
+    width: 100%;
+  }
+}
+#myKanban {
+  overflow-x: auto;
+  padding: 20px 0;
+}
+.success {
+  background: #00b961;
+}
+.info {
+  background: #2a92bf;
+}
+.warning {
+  background: #f4ce46;
+}
+.error {
+  background: #fb7d44;
+}
+.custom-button {
+  background-color: #4caf50;
+  border: none;
+  color: white;
+  padding: 7px 15px;
+  margin: 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+#timers .modal-header {
+  justify-content: center;
+  align-items: center;
+  background-color: #748aff;
+  height: 60px;
+}
+#timers #timerNav {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#timers #timerNav #timerTabs {
+  display: flex;
+  background-color: #252e59;
+  padding: 0.75rem;
+  border-radius: 8px;
+  align-items: center;
+}
+#timers #timerNav #timerTabs > * {
+  z-index: 2;
+}
+#timers #timerNav #timerTabs .tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 25px;
+  width: 140px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.25s ease-in-out;
+  font-size: 1.25rem;
+  font-weight: 0.5rem;
+  color: #a0a0a0;
+}
+#timers #timerNav #timerTabs input[type=radio] {
+  display: none;
+}
+#timers #timerNav #timerTabs input[type=radio]:checked + label {
+  color: white;
+}
+#timers #timerNav #timerTabs input[id=tabP]:checked ~ .glider {
+  transform: translateX(0);
+}
+#timers #timerNav #timerTabs input[id=tabS]:checked ~ .glider {
+  transform: translateX(100%);
+}
+#timers #timerNav #timerTabs .glider {
+  position: absolute;
+  display: flex;
+  margin: 0;
+  height: 30px;
+  width: 140px;
+  background-color: #748aff;
+  z-index: 1;
+  border-radius: 7px;
+  transition: 0.25s ease-in-out;
+}
+#timers .modal-body {
+  display: flex;
+  height: 600px;
+}
+#timers .modal-body #timers_p {
+  display: none;
+  margin: 20px;
+}
+#timers .modal-body #timers_p.active {
+  display: block;
+}
+#timers .modal-body #timers_p > .row {
+  height: 100%;
+}
+#timers .modal-body #timers_s {
+  display: none;
+  margin: 20px;
+}
+#timers .modal-body #timers_s > .row .col-5 {
+  height: 100%;
+}
+#timers .modal-body #timers_s.active {
+  display: block;
+}
+#timers .modal-body #timers_s > .row {
+  height: 100%;
+}
+#timers .modal-body #timers_s #stopwatchTime {
+  display: inline-block;
+  vertical-align: middle;
+  font-size: 100px;
+  margin: auto;
+  text-align: center;
+}
+#timers .modal-body #timers_s #lapTime {
+  display: flex;
+  flex-direction: column-reverse;
+  overflow: scroll;
+  height: 100%;
+  border-top: 3px solid darkgray;
+  border-bottom: 3px solid darkgray;
+}
+#timers .modal-body #timers_s #lapTime #lapTimeList {
+  list-style: none;
+}
+#timers .modal-body #timers_s #lapTime #lapTimeList .lapTimeItems {
+  font-size: 30px;
+}
+#timers .modal-body .timerBtns {
+  width: 80px;
+  height: 80px;
+  border-radius: 100%;
+}
+#timers .modal-body .timerBtns#sw-resetBtn {
+  display: none;
+}
+#timers .modal-body .timerBtns#sw-resetBtn.running {
+  display: block;
+}
+#timers .modal-body .timerBtns#sw-lapBtn {
+  display: none;
+}
+#timers .modal-body .timerBtns#sw-lapBtn.running {
+  display: block;
+}
+#timers .modal-body .timerBtns#pomo-startBtn {
+  display: none;
+}
+#timers .modal-body .timerBtns#pomo-startBtn.running {
+  display: block;
+}
+#timers .modal-body .timerBtns#pomo-pauseBtn {
+  display: none;
+}
+#timers .modal-body .timerBtns#pomo-pauseBtn.running {
+  display: block;
+}
+#timers .modal-body .timerBtns#sw-startBtn {
+  display: none;
+}
+#timers .modal-body .timerBtns#sw-startBtn.running {
+  display: block;
+}
+#timers .modal-body .timerBtns#sw-pauseBtn {
+  display: none;
+}
+#timers .modal-body .timerBtns#sw-pauseBtn.running {
+  display: block;
+}
+#timers .modal-body .timerBtnContainer .row {
+  height: 33%;
+  align-items: center;
+}
+#lapTime::-webkit-scrollbar {
+  width: 8px;
+}
+#lapTime::-webkit-scrollbar-track {
+  display: none;
+}
+#lapTime::-webkit-scrollbar-thumb {
+  background-color: #4e4e4e;
+  border-radius: 5px;
+}
+#slider {
+  width: 300px;
+  height: 300px;
+}
+/*# sourceMappingURL=index.HASH_REF_80038805bd6829e42a01d0f20c72b7db.css.map */

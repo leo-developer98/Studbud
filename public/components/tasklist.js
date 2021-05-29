@@ -2,11 +2,13 @@ import TaskStorage from './taskStorage.js';
 import LabelStorage from './labelStorage.js';
 import KanbanStorage from './kanbanStorage.js';
 import '../libraries/jkanban.min.js';
+import { event } from 'jquery';
 
 const taskWrapper = document.getElementById("taskWrapper");
 const taskAll = document.getElementById("taskgrid");
 const form = document.getElementById("taskForm");
 const tasks = document.getElementById("taskList");
+const labelDropdown = document.getElementById('taskLabelDropdown');
 
 var taskDescription = document.getElementById("td");
 var dueDate = document.getElementById("dd");
@@ -27,10 +29,6 @@ Date.prototype.toDateInputValue = (function () {
   local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
   return local.toJSON().slice(0, 10);
 });
-
-
-
-// dueDate.value = new Date().toDateInputValue();
 
 
 const addBtn = document.getElementById('addBtn');
@@ -70,13 +68,6 @@ kanban.addEventListener('click', function () {
   }
 })
 
-// document.querySelectorAll('.kanban-board').forEach(element => {
-//   element.addEventListener('click', function (event){
-//     event.stopPropagation();
-//     console.log ('Inner div clicked!');
-//   });
-// })
-
 // close Add Tasks when Task Grid is clicked
 taskAll.onclick = function () {
   if (addOpen) {
@@ -108,7 +99,6 @@ closeBtn.addEventListener('click', () => {
     addOpen = false;
   }
 })
-
 
 // Event Listener: Upload Tasks
 uploadBtn.addEventListener("click", function (event) {
@@ -160,26 +150,68 @@ const taskList = taskStorage.tasks;
 const labelStorage = new LabelStorage();
 const labelList = labelStorage.labels;
 
-taskList.forEach((element) => {
-  showTask(element);
-})
+// Kanban Storage
+const kanbanStorage = new KanbanStorage();
+const kanbanColumns = kanbanStorage.columns;
 
-const labelDropdown = document.getElementById('taskLabelDropdown');
+$(document).ready(function() {
+  taskList.forEach((element) => {
+    showTask(element);
+  })
+  
+  updateLabelDropdown();
+});
 
+// Updates the Empty Status for Task List and Task Label Dropdown
+function updateEmpty() {
+  if (taskList.length > 0) {
+    document.getElementById('emptyTaskList').style.display = 'none';
+  } else {
+    document.getElementById('emptyTaskList').style.display = 'block';
+  } 
+
+  if (labelList.length > 0) {
+    document.getElementById('noLabels').style.display = "none";
+  } else {
+    document.getElementById('noLabels').style.display = "block";
+  }
+}
+
+// Updates the label dropdown in HTML via current Label Storage
 function updateLabelDropdown() {
+  $('.dropdown-labels').remove();
   labelList.forEach((element) => {
     let labelSelect = document.createElement('li');
+    labelSelect.classList.add("dropdown-labels");
+    let buttonGroup = document.createElement('div');
+    buttonGroup.classList.add("btn-group");
+    buttonGroup.setAttribute("role", "group");
+    buttonGroup.setAttribute("aria-label", "Label Buttons Group");
+    // buttonGroup.style.border = "1px solid black";
+
     let labelBtn = document.createElement('button');
-    labelBtn.classList.add('btn');
-    labelBtn.classList.add('nav_btn');
+    labelBtn.classList.add('btn', 'btn-outline-secondary');
+    // labelBtn.classList.add('nav_btn');
     labelBtn.classList.add('dropdown-item');
     labelBtn.classList.add('label_btns');
     labelBtn.innerHTML = element.name.toString();
+    labelBtn.style.color = element.colour;
+    labelBtn.style.fontWeight = "550";
+
+    labelBtn.addEventListener('click', function(e) {
+      let labelTitle = labelBtn.innerHTML;
+      document.getElementById("newLabelInput").value = labelTitle.toString();
+      let colour = labelStorage.getColour(labelTitle.toString());
+      document.getElementById("labelColourInput").value = colour;
+    })
   
     // add Delete Button for Labels
     let delButton = document.createElement("button");
-    delButton.setAttribute('class', "btn-close");
-    delButton.classList.add('deleteBtn');
+    delButton.setAttribute("type", "button");
+    delButton.classList.add("btn", "btn-outline-danger", "btn-sm", "label-deleteBtn")
+    delButton.innerHTML = "<i class='fas fa-trash-alt'></i>";
+    delButton.style.border = "none";
+    // delButton.classList.add('deleteBtn');
   
     delButton.addEventListener("click", function (event) {
       event.preventDefault();
@@ -187,21 +219,14 @@ function updateLabelDropdown() {
         labelStorage.delete(element);
         labelSelect.remove();
       }
-
-      if (labelList.length > 0) {
-        document.getElementById('noLabels').style.display = "none";
-      } else {
-        document.getElementById('noLabels').style.display = "block";
-      }
     })
-  
-    labelSelect.appendChild(labelBtn);
-    labelSelect.appendChild(delButton);
+    buttonGroup.appendChild(labelBtn);
+    buttonGroup.appendChild(delButton);
+    labelSelect.appendChild(buttonGroup);
     labelDropdown.appendChild(labelSelect);
   })
+  updateEmpty();
 }
-
-updateLabelDropdown();
 
 function addTask(taskDescription, dueDate, completionTime, priorityRating, priorityRatingIndex, estimatedTime, completionStatus, label) {
   let task = {
@@ -216,6 +241,7 @@ function addTask(taskDescription, dueDate, completionTime, priorityRating, prior
     label
   }
 
+  // Alert if there is no user input for the task name:
   if (document.forms["taskForm"]["taskName"].value == "") {
     alert("Task Description must be filled out");
     return false;
@@ -223,72 +249,30 @@ function addTask(taskDescription, dueDate, completionTime, priorityRating, prior
   
    else {
     let key = (task.taskDescription).toString();
-    // let value = JSON.stringify(task);
 
-    // if (localStorage.getItem(key) === null) {
-    //   localStorage.setItem(key, value);
-    //   showTask(task);
+    // If created task doesn't exits (task name):
     if (taskStorage.getIndexByName(key)  === -1) {
+      // If there is no label input, empty label for the task
+      if (task.label.name == "") {
+        task.label = null;
+      } else {
+        labelStorage.create(task.label, task.label.name, task.label.colour);
+      }
+
+      // Add a task in Task Storage 
       taskStorage.create(task, key);
       showTask(task);
-      // updateLabelDropdown();
+
     } else {
       alert("Task " + key + " is already exists in the list")
       }
-    }
-    updateLabelDropdown();
-
-    if (labelList.length > 0) {
-      document.getElementById('noLabels').style.display = "none";
     }
 
     closeBtn.click();
 }
 
-function updateEmpty() {
-  if (taskList.length > 0) {
-    document.getElementById('emptyTaskList').style.display = 'none';
-  } else {
-    document.getElementById('emptyTaskList').style.display = 'block';
-  }
-}
-
-// Add created labels in LabelStorage to dropdown list
-
-// Event Listener for label buttons in dropdown list
-
-const labelBtns = document.querySelectorAll(".label_btns");
-
-for (let i=0; i < labelBtns.length; i++) {
-  labelBtns[i].addEventListener('click', function(e) {
-    let labelTitle = e.currentTarget.innerHTML;
-    console.log(labelTitle.toString());
-    document.getElementById("newLabelInput").value = labelTitle.toString();
-    let colour = labelStorage.getColour(labelTitle.toString());
-    document.getElementById("labelColourInput").value = colour;
-  })
-}
-
-// function updateLabel(label) {
-//     let labelSelect = document.createElement('li');
-//     let labelBtn = document.createElement('button');
-//     labelBtn.classList.add('btn');
-//     labelBtn.classList.add('nav_btn');
-//     labelBtn.classList.add('dropdown-item');
-//     labelBtn.innerHTML = label.name.toString();
-//     labelSelect.appendChild(labelBtn);
-//     labelDropdown.appendChild(labelSelect);
-// }
-
-
-// Kanban Storage
-
-const kanbanStorage = new KanbanStorage();
-const kanbanColumns = kanbanStorage.columns;
-
 function showTask(task) {
-  updateEmpty();
-
+  updateLabelDropdown();
   let item = document.createElement("div");
   item.setAttribute('class', 'card');
   item.classList.add('task_item');
@@ -305,7 +289,6 @@ function showTask(task) {
   item_title.appendChild(document.createTextNode(task.taskDescription));
 
   // Create a checkbox that moves the task to the Kanban "Done" column
-
   let doneBtn = document.createElement('button');
   doneBtn.innerHTML = "<i class='fas fa-check fa-xs'></i>"
   doneBtn.setAttribute('type', 'button');
@@ -328,6 +311,8 @@ function showTask(task) {
         // kanbanStorage.removeItem()
       })
     })
+
+    
   })
 
 
@@ -338,23 +323,15 @@ function showTask(task) {
 
   // Add details only when they exist
   if (task.hasOwnProperty('label') && task['label']) {
-    // let lb = document.createElement("div");
-    // lb.setAttribute('class', 'task_details');
-    // lb.innerHTML = '<i class="fas fa-tag"></i>';
-
-    // if (labelStorage.getIndex(task.label) !== -1) {
-    //   alert("Choose another label")
-    // } else {
-      if (task.label.name !== "") {
-        labelStorage.create(task.label, task.label.name, task.label.colour);
+      if (task.label !== null) {
         let labelName = task.label.name;
         let labelNameString = labelName.toString();
         let item_tag = document.createElement('span');
-        item_tag.setAttribute('class', 'badge');
+        item_tag.classList.add("badge", "task-labels")
         item_tag.setAttribute('id', labelNameString);
         item_tag.appendChild(document.createTextNode(labelName));
         item_tag.style.backgroundColor = task.label.colour;
-        item_body.appendChild(item_tag);
+        item_top.appendChild(item_tag);
       }
   }
 
@@ -388,7 +365,6 @@ function showTask(task) {
 
     let item_pr = document.createElement("p");
     item_pr.setAttribute('class', 'card-text');
-    // item_pr.innerHTML('<i class="fas fa-flag"></i>');
     item_pr.appendChild(document.createTextNode(task.priorityRating));
 
     pr.appendChild(item_pr);
@@ -396,20 +372,6 @@ function showTask(task) {
   }
 
   // add estimated time input when theres an input value
-  // let etInput = document.forms["taskForm"]["estimatedTime"].value;
-  // if (etInput !== "") {
-  //   let et = document.createElement("div");
-  //   et.setAttribute('class', 'task_details');
-  //   et.innerHTML = '<i class="far fa-clock"></i>';
-
-  //   let item_et = document.createElement("p");
-  //   item_et.setAttribute('class', 'card-text');
-  //   item_et.appendChild(document.createTextNode(task.estimatedTime + " hours"));
-
-  //   et.appendChild(item_et);
-  //   item_body.appendChild(et);
-  // }
-
   if (task.hasOwnProperty('estimatedTime') && task['estimatedTime']) {
     let et = document.createElement("div");
     et.setAttribute('class', 'task_details');
@@ -422,8 +384,6 @@ function showTask(task) {
     et.appendChild(item_et);
     item_body.appendChild(et);
   }
-
-  item.appendChild(item_body);
 
 
   let buttons = document.createElement("div");
@@ -448,7 +408,6 @@ function showTask(task) {
     // console.log(taskList);
 
     if (confirm('Are you sure you want to delete this task from task list?')) {
-    // localStorage.removeItem(task.taskDescription.toString());
     taskStorage.delete(task.taskDescription.toString());
     item.remove();
     updateEmpty();
@@ -471,7 +430,7 @@ function showTask(task) {
     }
     kanbanBoard.addElement("toDo", element);
 
-
+    // toDoButton.setAttribute("disabled", "true");
 
     document.querySelectorAll('.kanbanItemBtn').forEach((button) => {
       button.addEventListener("click", () => {
@@ -482,12 +441,14 @@ function showTask(task) {
 
   buttons.appendChild(toDoButton);
   buttons.appendChild(delButton);
-  item.appendChild(buttons);
+  item_body.appendChild(buttons);
 
+  item.appendChild(item_body);
   tasks.appendChild(item);
 
   form.reset();
 }
+
 
 // Helper functions
 
@@ -521,7 +482,6 @@ function compareEstimatedTime(a, b) {
   }
 }
 
-
 function removeItemFromArray(arr, index) {
   if (index > -1) {
     arr.splice(index, 1);
@@ -530,9 +490,6 @@ function removeItemFromArray(arr, index) {
   return arr;
 }
 
-// kanbanColumns.forEach((element) => {
-//   kanbanBoard.addBoards(columns);
-// })
 
 var columns = [
   {id: 'toDo', title: "To Do", item: []},
@@ -540,9 +497,6 @@ var columns = [
   {id: 'done', title: "Done", item: []}
 ];
 
-// for (let i=0; i < columns.length; i++) {
-
-// }
 
 var kanbanBoard = new jKanban({
   element          : '#myKanban',                                           // selector of the kanban container
@@ -575,3 +529,31 @@ var kanbanBoard = new jKanban({
   dragendBoard     : function (el) {},                             // callback when any board stop drag
   buttonClick      : function(el, boardId) {}                      // callback when the board's button is clicked
 });
+
+document.querySelectorAll('.kanban-title-board').forEach((boardName) => {
+  boardName.addEventListener("click", () => {
+    // event.preventDefault();
+    let name = boardName.innerHTML.toString();
+    console.log(name);
+    // let input = document.createElement("input");
+    // input.setAttribute("type", "text");
+    // input.setAttribute("placeholder", name);
+    // input.classList.add("form-control", "form-control-sm");
+    // boardName.innerHTML = "";
+    // boardName.appendChild(input);
+    // boardName.innerHTML = "<input type='text' placeholder='"+name+"'class='form-control form-control-sm'>"
+    // kanbanBoard.addForm("toDo", input);
+  })
+})
+
+const addBoardBtn = document.getElementById("addBoardBtn");
+addBoardBtn.addEventListener("click", () => {
+  let board = {
+    id    : "board-id-1",             
+    title : "Board Title",              
+    item  : []
+  }
+
+  columns.push(board);
+  console.log(columns);
+})

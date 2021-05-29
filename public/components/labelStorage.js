@@ -4,6 +4,7 @@ export default class LabelStorage {
       this.labels = JSON.parse(localStorage.getItem('labels')) || [];
     }
   
+    // Creates a new label and updates the Local Storage
     create(label, name, colour) {
       label.name = name;
       label.colour = colour;

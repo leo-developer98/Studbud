@@ -4,6 +4,7 @@ export default class TaskStorage {
     this.tasks = JSON.parse(localStorage.getItem('tasks')) || [];
   }
 
+  // Creates a task and update the local storage
   create(item, name) {
     item.name = name;
 

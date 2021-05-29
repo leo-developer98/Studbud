@@ -95,6 +95,12 @@
             display: none;
             margin: 20px;
 
+            > .row {
+                .col-5 {
+                    height: 100%;
+                }
+            }
+
             &.active {
                 display: block;
             }
@@ -102,21 +108,41 @@
             &>.row {
                 height: 100%;
             }
+            
+            // #stopwatchTimeParent {
+            //     height: 100%;
+            //     text-align: center;
 
-            #stopwatchTime {
-                font-size: 100px;
-            }
+            //     &::before {      /* create a full-height inline block pseudo-element */
+            //         content: ' ';
+            //         display: inline-block;
+            //         vertical-align: middle; /* vertical alignment of the inline element */
+            //         height: 100%;
+            //     }
+
+                #stopwatchTime {
+                    display: inline-block;
+                    vertical-align: middle; 
+                    font-size: 100px;
+                    margin: auto;
+                    text-align: center;
+                }
+            // }
+
 
             #lapTime {
-                display: block;
+                display: flex;
+                flex-direction: column-reverse;
                 overflow: scroll;
-                height: 90%;
+                height: 100%;
                 border-top: 3px solid darkgray;
                 border-bottom: 3px solid darkgray;
 
                 #lapTimeList {
                     list-style: none;
-
+                    .lapTimeItems {
+                        font-size: 30px;
+                    }
                 }
             }
         }
@@ -191,4 +217,10 @@
 #lapTime::-webkit-scrollbar-thumb {
     background-color: #4e4e4e;
     border-radius: 5px;
+}
+
+
+#slider {
+    width: 300px;
+    height: 300px;
 }
