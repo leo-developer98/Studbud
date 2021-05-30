@@ -804,9 +804,12 @@ function showTask(task) {
     };
     kanbanBoard.addElement("done", element);
     // kanbanStorage.addItem("done", element);
+    doneBtn.setAttribute("disabled", "true");
     document.querySelectorAll('.kanbanItemBtn').forEach(button => {
       button.addEventListener("click", () => {
         kanbanBoard.removeElement(button.id);
+        // kanbanStorage.removeItem()
+        doneBtn.removeAttribute("disabled");
       });
     });
   });
@@ -869,6 +872,27 @@ function showTask(task) {
   buttons.classList.add("btn-group-sm");
   buttons.classList.add("task_buttons");
   buttons.setAttribute("role", "group");
+  // Create "Move to Kanban" Button
+  let toDoButton = document.createElement("button");
+  let toDoButtonText = document.createTextNode("To Do");
+  toDoButton.appendChild(toDoButtonText);
+  toDoButton.setAttribute('class', "btn btn-outline-primary");
+  toDoButton.classList.add("moveBtn");
+  toDoButton.addEventListener("click", function (event) {
+    event.preventDefault();
+    let element = {
+      id: task.taskDescription,
+      title: task.taskDescription + "<button type='button' class='btn btn-outline-danger btn-sm kanbanItemBtn' id=" + task.taskDescription + "><i class='fas fa-trash-alt'></i></button>"
+    };
+    kanbanBoard.addElement("toDo", element);
+    toDoButton.setAttribute("disabled", "true");
+    document.querySelectorAll('.kanbanItemBtn').forEach(button => {
+      button.addEventListener("click", () => {
+        kanbanBoard.removeElement(button.id);
+        toDoButton.removeAttribute("disabled");
+      });
+    });
+  });
   // add Delete Button
   let delButton = document.createElement("button");
   let delButtonText = document.createTextNode("Delete");
@@ -886,26 +910,6 @@ function showTask(task) {
       item.remove();
       updateEmpty();
     }
-  });
-  // Create "Move to Kanban" Button
-  let toDoButton = document.createElement("button");
-  let toDoButtonText = document.createTextNode("To Do");
-  toDoButton.appendChild(toDoButtonText);
-  toDoButton.setAttribute('class', "btn btn-outline-primary");
-  toDoButton.classList.add("moveBtn");
-  toDoButton.addEventListener("click", function (event) {
-    event.preventDefault();
-    let element = {
-      id: task.taskDescription,
-      title: task.taskDescription + "<button type='button' class='btn btn-outline-danger btn-sm kanbanItemBtn' id=" + task.taskDescription + "><i class='fas fa-trash-alt'></i></button>"
-    };
-    kanbanBoard.addElement("toDo", element);
-    // toDoButton.setAttribute("disabled", "true");
-    document.querySelectorAll('.kanbanItemBtn').forEach(button => {
-      button.addEventListener("click", () => {
-        kanbanBoard.removeElement(button.id);
-      });
-    });
   });
   buttons.appendChild(toDoButton);
   buttons.appendChild(delButton);
@@ -1024,8 +1028,6 @@ addBoardBtn.addEventListener("click", () => {
     title: "Board Title",
     item: []
   };
-  columns.push(board);
-  console.log(columns);
 });
 
 },{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","./taskStorage.js":"3WapR","./labelStorage.js":"BKomJ","../libraries/jkanban.min.js":"3IAxf","./kanbanStorage.js":"3QfYK","jquery":"6Oaih"}],"3WapR":[function(require,module,exports) {
@@ -9798,16 +9800,6 @@ require('../libraries/easytimer.js/dist/easytimer.min.js');
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-$(document).ready(function () {
-  $('input[id="tabP"]').click(function () {
-    timerP.classList.add("active");
-    timerS.classList.remove('active');
-  });
-  $('input[id="tabS"]').click(function () {
-    timerP.classList.remove("active");
-    timerS.classList.add('active');
-  });
-});
 const tabP = document.getElementById('tabP');
 const tabS = document.getElementById('tabS');
 const timerP = document.getElementById('timers_p');
@@ -9824,8 +9816,179 @@ const swLapBtn = document.getElementById("sw-lapBtn");
 const lapList = document.getElementById("lapTimeList");
 const pomodoroDisplay = document.getElementById("pomodoroTime");
 const stopwatchDisplay = document.getElementById("stopwatchTime");
+const studyTimeInput = document.getElementById("studyTimeInput");
+const sbTimeInput = document.getElementById("sbTimeInput");
+const lbTimeInput = document.getElementById("lbTimeInput");
+$(document).ready(function () {
+  $('input[id="tabP"]').click(function () {
+    timerP.classList.add("active");
+    timerS.classList.remove('active');
+  });
+  $('input[id="tabS"]').click(function () {
+    timerP.classList.remove("active");
+    timerS.classList.add('active');
+  });
+});
+// function showVal(newVal) {
+// console.log(newVal.toString());
+// }
 var {Timer} = require('../libraries/easytimer.js/dist/easytimer');
-// Stopwatch
+// var study = 25;
+var study = 25;
+var shortBreak = 5;
+var longBreak = 30;
+var loop = 1;
+var pomodoroLoop = 4;
+var isBreak = false;
+// study: mode 0, short break: mode 1, long break: mode 2
+studyTimeInput.addEventListener("input", () => {
+  $('#pomodoroTime .minutes').html(studyTimeInput.value);
+  $('#pomodoroTime .seconds').html(pomodoro.getTimeValues().seconds);
+  study = parseInt(studyTimeInput.value);
+  let all = 4 * study + 3 * shortBreak + longBreak;
+  let pForMinute = 100 / all;
+  let studyWidth = pForMinute * study;
+  let sbWidth = pForMinute * shortBreak;
+  let lbWidth = pForMinute * longBreak;
+  $('.study-progress').html(study);
+  $('.study-progress').css("width", studyWidth + "%");
+  $('.sb-progress').css("width", sbWidth + "%");
+  $('.lb-progress').css("width", lbWidth + "%");
+  $('#studySliderValue').html(study);
+  console.log(studyTimeInput.value);
+});
+sbTimeInput.addEventListener("input", () => {
+  // $('#pomodoroTime .minutes').html(studyTimeInput.value);
+  // $('#pomodoroTime .seconds').html(pomodoro.getTimeValues().seconds);
+  shortBreak = parseInt(sbTimeInput.value);
+  let all = 4 * study + 3 * shortBreak + longBreak;
+  let pForMinute = 100 / all;
+  let studyWidth = pForMinute * study;
+  let sbWidth = pForMinute * shortBreak;
+  let lbWidth = pForMinute * longBreak;
+  $('.sb-progress').html(shortBreak);
+  $('.study-progress').css("width", studyWidth + "%");
+  $('.sb-progress').css("width", sbWidth + "%");
+  $('.lb-progress').css("width", lbWidth + "%");
+  $('#sbSliderValue').html(shortBreak);
+  console.log(sbTimeInput.value);
+});
+lbTimeInput.addEventListener("input", () => {
+  // $('#pomodoroTime .minutes').html(studyTimeInput.value);
+  // $('#pomodoroTime .seconds').html(pomodoro.getTimeValues().seconds);
+  longBreak = parseInt(lbTimeInput.value);
+  let all = 4 * study + 3 * shortBreak + longBreak;
+  let pForMinute = 100 / all;
+  let studyWidth = pForMinute * study;
+  let sbWidth = pForMinute * shortBreak;
+  let lbWidth = pForMinute * longBreak;
+  $('.lb-progress').html(longBreak);
+  $('.study-progress').css("width", studyWidth + "%");
+  $('.sb-progress').css("width", sbWidth + "%");
+  $('.lb-progress').css("width", lbWidth + "%");
+  $('#lbSliderValue').html(longBreak);
+  console.log(lbTimeInput.value);
+});
+// Pomodoro Timer
+var pomodoro = new Timer();
+$('#pomo-startBtn').click(function () {
+  pomodoro.start({
+    countdown: true,
+    startValues: {
+      seconds: study
+    },
+    target: {
+      minutes: 0
+    }
+  });
+  pomoStartBtn.classList.remove("running");
+  pomoPauseBtn.classList.add("running");
+  studyTimeInput.setAttribute("disabled", "true");
+  sbTimeInput.setAttribute("disabled", "true");
+  lbTimeInput.setAttribute("disabled", "true");
+});
+$('#pomo-pauseBtn').click(function () {
+  pomodoro.pause();
+  pomoPauseBtn.classList.remove("running");
+  pomoStartBtn.classList.add("running");
+});
+$('#pomo-resetBtn').click(function () {
+  loop = 1;
+  isBreak = false;
+  pomodoro.reset();
+  pomodoro.pause();
+  pomoPauseBtn.classList.remove("running");
+  pomoStartBtn.classList.add("running");
+  studyTimeInput.removeAttribute("disabled");
+  sbTimeInput.removeAttribute("disabled");
+  lbTimeInput.removeAttribute("disabled");
+});
+$('#pomo-stopBtn').click(function () {
+  pomodoro.stop();
+  pomoPauseBtn.classList.remove("running");
+  pomoStartBtn.classList.add("running");
+  studyTimeInput.removeAttribute("disabled");
+  sbTimeInput.removeAttribute("disabled");
+  lbTimeInput.removeAttribute("disabled");
+});
+pomodoro.addEventListener('secondsUpdated', function (e) {
+  $('#pomodoroTime .minutes').html(pomodoro.getTimeValues().minutes);
+  $('#pomodoroTime .seconds').html(pomodoro.getTimeValues().seconds);
+  $('#pomodoroLoop').html(loop);
+});
+pomodoro.addEventListener('started', function (e) {
+  $('#pomodoroTime .minutes').html(pomodoro.getTimeValues().minutes);
+  $('#pomodoroTime .seconds').html(pomodoro.getTimeValues().seconds);
+  $('#pomodoroLoop').html(loop);
+});
+pomodoro.addEventListener('reset', function (e) {
+  $('#pomodoroTime .minutes').html(pomodoro.getTimeValues().minutes);
+  $('#pomodoroTime .seconds').html(pomodoro.getTimeValues().seconds);
+  $('#pomodoroLoop').html(loop);
+});
+pomodoro.addEventListener('targetAchieved', function (e) {
+  if (isBreak) {
+    // Executing Study
+    loop = loop + 1;
+    pomodoro.start({
+      countdown: true,
+      startValues: {
+        seconds: study
+      },
+      target: {
+        minutes: 0
+      }
+    });
+    isBreak = false;
+  } else {
+    if (loop % pomodoroLoop === 0) {
+      // Executing Long Break
+      pomodoro.start({
+        countdown: true,
+        startValues: {
+          seconds: longBreak
+        },
+        target: {
+          minutes: 0
+        }
+      });
+      isBreak = true;
+    } else {
+      // Executing Short Break
+      pomodoro.start({
+        countdown: true,
+        startValues: {
+          seconds: shortBreak
+        },
+        target: {
+          minutes: 0
+        }
+      });
+      isBreak = true;
+    }
+  }
+});
+// Stopwatch Timer
 var stopWatch = new Timer();
 $('#sw-startBtn').click(function () {
   stopWatch.start({
@@ -9863,7 +10026,11 @@ $('#sw-lapBtn').click(function () {
   let time = stopWatch.getTimeValues().toString(['minutes', 'seconds']);
   let lap = document.createElement('li');
   lap.classList.add('lapTimeItems');
-  lap.innerHTML = "Lap " + lapNum + " " + time;
+  lap.innerHTML = "Lap " + lapNum;
+  let lappedTime = document.createElement('span');
+  lappedTime.classList.add("lappedTimes");
+  lappedTime.innerHTML = time;
+  lap.appendChild(lappedTime);
   lapList.appendChild(lap);
   lapNum = lapNum + 1;
 });
@@ -9875,101 +10042,6 @@ stopWatch.addEventListener('started', function (e) {
 });
 stopWatch.addEventListener('reset', function (e) {
   $('#stopwatchTime').html(stopWatch.getTimeValues().toString(['minutes', 'seconds']));
-});
-// var study = 25;
-var study = 10;
-var shortBreak = 5;
-var longBreak = 15;
-var loop = 1;
-var pomodoroLoop = 4;
-var isBreak = false;
-// study: mode 0, short break: mode 1, long break: mode 2
-// Pomodoro
-var pomodoro = new Timer();
-$('#pomo-startBtn').click(function () {
-  pomodoro.start({
-    countdown: true,
-    startValues: {
-      seconds: study
-    },
-    target: {
-      minutes: 0
-    }
-  });
-  pomoStartBtn.classList.remove("running");
-  pomoPauseBtn.classList.add("running");
-});
-$('#pomo-pauseBtn').click(function () {
-  pomodoro.pause();
-  pomoPauseBtn.classList.remove("running");
-  pomoStartBtn.classList.add("running");
-});
-$('#pomo-resetBtn').click(function () {
-  loop = 1;
-  isBreak = false;
-  pomodoro.reset();
-  pomodoro.pause();
-  pomoPauseBtn.classList.remove("running");
-  pomoStartBtn.classList.add("running");
-});
-$('#pomo-stopBtn').click(function () {
-  pomodoro.stop();
-  pomoPauseBtn.classList.remove("running");
-  pomoStartBtn.classList.add("running");
-});
-pomodoro.addEventListener('secondsUpdated', function (e) {
-  $('#pomodoroTime .minutes').html(pomodoro.getTimeValues().minutes);
-  $('#pomodoroTime .seconds').html(pomodoro.getTimeValues().seconds);
-  $('#pomodoroLoop').html(loop);
-});
-pomodoro.addEventListener('started', function (e) {
-  $('#pomodoroTime .minutes').html(pomodoro.getTimeValues().minutes);
-  $('#pomodoroTime .seconds').html(pomodoro.getTimeValues().seconds);
-  $('#pomodoroLoop').html(loop);
-});
-pomodoro.addEventListener('reset', function (e) {
-  $('#pomodoroTime .minutes').html(pomodoro.getTimeValues().minutes);
-  $('#pomodoroTime .seconds').html(pomodoro.getTimeValues().seconds);
-  $('#pomodoroLoop').html(loop);
-});
-pomodoro.addEventListener('targetAchieved', function (e) {
-  if (isBreak) {
-    loop = loop + 1;
-    pomodoro.start({
-      countdown: true,
-      startValues: {
-        seconds: study
-      },
-      target: {
-        minutes: 0
-      }
-    });
-    isBreak = false;
-  } else {
-    if (loop % pomodoroLoop === 0) {
-      pomodoro.start({
-        countdown: true,
-        startValues: {
-          seconds: longBreak
-        },
-        target: {
-          minutes: 0
-        }
-      });
-      isBreak = true;
-    } else {
-      pomodoro.start({
-        countdown: true,
-        startValues: {
-          seconds: shortBreak
-        },
-        target: {
-          minutes: 0
-        }
-      });
-      isBreak = true;
-    }
-  }
 });
 
 },{"../libraries/easytimer.js/dist/easytimer.min.js":"4Dhzm","../libraries/easytimer.js/dist/easytimer":"2zh7Q"}],"4Dhzm":[function(require,module,exports) {

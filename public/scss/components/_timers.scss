@@ -89,6 +89,12 @@
                 height: 100%;
             }
 
+            #slider {
+                .slider-values {
+                    float: right;
+                }
+            }
+
         }
 
         #timers_s {
@@ -133,15 +139,21 @@
             #lapTime {
                 display: flex;
                 flex-direction: column-reverse;
-                overflow: scroll;
-                height: 100%;
+                overflow-y: scroll;
+                height: 87%;
                 border-top: 3px solid darkgray;
                 border-bottom: 3px solid darkgray;
 
                 #lapTimeList {
                     list-style: none;
+                    margin-bottom: 0;
                     .lapTimeItems {
                         font-size: 30px;
+
+                        .lappedTimes {
+                            float: right;
+                            margin-right: 40px;
+                        }
                     }
                 }
             }

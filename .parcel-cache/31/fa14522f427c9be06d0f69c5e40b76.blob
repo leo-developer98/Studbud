@@ -591,6 +591,9 @@ nav .nav_links .nav_item .nav_btn.active {
 #timers .modal-body #timers_p > .row {
   height: 100%;
 }
+#timers .modal-body #timers_p #slider .slider-values {
+  float: right;
+}
 #timers .modal-body #timers_s {
   display: none;
   margin: 20px;
@@ -614,16 +617,21 @@ nav .nav_links .nav_item .nav_btn.active {
 #timers .modal-body #timers_s #lapTime {
   display: flex;
   flex-direction: column-reverse;
-  overflow: scroll;
-  height: 100%;
+  overflow-y: scroll;
+  height: 87%;
   border-top: 3px solid darkgray;
   border-bottom: 3px solid darkgray;
 }
 #timers .modal-body #timers_s #lapTime #lapTimeList {
   list-style: none;
+  margin-bottom: 0;
 }
 #timers .modal-body #timers_s #lapTime #lapTimeList .lapTimeItems {
   font-size: 30px;
+}
+#timers .modal-body #timers_s #lapTime #lapTimeList .lapTimeItems .lappedTimes {
+  float: right;
+  margin-right: 40px;
 }
 #timers .modal-body .timerBtns {
   width: 80px;

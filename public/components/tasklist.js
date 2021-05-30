@@ -304,12 +304,14 @@ function showTask(task) {
 
     kanbanBoard.addElement("done", element);
     // kanbanStorage.addItem("done", element);
-
+    doneBtn.setAttribute("disabled", "true");
     document.querySelectorAll('.kanbanItemBtn').forEach((button) => {
       button.addEventListener("click", () => {
         kanbanBoard.removeElement(button.id);
         // kanbanStorage.removeItem()
+        doneBtn.removeAttribute("disabled");
       })
+    
     })
 
     
@@ -392,6 +394,35 @@ function showTask(task) {
   buttons.classList.add("task_buttons");
   buttons.setAttribute("role", "group");
 
+  // Create "Move to Kanban" Button
+  let toDoButton = document.createElement("button");
+  let toDoButtonText = document.createTextNode("To Do");
+  toDoButton.appendChild(toDoButtonText);
+
+  toDoButton.setAttribute('class', "btn btn-outline-primary");
+  toDoButton.classList.add("moveBtn");
+
+  toDoButton.addEventListener("click", function(event) {
+    event.preventDefault();
+    let element = {
+      id: task.taskDescription,
+      title: task.taskDescription + "<button type='button' class='btn btn-outline-danger btn-sm kanbanItemBtn' id=" + task.taskDescription + "><i class='fas fa-trash-alt'></i></button>"
+    }
+    kanbanBoard.addElement("toDo", element);
+
+    toDoButton.setAttribute("disabled", "true");
+
+    document.querySelectorAll('.kanbanItemBtn').forEach((button) => {
+      button.addEventListener("click", () => {
+        kanbanBoard.removeElement(button.id);
+        toDoButton.removeAttribute("disabled");
+        // if (confirm("Remove the task from task list?")) {
+        //   delButton.click()
+        // }
+      })
+    })
+  })
+
   // add Delete Button
   let delButton = document.createElement("button");
   let delButtonText = document.createTextNode("Delete");
@@ -412,31 +443,6 @@ function showTask(task) {
     item.remove();
     updateEmpty();
     }
-  })
-
-  // Create "Move to Kanban" Button
-  let toDoButton = document.createElement("button");
-  let toDoButtonText = document.createTextNode("To Do");
-  toDoButton.appendChild(toDoButtonText);
-
-  toDoButton.setAttribute('class', "btn btn-outline-primary");
-  toDoButton.classList.add("moveBtn");
-
-  toDoButton.addEventListener("click", function(event) {
-    event.preventDefault();
-    let element = {
-      id: task.taskDescription,
-      title: task.taskDescription + "<button type='button' class='btn btn-outline-danger btn-sm kanbanItemBtn' id=" + task.taskDescription + "><i class='fas fa-trash-alt'></i></button>"
-    }
-    kanbanBoard.addElement("toDo", element);
-
-    // toDoButton.setAttribute("disabled", "true");
-
-    document.querySelectorAll('.kanbanItemBtn').forEach((button) => {
-      button.addEventListener("click", () => {
-        kanbanBoard.removeElement(button.id);
-      })
-    })
   })
 
   buttons.appendChild(toDoButton);
@@ -554,6 +560,4 @@ addBoardBtn.addEventListener("click", () => {
     item  : []
   }
 
-  columns.push(board);
-  console.log(columns);
 })
