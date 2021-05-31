@@ -1028,8 +1028,7 @@ addBoardBtn.addEventListener("click", () => {
     title: "Board Title",
     item: []
   };
-  kanbanBoard.addBoards([board]);
-  console.log(kanbanBoard);
+  kanbanBoard.addBoard();
 });
 
 },{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","./taskStorage.js":"3WapR","./labelStorage.js":"BKomJ","../libraries/jkanban.min.js":"3IAxf","./kanbanStorage.js":"3QfYK","jquery":"6Oaih"}],"3WapR":[function(require,module,exports) {
@@ -10831,4 +10830,4 @@ var define;
 
 },{}]},["27Rzb","4OAbU"], "4OAbU", "parcelRequiref77e")
 
-//# sourceMappingURL=index.8a5bc16d.js.map
+//# sourceMappingURL=index.HASH_REF_97912cc17f1f5bdf37964fbc8a5bc16d.js.map
