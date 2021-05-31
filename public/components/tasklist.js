@@ -158,8 +158,22 @@ $(document).ready(function() {
   taskList.forEach((element) => {
     showTask(element);
   })
-  
   updateLabelDropdown();
+  editableBoardTitle();
+  resizeBoards();
+
+  // let toDo = {id: 'toDo', title: "To Do", item: [], color: "#178bff" };
+  // let inProgress = {id: 'inProgress', title:"In Progress", item: [], color: "#178bff" };
+  // let done = {id: 'done', title: "Done", item: [], color: "#3dd66b"};
+
+  // // kanbanStorage.addColumn(toDo);
+  // // kanbanStorage.addColumn(inProgress);
+  // // kanbanStorage.addColumn(done);
+  // // console.log(JSON.stringify(kanbanStorage.columns));
+
+  // kanbanColumns.push(toDo);
+  // kanbanColumns.push(inProgress);
+  // kanbanColumns.push(done);
 });
 
 // Updates the Empty Status for Task List and Task Label Dropdown
@@ -498,19 +512,46 @@ function removeItemFromArray(arr, index) {
 
 
 var columns = [
-  {id: 'toDo', title: "To Do", item: []},
-  {id: 'inProgress', title:"In Progress", item: []},
-  {id: 'done', title: "Done", item: []}
+  {id: 'toDo', title: "To Do", item: [], color: "#178bff" },
+  {id: 'inProgress', title:"In Progress", item: [], color: "#178bff" },
+  {id: 'done', title: "Done", item: [], color: "#3dd66b"}
 ];
 
+function editableBoardTitle() {
+  document.querySelectorAll('.kanban-title-board').forEach((boardName) => {
+    boardName.setAttribute("contenteditable", "true");
+    boardName.addEventListener("click", () => {
+      // event.preventDefault();
+      let name = boardName.innerHTML.toString();
+      console.log(name);
+      // let input = document.createElement("input");
+      // input.setAttribute("type", "text");
+      // input.setAttribute("placeholder", name);
+      // input.classList.add("form-control", "form-control-sm");
+      // boardName.innerHTML = "";
+      // boardName.appendChild(input);
+      // boardName.innerHTML = "<input type='text' placeholder='"+name+"'class='form-control form-control-sm'>"
+      // kanbanBoard.addForm("toDo", input);
+    })
+  })
+}
+
+function resizeBoards() {
+  document.querySelectorAll(".kanban-board").forEach((board) => {
+    // console.log(JSON.stringify(kanbanBoard.boardContainer.length));
+    let boardNum = kanbanBoard.boardContainer.length;
+    let boardWidth = (100 / (boardNum))- 2;
+    board.style.width = boardWidth.toString() + "%";
+  })
+}
 
 var kanbanBoard = new jKanban({
-  element          : '#myKanban',                                           // selector of the kanban container
-  // gutter           : '15px',                                       // gutter of the board
-  // widthBoard       : '250px',                                      // width of the board
-  responsivePercentage: true,                                    // if it is true I use percentage in the width of the boards and it is not necessary gutter and widthBoard
+  element          : '#myKanban',                                  // selector of the kanban container
+  // gutter           : '15px',                                    // gutter of the board
+  // widthBoard       : '250px',                                   // width of the board
+  responsivePercentage: true,                                      // if it is true I use percentage in the width of the boards and it is not necessary gutter and widthBoard
   dragItems        : true,                                         // if false, all items are not draggable
-  boards           : columns,                                           // json of boards
+  boards           : columns,                                      // json of boards
   dragBoards       : true,                                         // the boards are draggable, if false only item can be dragged
   itemAddOptions: {
       enabled: false,                                              // add a button to board for easy item creation
@@ -536,29 +577,26 @@ var kanbanBoard = new jKanban({
   buttonClick      : function(el, boardId) {}                      // callback when the board's button is clicked
 });
 
-document.querySelectorAll('.kanban-title-board').forEach((boardName) => {
-  boardName.addEventListener("click", () => {
-    // event.preventDefault();
-    let name = boardName.innerHTML.toString();
-    console.log(name);
-    // let input = document.createElement("input");
-    // input.setAttribute("type", "text");
-    // input.setAttribute("placeholder", name);
-    // input.classList.add("form-control", "form-control-sm");
-    // boardName.innerHTML = "";
-    // boardName.appendChild(input);
-    // boardName.innerHTML = "<input type='text' placeholder='"+name+"'class='form-control form-control-sm'>"
-    // kanbanBoard.addForm("toDo", input);
-  })
-})
-
 const addBoardBtn = document.getElementById("addBoardBtn");
+const boardNameInput = document.getElementById("boardNameInput");
+const boardColorInput = document.getElementById("boardColorInput");
+
 addBoardBtn.addEventListener("click", () => {
-  let board = {
-    id    : "board-id-1",             
-    title : "Board Title",              
-    item  : []
+  if (boardNameInput.value == "") {
+    alert("Board title required");
+  } else {
+    let board = {
+      id    : boardNameInput.value.toString(),             
+      title : boardNameInput.value.toString(),              
+      item  : []
+    }
+    kanbanBoard.addBoards([board]);
+    resizeBoards();
+    // console.log(document.querySelector(".kanban-board[data-id='board-id-1'] > .kanban-board-header"));
+    // console.log(boardColorInput.value);
+    document.querySelector(".kanban-board[data-id='" + board.id + "'] > .kanban-board-header").style.backgroundColor = boardColorInput.value;
+  
+    // console.log(kanbanBoard)
+    editableBoardTitle();
   }
-  kanbanBoard.addBoards([board]);
-  console.log(kanbanBoard);
 })

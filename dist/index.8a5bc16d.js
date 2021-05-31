@@ -682,6 +682,8 @@ $(document).ready(function () {
     showTask(element);
   });
   updateLabelDropdown();
+  editableBoardTitle();
+  resizeBoards();
 });
 // Updates the Empty Status for Task List and Task Label Dropdown
 function updateEmpty() {
@@ -955,21 +957,42 @@ function removeItemFromArray(arr, index) {
 var columns = [{
   id: 'toDo',
   title: "To Do",
-  item: []
+  item: [],
+  color: "#178bff"
 }, {
   id: 'inProgress',
   title: "In Progress",
-  item: []
+  item: [],
+  color: "#178bff"
 }, {
   id: 'done',
   title: "Done",
-  item: []
+  item: [],
+  color: "#3dd66b"
 }];
+function editableBoardTitle() {
+  document.querySelectorAll('.kanban-title-board').forEach(boardName => {
+    boardName.setAttribute("contenteditable", "true");
+    boardName.addEventListener("click", () => {
+      // event.preventDefault();
+      let name = boardName.innerHTML.toString();
+      console.log(name);
+    });
+  });
+}
+function resizeBoards() {
+  document.querySelectorAll(".kanban-board").forEach(board => {
+    // console.log(JSON.stringify(kanbanBoard.boardContainer.length));
+    let boardNum = kanbanBoard.boardContainer.length;
+    let boardWidth = 100 / boardNum - 2;
+    board.style.width = boardWidth.toString() + "%";
+  });
+}
 var kanbanBoard = new jKanban({
   element: '#myKanban',
   // selector of the kanban container
-  // gutter           : '15px',                                       // gutter of the board
-  // widthBoard       : '250px',                                      // width of the board
+  // gutter           : '15px',                                    // gutter of the board
+  // widthBoard       : '250px',                                   // width of the board
   responsivePercentage: true,
   // if it is true I use percentage in the width of the boards and it is not necessary gutter and widthBoard
   dragItems: true,
@@ -1014,22 +1037,26 @@ var kanbanBoard = new jKanban({
   // callback when any board stop drag
   buttonClick: function (el, boardId) {}
 });
-document.querySelectorAll('.kanban-title-board').forEach(boardName => {
-  boardName.addEventListener("click", () => {
-    // event.preventDefault();
-    let name = boardName.innerHTML.toString();
-    console.log(name);
-  });
-});
 const addBoardBtn = document.getElementById("addBoardBtn");
+const boardNameInput = document.getElementById("boardNameInput");
+const boardColorInput = document.getElementById("boardColorInput");
 addBoardBtn.addEventListener("click", () => {
-  let board = {
-    id: "board-id-1",
-    title: "Board Title",
-    item: []
-  };
-  kanbanBoard.addBoards([board]);
-  console.log(kanbanBoard);
+  if (boardNameInput.value == "") {
+    alert("Board title required");
+  } else {
+    let board = {
+      id: boardNameInput.value.toString(),
+      title: boardNameInput.value.toString(),
+      item: []
+    };
+    kanbanBoard.addBoards([board]);
+    resizeBoards();
+    // console.log(document.querySelector(".kanban-board[data-id='board-id-1'] > .kanban-board-header"));
+    // console.log(boardColorInput.value);
+    document.querySelector(".kanban-board[data-id='" + board.id + "'] > .kanban-board-header").style.backgroundColor = boardColorInput.value;
+    // console.log(kanbanBoard)
+    editableBoardTitle();
+  }
 });
 
 },{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","./taskStorage.js":"3WapR","./labelStorage.js":"BKomJ","../libraries/jkanban.min.js":"3IAxf","./kanbanStorage.js":"3QfYK","jquery":"6Oaih"}],"3WapR":[function(require,module,exports) {
@@ -9821,6 +9848,7 @@ const stopwatchDisplay = document.getElementById("stopwatchTime");
 const studyTimeInput = document.getElementById("studyTimeInput");
 const sbTimeInput = document.getElementById("sbTimeInput");
 const lbTimeInput = document.getElementById("lbTimeInput");
+const timerModalWhole = document.getElementById("timersModalWhole");
 $(document).ready(function () {
   $('input[id="tabP"]').click(function () {
     timerP.classList.add("active");
@@ -9830,23 +9858,24 @@ $(document).ready(function () {
     timerP.classList.remove("active");
     timerS.classList.add('active');
   });
+  $('#pomodoroTime .seconds').html(study);
 });
 // function showVal(newVal) {
 // console.log(newVal.toString());
 // }
+// new timer?
 var {Timer} = require('../libraries/easytimer.js/dist/easytimer');
-// var study = 25;
 var study = 25;
 var shortBreak = 5;
 var longBreak = 30;
 var loop = 1;
 var pomodoroLoop = 4;
 var isBreak = false;
-// study: mode 0, short break: mode 1, long break: mode 2
+var progressIndex = 1;
+// Setting study time from Input
 studyTimeInput.addEventListener("input", () => {
-  $('#pomodoroTime .minutes').html(studyTimeInput.value);
-  $('#pomodoroTime .seconds').html(pomodoro.getTimeValues().seconds);
   study = parseInt(studyTimeInput.value);
+  $('#pomodoroTime .seconds').html(study);
   let all = 4 * study + 3 * shortBreak + longBreak;
   let pForMinute = 100 / all;
   let studyWidth = pForMinute * study;
@@ -9857,11 +9886,9 @@ studyTimeInput.addEventListener("input", () => {
   $('.sb-progress').css("width", sbWidth + "%");
   $('.lb-progress').css("width", lbWidth + "%");
   $('#studySliderValue').html(study);
-  console.log(studyTimeInput.value);
 });
+// Setting short break time from Input
 sbTimeInput.addEventListener("input", () => {
-  // $('#pomodoroTime .minutes').html(studyTimeInput.value);
-  // $('#pomodoroTime .seconds').html(pomodoro.getTimeValues().seconds);
   shortBreak = parseInt(sbTimeInput.value);
   let all = 4 * study + 3 * shortBreak + longBreak;
   let pForMinute = 100 / all;
@@ -9873,11 +9900,9 @@ sbTimeInput.addEventListener("input", () => {
   $('.sb-progress').css("width", sbWidth + "%");
   $('.lb-progress').css("width", lbWidth + "%");
   $('#sbSliderValue').html(shortBreak);
-  console.log(sbTimeInput.value);
 });
+// Setting long break time from Input
 lbTimeInput.addEventListener("input", () => {
-  // $('#pomodoroTime .minutes').html(studyTimeInput.value);
-  // $('#pomodoroTime .seconds').html(pomodoro.getTimeValues().seconds);
   longBreak = parseInt(lbTimeInput.value);
   let all = 4 * study + 3 * shortBreak + longBreak;
   let pForMinute = 100 / all;
@@ -9889,11 +9914,11 @@ lbTimeInput.addEventListener("input", () => {
   $('.sb-progress').css("width", sbWidth + "%");
   $('.lb-progress').css("width", lbWidth + "%");
   $('#lbSliderValue').html(longBreak);
-  console.log(lbTimeInput.value);
 });
 // Pomodoro Timer
 var pomodoro = new Timer();
 $('#pomo-startBtn').click(function () {
+  console.log(study);
   pomodoro.start({
     countdown: true,
     startValues: {
@@ -9915,18 +9940,17 @@ $('#pomo-pauseBtn').click(function () {
   pomoStartBtn.classList.add("running");
 });
 $('#pomo-resetBtn').click(function () {
-  loop = 1;
-  isBreak = false;
   pomodoro.reset();
+  pomodoro.start();
   pomodoro.pause();
   pomoPauseBtn.classList.remove("running");
   pomoStartBtn.classList.add("running");
-  studyTimeInput.removeAttribute("disabled");
-  sbTimeInput.removeAttribute("disabled");
-  lbTimeInput.removeAttribute("disabled");
 });
 $('#pomo-stopBtn').click(function () {
+  isBreak = false;
   pomodoro.stop();
+  $('#pomodoroLoop').html("0");
+  $('#pomodoroTime .seconds').html(study);
   pomoPauseBtn.classList.remove("running");
   pomoStartBtn.classList.add("running");
   studyTimeInput.removeAttribute("disabled");
@@ -9942,15 +9966,33 @@ pomodoro.addEventListener('started', function (e) {
   $('#pomodoroTime .minutes').html(pomodoro.getTimeValues().minutes);
   $('#pomodoroTime .seconds').html(pomodoro.getTimeValues().seconds);
   $('#pomodoroLoop').html(loop);
+  $("#progress" + (progressIndex % 8).toString()).addClass("progress-bar-striped progress-bar-animated");
 });
 pomodoro.addEventListener('reset', function (e) {
   $('#pomodoroTime .minutes').html(pomodoro.getTimeValues().minutes);
   $('#pomodoroTime .seconds').html(pomodoro.getTimeValues().seconds);
   $('#pomodoroLoop').html(loop);
+  $("#progress" + progressIndex.toString()).removeClass("progress-bar-animated");
+  study = parseInt(studyTimeInput.value);
+  shortBreak = parseInt(sbTimeInput.value);
+  longBreak = parseInt(lbTimeInput.value);
+});
+pomodoro.addEventListener('paused', function (e) {
+  // $('#pomodoroTime .minutes').html(pomodoro.getTimeValues().minutes);
+  // $('#pomodoroTime .seconds').html(pomodoro.getTimeValues().seconds);
+  // $('#pomodoroLoop').html(loop);
+  $("#progress" + (progressIndex % 8).toString()).removeClass("progress-bar-animated");
+});
+pomodoro.addEventListener('stopped', function (e) {
+  // $('#pomodoroTime .minutes').html(pomodoro.getTimeValues().minutes);
+  // $('#pomodoroTime .seconds').html(pomodoro.getTimeValues().seconds);
+  // $('#pomodoroLoop').html(loop);
+  $(".progress-bar").removeClass("progress-bar-striped progress-bar-animated");
 });
 pomodoro.addEventListener('targetAchieved', function (e) {
+  progressIndex = progressIndex + 1;
   if (isBreak) {
-    // Executing Study
+    // Executing Study (minutes)
     loop = loop + 1;
     pomodoro.start({
       countdown: true,
@@ -9962,9 +10004,10 @@ pomodoro.addEventListener('targetAchieved', function (e) {
       }
     });
     isBreak = false;
+    $("#progress" + (progressIndex % 8).toString()).addClass("progress-bar-striped progress-bar-animated");
   } else {
     if (loop % pomodoroLoop === 0) {
-      // Executing Long Break
+      // Executing Long Break (minutes)
       pomodoro.start({
         countdown: true,
         startValues: {
@@ -9975,8 +10018,9 @@ pomodoro.addEventListener('targetAchieved', function (e) {
         }
       });
       isBreak = true;
+      $("#progress" + (progressIndex % 8).toString()).addClass("progress-bar-striped progress-bar-animated");
     } else {
-      // Executing Short Break
+      // Executing Short Break (minutes)
       pomodoro.start({
         countdown: true,
         startValues: {
@@ -9987,6 +10031,7 @@ pomodoro.addEventListener('targetAchieved', function (e) {
         }
       });
       isBreak = true;
+      $("#progress" + (progressIndex % 8).toString()).addClass("progress-bar-striped progress-bar-animated");
     }
   }
 });
@@ -10016,12 +10061,14 @@ $('#sw-stopBtn').click(function () {
   swStartBtn.classList.add("running");
 });
 $('#sw-resetBtn').click(function () {
-  stopWatch.reset();
-  stopWatch.pause();
-  swResetBtn.classList.add("running");
-  swLapBtn.classList.remove("running");
-  lapList.innerHTML = "";
-  lapNum = 1;
+  if (confirm("Current lap times will be deleted")) {
+    stopWatch.reset();
+    stopWatch.pause();
+    swResetBtn.classList.add("running");
+    swLapBtn.classList.remove("running");
+    lapList.innerHTML = "";
+    lapNum = 1;
+  }
 });
 var lapNum = 1;
 $('#sw-lapBtn').click(function () {

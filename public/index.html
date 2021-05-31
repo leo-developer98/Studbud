@@ -107,15 +107,22 @@
     <div id="kanban">
         <div id="myKanban">
             <div id="kanbanBtn-container">
-                <button type="button" class="btn btn-outline-success btn-sm" id="addBoardBtn">Add New Board</button>
+                <form>
+                    <div class="input-group kanbanBoard-inputs" role="group" aria-label="Kanban add new board">
+                        <input type="text" name="boardName" id="boardNameInput" class="form-control form-control-sm"
+                        placeholder="New board name" required/>
+                        <input type="color" class="form-control form-control-color form-control-sm" id="boardColorInput" value="#696969" title="Choose your color">
+                        <button type="button" class="btn btn-outline-success btn-sm" id="addBoardBtn" >Add</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 
     <div id="timers" class="page_container modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header">
+            <div class="modal-content" id="timersModalWhole">
+                <div class="modal-header" id="timersModalHeader">
                     <div id="timerNav">
                         <div id="timerTabs">
                             <input type="radio" name="tabs" id="tabP" checked>
@@ -126,19 +133,19 @@
                             <span class="glider"></span>
                         </div>
                     </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" id="timersModal">
                     <div id="timers_p" class="active container" >
                         <div class="progress">
-                            <div class="progress-bar bg-success study-progress" role="progressbar" style="width: 17.25%" aria-valuenow="17.25" aria-valuemin="3.45" aria-valuemax="100">25</div>
-                            <div class="progress-bar sb-progress" role="progressbar" style="width: 3.45%" aria-valuenow="3.45" aria-valuemin="3.45" aria-valuemax="100">5</div>
-                            <div class="progress-bar bg-success study-progress" role="progressbar" style="width: 17.25%" aria-valuenow="17.25" aria-valuemin="3.45" aria-valuemax="100">25</div>
-                            <div class="progress-bar sb-progress" role="progressbar" style="width: 3.45%" aria-valuenow="3.45" aria-valuemin="3.45" aria-valuemax="100">5</div>
-                            <div class="progress-bar bg-success study-progress" role="progressbar" style="width: 17.25%" aria-valuenow="17.25" aria-valuemin="3.45" aria-valuemax="100">25</div>
-                            <div class="progress-bar sb-progress" role="progressbar" style="width: 3.45%" aria-valuenow="3.45" aria-valuemin="3.45" aria-valuemax="100">5</div>
-                            <div class="progress-bar bg-success study-progress" role="progressbar" style="width: 17.25%" aria-valuenow="17.25" aria-valuemin="3.45" aria-valuemax="100">25</div>
-                            <div class="progress-bar lb-progress" role="progressbar" style="width: 20.7%" aria-valuenow="20.7" aria-valuemin="3.45" aria-valuemax="100">30</div>
+                            <div class="progress-bar bg-success study-progress" role="progressbar" style="width: 17.25%" aria-valuenow="17.25" aria-valuemin="3.45" aria-valuemax="100" id="progress1">25</div>
+                            <div class="progress-bar sb-progress" role="progressbar" style="width: 3.45%" aria-valuenow="3.45" aria-valuemin="3.45" aria-valuemax="100" id="progress2">5</div>
+                            <div class="progress-bar bg-success study-progress" role="progressbar" style="width: 17.25%" aria-valuenow="17.25" aria-valuemin="3.45" aria-valuemax="100" id="progress3">25</div>
+                            <div class="progress-bar sb-progress" role="progressbar" style="width: 3.45%" aria-valuenow="3.45" aria-valuemin="3.45" aria-valuemax="100" id="progress4">5</div>
+                            <div class="progress-bar bg-success study-progress" role="progressbar" style="width: 17.25%" aria-valuenow="17.25" aria-valuemin="3.45" aria-valuemax="100" id="progress5">25</div>
+                            <div class="progress-bar sb-progress" role="progressbar" style="width: 3.45%" aria-valuenow="3.45" aria-valuemin="3.45" aria-valuemax="100" id="progress6">5</div>
+                            <div class="progress-bar bg-success study-progress" role="progressbar" style="width: 17.25%" aria-valuenow="17.25" aria-valuemin="3.45" aria-valuemax="100" id="progress7">25</div>
+                            <div class="progress-bar lb-progress" role="progressbar" style="width: 20.7%" aria-valuenow="20.7" aria-valuemin="3.45" aria-valuemax="100" id="progress0">30</div>
                         </div>
                         <div class="row">
                             <div class="col-5">
@@ -150,7 +157,7 @@
                                         <label for="sbTimeInput" class="form-label">Short Break</label><span class="badge rounded-pill bg-primary slider-values" id="sbSliderValue">5</span>
                                         <input type="range" class="form-range" id="sbTimeInput" min="5" max="30" step="5" value="5">
                                         <label for="lbTimeInput" class="form-label">Long Break</label><span class="badge rounded-pill bg-primary slider-values" id="lbSliderValue">30</span>
-                                        <input type="range" class="form-range" id="lbTimeInput" min="0" max="60" step="5" value="30">
+                                        <input type="range" class="form-range" id="lbTimeInput" min="5" max="60" step="5" value="30">
                                     </div>
                                 </div>
                                 <div class="row-2">
@@ -163,8 +170,9 @@
                                    <span id="pomodoroLoop">0</span><span> pomodoro loop</span>
                                 </div>
                                 <div id="pomodoroTime">
-                                    <div><span class="minutes">25</span><span> minutes</span></div>
-                                    <div><span class="seconds">0</span><span> seconds</span></div>
+                                    <!-- Put Default values inside the time display spans -->
+                                    <div><span class="minutes"></span><span> minutes</span></div>
+                                    <div><span class="seconds"></span><span> seconds</span></div>
                                 </div>
                             </div>
                             <div class="col-2 timerBtnContainer">

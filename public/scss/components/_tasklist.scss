@@ -120,13 +120,13 @@
         position: absolute;
         width: 270px;
         height: 500px;
-        background-color: whitesmoke;
+        background-color: #ffffff;
         bottom: calc(56px - 500px);
         border-radius: 10px 10px 0 0;
         padding: 10px;
         overflow: hidden;
         transition: all 0.4s ease-in-out;
-
+        color: rgb(54, 54, 54);
         &.open {
             bottom: 56px;
         }
@@ -165,17 +165,17 @@
         display: inline-block;
         justify-content: center;
         align-items: center;
-        color: #748aff;
+        color: #252e59;
         cursor: pointer;
         padding: 0 4px;
-        background-color: white;
+        background-color: whitesmoke;
         border-radius: 50%;
-        border: 10px solid white;
+        border: 10px solid whitesmoke;
 
         &:hover {
-            background-color: #748aff;
-            border: 10px solid #748aff;
-            color: white;
+            background-color: #252e59;
+            border: 10px solid #252e59;
+            color: whitesmoke;
         }
 
         &.open {
@@ -190,17 +190,17 @@
             display: inline-block;
             justify-content: center;
             align-items: center;
-            color: #748aff;
+            color: #252e59;
             cursor: pointer;
-            background-color: white;
+            background-color: whitesmoke;
             padding: 0 4px;
             border-radius: 50%;
-            border: 10px solid white;
+            border: 10px solid whitesmoke;
 
             &:hover {
-                background-color: #748aff;
-                border: 10px solid #748aff;
-                color: white;
+                background-color: #252e59;
+                border: 10px solid #252e59;
+                color: whitesmoke;
             }
         }
     }
@@ -251,6 +251,10 @@
     background-color: whitesmoke;
     transition: all 0.25s ease-in-out;
 
+    .kanbanBoard-inputs {
+        width: 25%;
+    }
+
     #myKanban {
         #kanbanBtn-container {
             margin: 15px;
@@ -263,11 +267,15 @@
         background-color: whitesmoke;
     }
 
+    #addBoardBtn {
+        z-index: 0;
+    }
+
 }
 
 .kanban-board {
     height: 600px;
-    box-shadow:5px 5px 5px rgb(158, 158, 158);
+    // box-shadow:5px 5px 5px rgb(158, 158, 158);
 
     .kanban-title-board {
         color: white;
@@ -337,35 +345,35 @@
 
 // From jKanban example:
 
-#myKanban {
-    overflow-x: auto;
-    padding: 20px 0;
-}
+// #myKanban {
+//     overflow-x: auto;
+//     padding: 0;
+// }
 
-.success {
-    background: #00b961;
-}
+// .success {
+//     background: #00b961;
+// }
 
-.info {
-    background: #2a92bf;
-}
+// .info {
+//     background: #2a92bf;
+// }
 
-.warning {
-    background: #f4ce46;
-}
+// .warning {
+//     background: #f4ce46;
+// }
 
-.error {
-    background: #fb7d44;
-}
+// .error {
+//     background: #fb7d44;
+// }
 
-.custom-button {
-    background-color: #4caf50;
-    border: none;
-    color: white;
-    padding: 7px 15px;
-    margin: 10px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-}
+// .custom-button {
+//     background-color: #4caf50;
+//     border: none;
+//     color: white;
+//     padding: 7px 15px;
+//     margin: 10px;
+//     text-align: center;
+//     text-decoration: none;
+//     display: inline-block;
+//     font-size: 16px;
+// }
