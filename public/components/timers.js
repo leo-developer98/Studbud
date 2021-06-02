@@ -155,6 +155,8 @@ $('#pomo-resetBtn').click(function () {
 
 $('#pomo-stopBtn').click(function () {
     isBreak = false;
+    progressIndex = 1;
+    loop = 1;
     pomodoro.stop();
     $('#pomodoroLoop').html("0");
     $('#pomodoroTime .seconds').html(study);
@@ -183,7 +185,7 @@ pomodoro.addEventListener('started', function (e) {
 pomodoro.addEventListener('reset', function (e) {
     $('#pomodoroTime .minutes').html(pomodoro.getTimeValues().minutes);
     $('#pomodoroTime .seconds').html(pomodoro.getTimeValues().seconds);
-    $('#pomodoroLoop').html(loop);
+    // $('#pomodoroLoop').html(loop);
     $("#progress" + progressIndex.toString()).removeClass("progress-bar-animated");
     study = parseInt(studyTimeInput.value);
     shortBreak = parseInt(sbTimeInput.value);
@@ -203,7 +205,6 @@ pomodoro.addEventListener('stopped', function (e) {
     // $('#pomodoroTime .seconds').html(pomodoro.getTimeValues().seconds);
     // $('#pomodoroLoop').html(loop);
     $(".progress-bar").removeClass("progress-bar-striped progress-bar-animated");
-    
 });
 
 pomodoro.addEventListener('targetAchieved', function (e) {

@@ -97,10 +97,10 @@
                 <button type="button" id="sortTasksBtn" class="btn btn-sm dropdown-toggle"
                     data-bs-toggle="dropdown" aria-expanded="false">Sort tasks</button>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                    <li><a class="dropdown-item" href="#">Sort by date created</a></li>
-                    <li><a class="dropdown-item" href="#">Sort by due date</a></li>
-                    <li><a class="dropdown-item" href="#">Sort by priority rating</a></li>
-                    <li><a class="dropdown-item" href="#">Sort by estimated time</a></li>
+                    <li><a class="dropdown-item" href="#sortDateCreated" id="#sortDateCreated">Sort by date created</a></li>
+                    <li><a class="dropdown-item" href="#sortDueDate" id="#sortDueDate">Sort by due date</a></li>
+                    <li><a class="dropdown-item" href="#sortPriorityRating" id="#sortPriorityRating">Sort by priority rating</a></li>
+                    <li><a class="dropdown-item" href="#sortEstimatedTime" id="sortEstimatedTime">Sort by estimated time</a></li>
                 </ul>
         </div>
     </div>
@@ -108,10 +108,11 @@
         <div id="myKanban">
             <div id="kanbanBtn-container">
                 <form>
-                    <div class="input-group kanbanBoard-inputs" role="group" aria-label="Kanban add new board">
-                        <input type="text" name="boardName" id="boardNameInput" class="form-control form-control-sm"
+                    <!-- <button type="button" class="btn btn-outline-success btn-sm" id="addBoardWrapperBtn"><i class="fas fa-plus"></i></button> -->
+                    <div class="input-group" role="group" aria-label="Kanban add new board" id="kanbanAddInputGroup">
+                        <input type="text" name="boardName" id="boardNameInput" class="form-control form-control-sm kanbanBoard-inputs"
                         placeholder="New board name" required/>
-                        <input type="color" class="form-control form-control-color form-control-sm" id="boardColorInput" value="#696969" title="Choose your color">
+                        <input type="color" class="form-control form-control-color form-control-sm kanbanBoard-inputs" id="boardColorInput" value="#696969" title="Choose your color">
                         <button type="button" class="btn btn-outline-success btn-sm" id="addBoardBtn" >Add</button>
                     </div>
                 </form>
@@ -147,9 +148,12 @@
                             <div class="progress-bar bg-success study-progress" role="progressbar" style="width: 17.25%" aria-valuenow="17.25" aria-valuemin="3.45" aria-valuemax="100" id="progress7">25</div>
                             <div class="progress-bar lb-progress" role="progressbar" style="width: 20.7%" aria-valuenow="20.7" aria-valuemin="3.45" aria-valuemax="100" id="progress0">30</div>
                         </div>
-                        <div class="row">
+                        <div class="row" id="pomodoroContainer">
                             <div class="col-5">
                                 <div class="row-10">
+                                    <!-- <div>
+                                        <i class="fas fa-stopwatch fa-10x"></i>
+                                    </div> -->
                                     <div id="slider">
                                         <label for="studyTimeInput" class="form-label">Study Time</label><span class="badge rounded-pill bg-success slider-values" id="studySliderValue">25</span>
                                         <input type="range" class="form-range" id="studyTimeInput" min="5" max="60" step="5" value="25">                              
@@ -165,14 +169,12 @@
                                 </div>
 
                             </div>
-                            <div class="col-5">
-                                <div>
-                                   <span id="pomodoroLoop">0</span><span> pomodoro loop</span>
-                                </div>
+                            <div class="col-5" id="pomodoroDisplays">
                                 <div id="pomodoroTime">
                                     <!-- Put Default values inside the time display spans -->
                                     <div><span class="minutes"></span><span> minutes</span></div>
                                     <div><span class="seconds"></span><span> seconds</span></div>
+                                    <div><span id="pomodoroLoop">0</span><span> pomodoro loop</span></div>
                                 </div>
                             </div>
                             <div class="col-2 timerBtnContainer">
@@ -233,38 +235,77 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <form id="searchForm">
-                        <h1>Search Box</h1>
-                        <input type="search" name="searchBox" id="searchBox" placeholder="Word to Search">
-                        <input type="button" name="submit" value="submit" onclick="wordSearch()">
-                        <input type="reset" value="reset" onclick="reloadPage()">
+                        <div class="input-group">
+                            <input type="search" name="searchBox" id="searchBox" placeholder="Word to Search" class="form-control">
+                            <button type="submit" class="btn btn-primary" id="dicSearchBtn"><i class="fas fa-search"></i></button>
+                            <button type="reset" class="btn btn-primary" id="dicReloadBtn"><i class="fas fa-redo-alt"></i></button>
+                        </div>
+                        <!-- <input type="button" name="submit" value="submit" onclick="wordSearch()" class="form-control">> -->
+                        <!-- <input type="reset" value="reset" onclick="reloadPage()" class="form-control"> -->
                     </form>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div id="searchResult">
-                        <div>
-                            <h1>Word</h1>
-                            <p id="word"></p>
-                        </div>
-                        <div>
-                            <h1>Definiiton</h1>
-                            <p id="definition"></p>
-                        </div>
-                        <div>
-                            <h1>Example</h1>
-                            <p id="example"></p>
+                    <!-- <div id="searchResult">
+                        <div id="box1" style="background-color: blue;">
+                            <div>
+                                <p>Word</p>
+                                <p id="word"></p>
+                            </div>
+                            <div>
+                                <p>Definiiton</p>
+                                <p id="definition"></p>
+                            </div>
+                            <div>
+                                <p>Example</p>
+                                <p id="example"></p>
+                            </div>
                         </div>
                     </div>
+                    <div style="background-color: rgb(184, 0, 0);">
+                        <div>
+                            <p>Synonyms</p>
+                            <p id="synonyms"></p>
+                        </div>
+                        <div>
+                            <p>Antonyms</p>
+                            <p id="antonyms"></p>
+                        </div>
+                    </div> -->
+                    <main class="container-fluid">
+                        <div class="row justify-content-center align-items-center">
+                            <div id="word-search" class="col-md-7">
+                                <h2>Comprehensive Word Information</h2>
+                                <p class="text-center">Here you can get information on words. Learn about different definitions, synonyms, types of speech, categories, get examples and more!</p>
+                            </div>
+                        </div>
+                        <!-- create a form for user input -->
+                        <!-- 'sticky-top' allows the div to stay at the top of page on scroll -->
+                        <div id="form-row" class="row sticky-top">
+                            <div class="col">
+                                <form id="main-form">
+                                    <fieldset>
+                                        <label htmlFor="word">Enter Word</label>
+                                        <!-- create text input -->
+                                        <input id='word-input' type="text" class="form-control" name="word" placeholder="automobile">
+                                        <!-- create submit button -->
+                                        <button class="btn btn-primary" type="button">search</button>
+                                        <input value="Submit" type="submit" style="margin: 10px" class="btn btn-primary" />
+                                    </fieldset>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center">
+                            <div class="col-md-10">
+                                <!-- empty list to place our word data -->
+                                <ul id="word-info" class="list-unstyled"></ul>
+                            </div>
+                        </div>
+                    </main>
                 </div>
-                <div class="modal-footer">
-                    <div>
-                        <h1>Synonyms</h1>
-                        <p id="synonyms"></p>
-                    </div>
-                    <div>
-                        <h1>Antonyms</h1>
-                        <p id="antonyms"></p>
-                    </div>
-                </div>
+                <!-- <div class="modal-footer">
+
+                </div> -->
             </div>
         </div>
     </div>
@@ -286,7 +327,7 @@
     </div> -->
     <div class="offcanvas offcanvas-bottom" tabindex="-1" data-bs-backdrop="true" id="musicPlayer" aria-labelledby="offcanvasBottomLabel">
         <div class="offcanvas-header">
-          <h5 class="offcanvas-title" id="offcanvasBottomLabel">Music Player</h5>
+          <!-- <h5 class="offcanvas-title" id="offcanvasBottomLabel">Music Player</h5> -->
           <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">

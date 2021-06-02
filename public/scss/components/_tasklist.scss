@@ -80,7 +80,7 @@
                 .task_details {
                     // display: inline-block;
                     color: rgb(56, 56, 56);
-
+                    width: 60%;
                     .card-text {
                         margin-left: 10px;
                     }
@@ -108,8 +108,10 @@
                 }
 
                 .task_buttons {
-                    margin-top: 10px;
-                    width: 100%;
+                    display: flex;
+                    float: right;
+                    // margin-top: 10px;
+                    // width: 100%;
                 }
             }
         }
@@ -165,7 +167,7 @@
         display: inline-block;
         justify-content: center;
         align-items: center;
-        color: #252e59;
+        color: #43519d;
         cursor: pointer;
         padding: 0 4px;
         background-color: whitesmoke;
@@ -173,8 +175,8 @@
         border: 10px solid whitesmoke;
 
         &:hover {
-            background-color: #252e59;
-            border: 10px solid #252e59;
+            background-color: #43519d;
+            border: 10px solid #43519d;
             color: whitesmoke;
         }
 
@@ -190,7 +192,7 @@
             display: inline-block;
             justify-content: center;
             align-items: center;
-            color: #252e59;
+            color: #43519d;
             cursor: pointer;
             background-color: whitesmoke;
             padding: 0 4px;
@@ -198,8 +200,8 @@
             border: 10px solid whitesmoke;
 
             &:hover {
-                background-color: #252e59;
-                border: 10px solid #252e59;
+                background-color: #43519d;
+                border: 10px solid #43519d;
                 color: whitesmoke;
             }
         }
@@ -212,14 +214,14 @@
     height: 56px;
     width: 270px;
     bottom: 0;
-    background-color: #43519d;
+    background-color: #252e59;
     align-items: center;
 
     #sortTasksBtn {
         display: flex;
         align-items: center;
         justify-content: center;
-        background-color: #43519d;
+        background-color: #252e59;
         color: white;
         border: none;
         height: 60%;
@@ -251,13 +253,23 @@
     background-color: whitesmoke;
     transition: all 0.25s ease-in-out;
 
-    .kanbanBoard-inputs {
+    #kanbanAddInputGroup {
         width: 25%;
+
+        // .kanbanBoard-inputs {
+        //     width: 0;
+        //     transition: all 1s ease-in-out;
+        //     &.open {
+        //         display: flex;
+        //         width: 100%;
+        //     }
+        // }
     }
 
     #myKanban {
         #kanbanBtn-container {
             margin: 15px;
+            overflow: hidden;
         }
     }
 
@@ -267,6 +279,7 @@
         background-color: whitesmoke;
     }
 
+
     #addBoardBtn {
         z-index: 0;
     }
@@ -274,7 +287,8 @@
 }
 
 .kanban-board {
-    height: 600px;
+    height: 620px;
+    // height: 100%;
     // box-shadow:5px 5px 5px rgb(158, 158, 158);
 
     .kanban-title-board {
@@ -301,7 +315,16 @@
         }
         // border: 10px solid #b8ff9c;
     }
+
+    .boardDeleteBtn {
+        border: none;
+        display: flex;
+        float: right;
+        margin: auto;
+        color: white;
+    }
 }
+
 .kanban-item {
     justify-content: center;
     align-items: center;
@@ -312,6 +335,7 @@
         margin:auto;
     }
 }
+
 
 @media only screen and (max-width: 500px) {
     #kanban {

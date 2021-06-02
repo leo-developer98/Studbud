@@ -7,7 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
     "prestart": "parcel build ./public/index.html",
-    "dev": "parcel serve ./public/index.html"
+    "dev": "parcel serve ./public/index.html",
+    "lambda-serve": "netlify-lambda serve functions",
+    "lambda-build": "netlify-lambda build functions"
   },
   "repository": {
     "type": "git",
@@ -21,9 +23,11 @@
   "homepage": "https://github.com/leo-developer98/Studbud#readme",
   "dependencies": {
     "@mougli/circular-slider": "^1.0.0",
+    "axios": "^0.21.1",
     "easytimer.js": "^4.3.4",
     "express": "^4.17.1",
     "jquery": "^3.6.0",
+    "netlify-lambda": "^2.0.8",
     "scss": "^1.32.11",
     "urban-dictionary": "^3.0.0"
   },

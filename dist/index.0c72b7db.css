@@ -264,6 +264,7 @@ nav .nav_links .nav_item .nav_btn.active {
 }
 #taskWrapper #taskgrid #taskList .task_item .task_details {
   color: #383838;
+  width: 60%;
 }
 #taskWrapper #taskgrid #taskList .task_item .task_details .card-text {
   margin-left: 10px;
@@ -285,8 +286,8 @@ nav .nav_links .nav_item .nav_btn.active {
   color: #383838;
 }
 #taskWrapper #taskgrid #taskList .task_item .task_buttons {
-  margin-top: 10px;
-  width: 100%;
+  display: flex;
+  float: right;
 }
 #taskWrapper #addTask {
   display: block;
@@ -332,7 +333,7 @@ nav .nav_links .nav_item .nav_btn.active {
   display: inline-block;
   justify-content: center;
   align-items: center;
-  color: #252e59;
+  color: #43519d;
   cursor: pointer;
   padding: 0 4px;
   background-color: whitesmoke;
@@ -340,8 +341,8 @@ nav .nav_links .nav_item .nav_btn.active {
   border: 10px solid whitesmoke;
 }
 #uploadBtnContainer #addBtn:hover {
-  background-color: #252e59;
-  border: 10px solid #252e59;
+  background-color: #43519d;
+  border: 10px solid #43519d;
   color: whitesmoke;
 }
 #uploadBtnContainer #addBtn.open {
@@ -354,7 +355,7 @@ nav .nav_links .nav_item .nav_btn.active {
   display: inline-block;
   justify-content: center;
   align-items: center;
-  color: #252e59;
+  color: #43519d;
   cursor: pointer;
   background-color: whitesmoke;
   padding: 0 4px;
@@ -362,8 +363,8 @@ nav .nav_links .nav_item .nav_btn.active {
   border: 10px solid whitesmoke;
 }
 #uploadBtnContainer #uploadBtn.open:hover {
-  background-color: #252e59;
-  border: 10px solid #252e59;
+  background-color: #43519d;
+  border: 10px solid #43519d;
   color: whitesmoke;
 }
 #task_bottom {
@@ -372,14 +373,14 @@ nav .nav_links .nav_item .nav_btn.active {
   height: 56px;
   width: 270px;
   bottom: 0;
-  background-color: #43519d;
+  background-color: #252e59;
   align-items: center;
 }
 #task_bottom #sortTasksBtn {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #43519d;
+  background-color: #252e59;
   color: white;
   border: none;
   height: 60%;
@@ -403,11 +404,12 @@ nav .nav_links .nav_item .nav_btn.active {
   background-color: whitesmoke;
   transition: all 0.25s ease-in-out;
 }
-#kanban .kanbanBoard-inputs {
+#kanban #kanbanAddInputGroup {
   width: 25%;
 }
 #kanban #myKanban #kanbanBtn-container {
   margin: 15px;
+  overflow: hidden;
 }
 #kanban.open {
   margin-left: 270px;
@@ -418,7 +420,7 @@ nav .nav_links .nav_item .nav_btn.active {
   z-index: 0;
 }
 .kanban-board {
-  height: 600px;
+  height: 620px;
 }
 .kanban-board .kanban-title-board {
   color: white;
@@ -431,6 +433,13 @@ nav .nav_links .nav_item .nav_btn.active {
 }
 .kanban-board[data-id=done] .kanban-board-header {
   background-color: #3dd66b;
+}
+.kanban-board .boardDeleteBtn {
+  border: none;
+  display: flex;
+  float: right;
+  margin: auto;
+  color: white;
 }
 .kanban-item {
   justify-content: center;
@@ -521,7 +530,7 @@ nav .nav_links .nav_item .nav_btn.active {
   margin: 0;
   height: 30px;
   width: 140px;
-  background-color: #748aff;
+  background-color: #43519d;
   z-index: 1;
   border-radius: 7px;
   transition: 0.25s ease-in-out;
@@ -542,6 +551,17 @@ nav .nav_links .nav_item .nav_btn.active {
 }
 #timers .modal-body #timers_p #slider .slider-values {
   float: right;
+}
+#timers .modal-body #timers_p #pomodoroTime {
+  font-size: 40px;
+  float: right;
+}
+#timers .modal-body #timers_p #pomodoroContainer {
+  margin-top: 20px;
+}
+#timers .modal-body #timers_p #pomodoroContainer #pomodoroDisplays {
+  justify-content: center;
+  align-items: center;
 }
 #timers .modal-body #timers_s {
   display: none;
@@ -641,5 +661,12 @@ nav .nav_links .nav_item .nav_btn.active {
 #slider {
   width: 300px;
   height: 300px;
+}
+#dictionary .modal-header {
+  justify-content: center;
+  align-items: center;
+  height: 60px;
+  background-color: #43519d;
+  border: none;
 }
 /*# sourceMappingURL=index.0c72b7db.css.map */

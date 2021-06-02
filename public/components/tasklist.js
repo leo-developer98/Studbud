@@ -402,7 +402,7 @@ function showTask(task) {
   }
 
 
-  let buttons = document.createElement("div");
+  let buttons = document.createElement("span");
   buttons.classList.add("btn-group");
   buttons.classList.add("btn-group-sm");
   buttons.classList.add("task_buttons");
@@ -410,8 +410,10 @@ function showTask(task) {
 
   // Create "Move to Kanban" Button
   let toDoButton = document.createElement("button");
-  let toDoButtonText = document.createTextNode("To Do");
-  toDoButton.appendChild(toDoButtonText);
+  // let toDoButtonText = document.createTextNode("To Do");
+  // toDoButton.appendChild(toDoButtonText);
+
+  toDoButton.innerHTML = "<i class='fas fa-chevron-right'></i>";
 
   toDoButton.setAttribute('class', "btn btn-outline-primary");
   toDoButton.classList.add("moveBtn");
@@ -439,11 +441,17 @@ function showTask(task) {
 
   // add Delete Button
   let delButton = document.createElement("button");
-  let delButtonText = document.createTextNode("Delete");
-  delButton.appendChild(delButtonText);
+  // let delButtonText = document.createTextNode("Delete");
+  // delButton.appendChild(delButtonText);
+  delButton.innerHTML = "<i class='fas fa-trash-alt'></i></button>";
 
   delButton.setAttribute('class', "btn btn-outline-danger");
   delButton.classList.add('deleteBtn');
+  // delButton.setAttribute("data-bs-toggle", "tooltip");
+  // delButton.setAttribute("data-bs-placement", "top");
+  // delButton.setAttribute("title", "Delete Task")
+  // $('[data-toggle="tooltip"]').tooltip();
+
 
   delButton.addEventListener("click", function (event) {
     event.preventDefault();
@@ -473,13 +481,14 @@ function showTask(task) {
 // Helper functions
 
 function compareDueDate(a, b) {
-  if (a.dueDate < b.dueDate) {
-    return -1;
-  } else if (a.dueDate > b.dueDate) {
-    return 1;
-  } else {
-    return 0;
-  }
+  // if (a.dueDate < b.dueDate) {
+  //   return -1;
+  // } else if (a.dueDate > b.dueDate) {
+  //   return 1;
+  // } else {
+  //   return 0;
+  // }
+  return parseInt(a.dueDate) - parseInt(b.dueDate)
 }
 
 function comparePriority(a, b) {
@@ -510,10 +519,24 @@ function removeItemFromArray(arr, index) {
   return arr;
 }
 
+// a = {dueDate}
+// console.log(JSON.stringify(taskList));
+// console.log(JSON.stringify(taskList.sort(compareDueDate())));
+
+const sortDateCreated = document.getElementById("sortDateCreated");
+const sortDueDate = document.getElementById("sortDueDate");
+const sortPriorityRating = document.getElementById("sortPriorityRating");
+const sortEstimatedTime = document.getElementById("sortEstimatedTime");
+
+// sortDueDate.addEventListener("click", () => {
+//   console.log(taskList);
+//   console.log(taskList.sort(compareDueDate()));
+// })
+
 
 var columns = [
   {id: 'toDo', title: "To Do", item: [], color: "#178bff" },
-  {id: 'inProgress', title:"In Progress", item: [], color: "#178bff" },
+  {id: 'inProgress', title:"In Progress", item: [], color: "#ffc31e" },
   {id: 'done', title: "Done", item: [], color: "#3dd66b"}
 ];
 
@@ -551,7 +574,7 @@ var kanbanBoard = new jKanban({
   // widthBoard       : '250px',                                   // width of the board
   responsivePercentage: true,                                      // if it is true I use percentage in the width of the boards and it is not necessary gutter and widthBoard
   dragItems        : true,                                         // if false, all items are not draggable
-  boards           : columns,                                      // json of boards
+  boards           : [],                                      // json of boards
   dragBoards       : true,                                         // the boards are draggable, if false only item can be dragged
   itemAddOptions: {
       enabled: false,                                              // add a button to board for easy item creation
@@ -577,6 +600,37 @@ var kanbanBoard = new jKanban({
   buttonClick      : function(el, boardId) {}                      // callback when the board's button is clicked
 });
 
+$(document).ready(function() {
+  for(let i = 0; i < columns.length; i++) {
+    let board = columns[i];
+    kanbanBoard.addBoards([board]);
+    resizeBoards();
+    let boardHeader = document.querySelector(".kanban-board[data-id='" + board.id + "'] > .kanban-board-header");
+    boardHeader.style.backgroundColor = board.color;
+
+    let deleteBtn = document.createElement("button");
+    deleteBtn.setAttribute("type", "button");
+    deleteBtn.classList.add("btn", "btn-outline-danger", "btn-sm", "boardDeleteBtn");
+    deleteBtn.innerHTML = "<i class='fas fa-trash-alt'></i>";
+
+    deleteBtn.addEventListener("click", () => {
+      kanbanBoard.removeBoard(board.id);
+      let boards = kanbanBoard.boardContainer;
+      let pos = boards.indexOf(board);
+      boards.splice(pos, 1);
+      resizeBoards();
+    })
+    boardHeader.appendChild(deleteBtn);
+    editableBoardTitle();
+  }
+})
+
+const addBoardWrapperBtn = document.getElementById("addBoardWrapperBtn");
+
+// addBoardBtn.addEventListener("click", () => {
+//   $(".kanbanBoard-inputs").addClass("open");
+// })
+
 const addBoardBtn = document.getElementById("addBoardBtn");
 const boardNameInput = document.getElementById("boardNameInput");
 const boardColorInput = document.getElementById("boardColorInput");
@@ -585,18 +639,36 @@ addBoardBtn.addEventListener("click", () => {
   if (boardNameInput.value == "") {
     alert("Board title required");
   } else {
+    let boardTitle = boardNameInput.value.toString()
+
     let board = {
-      id    : boardNameInput.value.toString(),             
-      title : boardNameInput.value.toString(),              
+      id    : boardTitle,             
+      title : boardTitle,              
       item  : []
     }
     kanbanBoard.addBoards([board]);
     resizeBoards();
     // console.log(document.querySelector(".kanban-board[data-id='board-id-1'] > .kanban-board-header"));
     // console.log(boardColorInput.value);
-    document.querySelector(".kanban-board[data-id='" + board.id + "'] > .kanban-board-header").style.backgroundColor = boardColorInput.value;
-  
-    // console.log(kanbanBoard)
+    let boardHeader = document.querySelector(".kanban-board[data-id='" + board.id + "'] > .kanban-board-header");
+    boardHeader.style.backgroundColor = boardColorInput.value;
+
+    let deleteBtn = document.createElement("button");
+    deleteBtn.setAttribute("type", "button");
+    deleteBtn.classList.add("btn", "btn-outline-danger", "btn-sm", "boardDeleteBtn");
+    deleteBtn.innerHTML = "<i class='fas fa-trash-alt'></i>";
+
+    deleteBtn.addEventListener("click", () => {
+      kanbanBoard.removeBoard(board.id);
+      let boards = kanbanBoard.boardContainer;
+      let pos = boards.indexOf(board);
+      boards.splice(pos, 1);
+      resizeBoards();
+    })
+
+    boardHeader.appendChild(deleteBtn);
     editableBoardTitle();
   }
 })
+
+// console.log(kanbanBoard);
