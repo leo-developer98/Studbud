@@ -1,4 +1,3 @@
-
 #timers {
     .modal-header {
         justify-content: center;
@@ -21,14 +20,14 @@
                 background-color: #252e59;
                 // box-shadow: 0 0 1px 0 rgba(24, 94, 224, .15),
                 //             0 6px 12px 0 rgba(24, 94, 224, .15);
-                padding: .75rem;
+                padding: 0.75rem;
                 border-radius: 8px;
                 align-items: center;
-    
+
                 & > * {
                     z-index: 2;
                 }
-    
+
                 .tab {
                     display: flex;
                     align-items: center;
@@ -42,25 +41,25 @@
                     font-weight: 0.5rem;
                     color: rgb(160, 160, 160);
                 }
-    
-                input[type='radio'] {
+
+                input[type="radio"] {
                     display: none;
-    
+
                     &:checked + label {
                         color: white;
                     }
                 }
-    
-                input[id="tabP"]{
-                    &:checked ~ .glider{
+
+                input[id="tabP"] {
+                    &:checked ~ .glider {
                         transform: translateX(0);
                     }
                 }
-    
-                input[id="tabS"]:checked ~ .glider{
+
+                input[id="tabS"]:checked ~ .glider {
                     transform: translateX(100%);
                 }
-    
+
                 .glider {
                     position: absolute;
                     display: flex;
@@ -74,8 +73,6 @@
                 }
             }
         }
-
-
     }
 
     .modal-body {
@@ -91,7 +88,7 @@
                 display: block;
             }
 
-            &>.row {
+            & > .row {
                 height: 100%;
             }
 
@@ -130,10 +127,10 @@
                 display: block;
             }
 
-            &>.row {
+            & > .row {
                 height: 100%;
             }
-            
+
             // #stopwatchTimeParent {
             //     height: 100%;
             //     text-align: center;
@@ -147,13 +144,12 @@
 
             #stopwatchTime {
                 display: inline-block;
-                vertical-align: middle; 
+                vertical-align: middle;
                 font-size: 100px;
                 margin: auto;
                 text-align: center;
             }
             // }
-
 
             #lapTime {
                 display: flex;
@@ -186,7 +182,7 @@
             &#sw-resetBtn {
                 display: none;
                 &.running {
-                    display: block
+                    display: block;
                 }
             }
 
@@ -194,7 +190,7 @@
                 display: none;
 
                 &.running {
-                    display: block
+                    display: block;
                 }
             }
 
@@ -202,28 +198,28 @@
                 display: none;
 
                 &.running {
-                    display: block
+                    display: block;
                 }
             }
             &#pomo-pauseBtn {
                 display: none;
 
                 &.running {
-                    display: block
+                    display: block;
                 }
             }
             &#sw-startBtn {
                 display: none;
 
                 &.running {
-                    display: block
+                    display: block;
                 }
             }
             &#sw-pauseBtn {
                 display: none;
 
                 &.running {
-                    display: block
+                    display: block;
                 }
             }
         }
@@ -249,7 +245,6 @@
     background-color: #4e4e4e;
     border-radius: 5px;
 }
-
 
 #slider {
     width: 300px;

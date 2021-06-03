@@ -112,16 +112,7 @@
 const searchBtn = document.getElementById("dicSearchBtn");
 const searchInput = document.getElementById("searchBox");
 
-searchBtn.addEventListener("click", function() {
-    let word = searchInput.value;
-    // var request = new XMLHttpRequest();
-
-    // request.open('GET', `https://api.dictionaryapi.dev/api/v2/entries/en_UK/${word}`);
-
-    // request.onload = function() {
-    //     console.log(this.response);
-    // }
-
+function wordSearch(word) {
     var settings = {
         "async": true,
         "crossDomain": true,
@@ -132,24 +123,105 @@ searchBtn.addEventListener("click", function() {
             "x-rapidapi-host": "wordsapiv1.p.rapidapi.com"
         }
     };
-    
+
     $.ajax(settings).done(function (response) {
         console.log(response);
         let resultLength = response.results.length;
         $("#word").html(response.word);
         $("#pronunciation").html(response.pronunciation.all);
+        let synonyms = [];
+        $("#definitions").empty();
         for (let i = 0; i < resultLength; i++) {
             let result = response.results[i];
-            let box = $("<div></div>");
-            let def = $("<p></p>").text(result.definition);
-            let mode = $("<p></p>").text(result.partOfSpeech);
-            $("#definitions").append(box);
+            let allResults = $("<div class='results'></div>")
+            let box = $("<div class='eachDefinition'></div>");
+            let def = $("<p class='definition'></p>").text(result.definition);
+            let mode = $("<p class='partOfSpeech'></p>").text(result.partOfSpeech);
+
             box.append(mode);
             box.append(def);
+            allResults.append(box);
+            let synonyms = $('<div class="synonyms"></div>');
+            if (result.hasOwnProperty('synonyms')) {
+                // for (let i=0;i<result.synonyms.length;i++) {
+                //     synonyms.push(result.synonyms[i]);
+
+                // }
+
+                if (result.synonyms.length > 4) {
+                    let seeMore = $("<button class='btn btn-outline-primary btn-sm seeMoreBtn'>SEE MORE</button>");
+                    synonyms.append(seeMore);
+
+                    seeMore.click(function() {
+                        synonyms.css('max-height', 'none');
+                        seeMore.css("display", "none");
+                        seeLess.css("display", "flex");
+                        // synonyms.css('background-color', 'black');
+                    })
+
+                    let seeLess = $("<button class='btn btn-outline-primary btn-sm seeLessBtn'>SEE LESS</button>");
+                    seeLess.css("display", "none");
+                    synonyms.append(seeLess);
+
+                    seeLess.click(function() {
+                        synonyms.css('max-height', '65px');
+                        // synonyms.css('background-color', 'black');
+                        seeLess.css("display", "none");
+                        seeMore.css("display", "flex");
+                    })
+                }
+
+                for (let i = 0; i < result.synonyms.length; i++) {
+                    let synonymBox = $("<button class='synonym btn btn-outline-primary btn-sm'></button>").text(result.synonyms[i]);
+                    synonyms.append(synonymBox);
+
+                    synonymBox.click(function () {
+                        let word = synonymBox.text();
+                        console.log(word);
+                        searchInput.value = word;
+                        searchBtn.click();
+                        // wordSearch()
+                    });
+                }
+
+                // seeMore.click(function() {
+                //     synonyms.css('max-height', '');
+                // })
+            }
+            allResults.append(synonyms);
+            $("#definitions").append(allResults);
         }
+        // // console.log(synonyms);
+        // $('#synonyms').empty();
+        // for (let i=0;i<synonyms.length; i++) {
+        //     let synonymBox = $("<button class='synonym btn btn-outline-primary'></button>").text(synonyms[i]);
+        //     $('#synonyms').append(synonymBox);
+
+        //     synonymBox.click(function() {
+        //         let word = synonymBox.text();
+        //         console.log(word);
+        //         searchInput.value = word;
+        //         searchBtn.click();
+        //         // wordSearch()
+        //     });
+        // }
     });
 
-    $.ajax(settings).fail(function() {
+    $.ajax(settings).fail(function () {
         console.log("No word found");
+        $('#word').html("No result found");
     })
+}
+
+
+searchBtn.addEventListener("click", function () {
+    let word = searchInput.value;
+    wordSearch(word);
+    // var request = new XMLHttpRequest();
+
+    // request.open('GET', `https://api.dictionaryapi.dev/api/v2/entries/en_UK/${word}`);
+
+    // request.onload = function() {
+    //     console.log(this.response);
+    // }
 })

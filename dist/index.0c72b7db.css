@@ -201,7 +201,7 @@ nav .nav_links .nav_item .nav_btn.active {
   width: 270px;
   height: calc(100vh - 56px);
   transition: all 0.25s ease-in-out;
-  background-color: #d4d4d4;
+  background-color: #e1e1e1;
   left: -270px;
 }
 #taskWrapper.open {
@@ -215,7 +215,7 @@ nav .nav_links .nav_item .nav_btn.active {
 }
 #taskWrapper #taskgrid #taskList {
   display: block;
-  background-color: #d4d4d4;
+  background-color: #e1e1e1;
   height: 650px;
   width: 100%;
   overflow-y: scroll;
@@ -668,5 +668,109 @@ nav .nav_links .nav_item .nav_btn.active {
   height: 60px;
   background-color: #43519d;
   border: none;
+}
+#dictionary .modal-header .input-group {
+  width: 100%;
+}
+#dictionary .modal-header .input-group #dicSearchBtn {
+  background-color: #252e59;
+  border: none;
+}
+#dictionary .modal-header .input-group #dicRefreshBtn {
+  background-color: #252e59;
+  border-color: #43519d;
+}
+#dictionary .modal-body {
+  min-height: 300px;
+  max-height: 650px;
+  padding-top: 0;
+  margin-right: 3px;
+  overflow-y: scroll;
+}
+#dictionary .modal-body::-webkit-scrollbar {
+  width: 8px;
+}
+#dictionary .modal-body::-webkit-scrollbar-track {
+  display: none;
+}
+#dictionary .modal-body::-webkit-scrollbar-thumb {
+  background-color: #4e4e4e;
+  border-radius: 5px;
+  margin-right: 2px;
+}
+#dictionary .modal-body #searchResult #dicResultTop {
+  padding: 20px 0;
+}
+#dictionary .modal-body #searchResult #dicResultTop #word {
+  display: inline-block;
+  font-size: 3rem;
+}
+#dictionary .modal-body #searchResult #dicResultTop #pronunciation {
+  display: inline-block;
+  margin-left: 10px;
+}
+#dictionary .modal-body #searchResult #definitions .results {
+  background-color: #ececec;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+#dictionary .modal-body #searchResult #definitions .results .eachDefinition {
+  background-color: #252e59;
+  padding: 10px;
+  border-radius: 0 8px 0 0;
+}
+#dictionary .modal-body #searchResult #definitions .results .eachDefinition .definition {
+  color: white;
+}
+#dictionary .modal-body #searchResult #definitions .results .eachDefinition .partOfSpeech {
+  font-style: oblique;
+  color: #bebebe;
+}
+#dictionary .modal-body #searchResult #definitions .results .synonyms {
+  padding: 10px;
+  overflow-y: hidden;
+  justify-content: space-between;
+  max-height: 65px;
+}
+#dictionary .modal-body #searchResult #definitions .results .synonyms .seeMoreBtn {
+  text-decoration: underline;
+  border: none;
+  display: flex;
+  float: right;
+}
+#dictionary .modal-body #searchResult #definitions .results .synonyms .seeMoreBtn:hover {
+  background-color: none;
+  background: none;
+  color: #252e59;
+}
+#dictionary .modal-body #searchResult #definitions .results .synonyms .seeLessBtn {
+  text-decoration: underline;
+  border: none;
+  display: flex;
+  float: right;
+}
+#dictionary .modal-body #searchResult #definitions .results .synonyms .seeLessBtn:hover {
+  background-color: none;
+  background: none;
+  color: #252e59;
+}
+#dictionary .modal-body #searchResult #definitions .results .synonyms .synonym {
+  margin: 8px;
+}
+#dictionary .modal-body #moreDefinitionsBtn {
+  width: 50px;
+  height: 50px;
+  background-color: #43519d;
+  border-radius: 100%;
+}
+#dictionary .modal-body #moreDefinitionsBtn:hover {
+  background-color: #252e59;
+}
+#musicPlayer .offcanvas-header {
+  background-color: #43519d;
+}
+#musicPlayer .offcanvas-body {
+  padding: 0;
+  height: 500px;
 }
 /*# sourceMappingURL=index.0c72b7db.css.map */

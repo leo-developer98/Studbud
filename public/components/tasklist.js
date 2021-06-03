@@ -57,9 +57,12 @@ taskBtn.addEventListener('click', () => {
   }
 })
 
-// close Task List when main page is clicked
-kanban.addEventListener('click', function () {
-  if (taskOpen) {
+
+$("#myKanban").click(function(event) {
+  // console.log(event.target);
+  // Disable closing tasklist when the following elements were clicked
+  if($(event.target).is('.kanbanItemBtn, .kanban-title-board, .kanban-board-header') || $(event.target).is("i, input")){
+  } else if (taskOpen) {
     taskBtn.classList.remove('open');
     taskAll.classList.remove('open');
     taskWrapper.classList.remove('open');
@@ -67,6 +70,21 @@ kanban.addEventListener('click', function () {
     taskOpen = false;
   }
 })
+
+// // close Task List when main page is clicked
+// kanban.addEventListener('click', function (event) {
+//   // alert($(event.target).attr('class'));
+//   if($(event.target).hasClass('kanban-board')){
+//     alert("triggered");
+//   }
+//   if (taskOpen) {
+//     taskBtn.classList.remove('open');
+//     taskAll.classList.remove('open');
+//     taskWrapper.classList.remove('open');
+//     kanban.classList.remove('open');
+//     taskOpen = false;
+//   }
+// })
 
 // close Add Tasks when Task Grid is clicked
 taskAll.onclick = function () {
@@ -154,7 +172,7 @@ const labelList = labelStorage.labels;
 const kanbanStorage = new KanbanStorage();
 const kanbanColumns = kanbanStorage.columns;
 
-$(document).ready(function() {
+$(document).ready(function () {
   taskList.forEach((element) => {
     showTask(element);
   })
@@ -182,7 +200,7 @@ function updateEmpty() {
     document.getElementById('emptyTaskList').style.display = 'none';
   } else {
     document.getElementById('emptyTaskList').style.display = 'block';
-  } 
+  }
 
   if (labelList.length > 0) {
     document.getElementById('noLabels').style.display = "none";
@@ -212,13 +230,13 @@ function updateLabelDropdown() {
     labelBtn.style.color = element.colour;
     labelBtn.style.fontWeight = "550";
 
-    labelBtn.addEventListener('click', function(e) {
+    labelBtn.addEventListener('click', function (e) {
       let labelTitle = labelBtn.innerHTML;
       document.getElementById("newLabelInput").value = labelTitle.toString();
       let colour = labelStorage.getColour(labelTitle.toString());
       document.getElementById("labelColourInput").value = colour;
     })
-  
+
     // add Delete Button for Labels
     let delButton = document.createElement("button");
     delButton.setAttribute("type", "button");
@@ -226,7 +244,7 @@ function updateLabelDropdown() {
     delButton.innerHTML = "<i class='fas fa-trash-alt'></i>";
     delButton.style.border = "none";
     // delButton.classList.add('deleteBtn');
-  
+
     delButton.addEventListener("click", function (event) {
       event.preventDefault();
       if (confirm('Are you sure you want to delete this label from task labels?')) {
@@ -259,13 +277,13 @@ function addTask(taskDescription, dueDate, completionTime, priorityRating, prior
   if (document.forms["taskForm"]["taskName"].value == "") {
     alert("Task Description must be filled out");
     return false;
-  } 
-  
-   else {
+  }
+
+  else {
     let key = (task.taskDescription).toString();
 
     // If created task doesn't exits (task name):
-    if (taskStorage.getIndexByName(key)  === -1) {
+    if (taskStorage.getIndexByName(key) === -1) {
       // If there is no label input, empty label for the task
       if (task.label.name == "") {
         task.label = null;
@@ -279,10 +297,10 @@ function addTask(taskDescription, dueDate, completionTime, priorityRating, prior
 
     } else {
       alert("Task " + key + " is already exists in the list")
-      }
     }
+  }
 
-    closeBtn.click();
+  closeBtn.click();
 }
 
 function showTask(task) {
@@ -325,10 +343,10 @@ function showTask(task) {
         // kanbanStorage.removeItem()
         doneBtn.removeAttribute("disabled");
       })
-    
+
     })
 
-    
+
   })
 
 
@@ -339,16 +357,16 @@ function showTask(task) {
 
   // Add details only when they exist
   if (task.hasOwnProperty('label') && task['label']) {
-      if (task.label !== null) {
-        let labelName = task.label.name;
-        let labelNameString = labelName.toString();
-        let item_tag = document.createElement('span');
-        item_tag.classList.add("badge", "task-labels")
-        item_tag.setAttribute('id', labelNameString);
-        item_tag.appendChild(document.createTextNode(labelName));
-        item_tag.style.backgroundColor = task.label.colour;
-        item_top.appendChild(item_tag);
-      }
+    if (task.label !== null) {
+      let labelName = task.label.name;
+      let labelNameString = labelName.toString();
+      let item_tag = document.createElement('span');
+      item_tag.classList.add("badge", "task-labels")
+      item_tag.setAttribute('id', labelNameString);
+      item_tag.appendChild(document.createTextNode(labelName));
+      item_tag.style.backgroundColor = task.label.colour;
+      item_top.appendChild(item_tag);
+    }
   }
 
   if (task.hasOwnProperty('dueDate') && task['dueDate']) {
@@ -415,10 +433,10 @@ function showTask(task) {
 
   toDoButton.innerHTML = "<i class='fas fa-chevron-right'></i>";
 
-  toDoButton.setAttribute('class', "btn btn-outline-primary");
+  toDoButton.setAttribute('class', "btn btn-outline-primary btn-sm");
   toDoButton.classList.add("moveBtn");
 
-  toDoButton.addEventListener("click", function(event) {
+  toDoButton.addEventListener("click", function (event) {
     event.preventDefault();
     let element = {
       id: task.taskDescription,
@@ -445,7 +463,7 @@ function showTask(task) {
   // delButton.appendChild(delButtonText);
   delButton.innerHTML = "<i class='fas fa-trash-alt'></i></button>";
 
-  delButton.setAttribute('class', "btn btn-outline-danger");
+  delButton.setAttribute('class', "btn btn-outline-danger btn-sm");
   delButton.classList.add('deleteBtn');
   // delButton.setAttribute("data-bs-toggle", "tooltip");
   // delButton.setAttribute("data-bs-placement", "top");
@@ -461,17 +479,18 @@ function showTask(task) {
     // console.log(taskList);
 
     if (confirm('Are you sure you want to delete this task from task list?')) {
-    taskStorage.delete(task.taskDescription.toString());
-    item.remove();
-    updateEmpty();
+      taskStorage.delete(task.taskDescription.toString());
+      item.remove();
+      updateEmpty();
     }
   })
 
   buttons.appendChild(toDoButton);
   buttons.appendChild(delButton);
-  item_body.appendChild(buttons);
+  // item_body.appendChild(buttons);
 
   item.appendChild(item_body);
+  item.appendChild(buttons);
   tasks.appendChild(item);
 
   form.reset();
@@ -479,6 +498,18 @@ function showTask(task) {
 
 
 // Helper functions
+
+function compareDateCreated(a,b) {
+  // if (a.id < b.id) {
+  //   return -1;
+  // } else if (a.id > b.id) {
+  //   return 1;
+  // } else {
+  //   return 0;
+  // }
+
+  return a.id - b.id;
+}
 
 function compareDueDate(a, b) {
   // if (a.dueDate < b.dueDate) {
@@ -488,27 +519,67 @@ function compareDueDate(a, b) {
   // } else {
   //   return 0;
   // }
-  return parseInt(a.dueDate) - parseInt(b.dueDate)
+  // equal items sort equally
+  if (a.dueDate === b.dueDate) {
+    return 0;
+  }
+  // nulls sort after anything else
+  else if (a.dueDate === "") {
+    return 1;
+  }
+  else if (b.dueDate === "") {
+    return -1;
+  } else { 
+      return a.dueDate < b.dueDate ? -1 : 1;
+        // return parseInt(a.dueDate) - parseInt(b.dueDate);
+  }
 }
 
 function comparePriority(a, b) {
-  if (a.priorityRatingIndex < b.priorityRatingIndex) {
-    return -1;
-  } else if (a.priorityRatingIndex > b.priorityRatingIndex) {
-    return 1;
-  } else {
+  // if (a.priorityRatingIndex < b.priorityRatingIndex) {
+  //   return 1;
+  // } else if (a.priorityRatingIndex > b.priorityRatingIndex) {
+  //   return -1;
+  // } else {
+  //   return 0;
+  // }
+  if (a.priorityRatingIndex === b.priorityRatingIndex) {
     return 0;
   }
+  // nulls sort after anything else
+  else if (a.priorityRatingIndex == "") {
+    return 1;
+  }
+  else if (b.priorityRatingIndex == "") {
+    return -1;
+  } else { 
+    return parseInt(a.priorityRatingIndex) < parseInt(b.priorityRatingIndex) ? 1 : -1;
+  }
+  // return b.priorityRatingIndex - a.priorityRatingIndex;
 }
 
 function compareEstimatedTime(a, b) {
-  if (a.estimatedTime < b.estimatedTime) {
-    return -1;
-  } else if (a.estimatedTime > b.estimatedTime) {
-    return 1;
-  } else {
+  // if (a.estimatedTime < b.estimatedTime) {
+  //   return -1;
+  // } else if (a.estimatedTime > b.estimatedTime) {
+  //   return 1;
+  // } else {
+  //   return 0;
+  // }
+  if (a.estimatedTime === b.estimatedTime) {
     return 0;
   }
+  // nulls sort after anything else
+  else if (a.estimatedTime == "") {
+    return 1;
+  }
+  else if (b.estimatedTime == "") {
+    return -1;
+  } else { 
+    return parseInt(a.estimatedTime) < parseInt(b.estimatedTime) ? -1 : 1;
+  }
+
+  return a.estimatedTime - b.estimatedTime;
 }
 
 function removeItemFromArray(arr, index) {
@@ -519,14 +590,40 @@ function removeItemFromArray(arr, index) {
   return arr;
 }
 
+$("#sortDateCreated").click(function(event) {
+  // alert("clicked");
+  taskList.sort(compareDateCreated)
+  console.log(taskList.sort(compareDateCreated));
+  console.log(taskList);
+})
+
+$("#sortDueDate").click(function(event) {
+  taskList.sort(compareDueDate)
+  console.log(taskList.sort(compareDueDate));
+  console.log(taskList);
+})
+
+$("#sortPriorityRating").click(function(event) {
+  taskList.sort(comparePriority)
+  console.log(taskList.sort(comparePriority));
+  console.log(taskList);
+})
+
+$("#sortEstimatedTime").click(function(event) {
+  taskList.sort(compareEstimatedTime)
+  console.log(taskList.sort(compareEstimatedTime));
+  console.log(taskList);
+})
+
+
 // a = {dueDate}
 // console.log(JSON.stringify(taskList));
 // console.log(JSON.stringify(taskList.sort(compareDueDate())));
 
-const sortDateCreated = document.getElementById("sortDateCreated");
-const sortDueDate = document.getElementById("sortDueDate");
-const sortPriorityRating = document.getElementById("sortPriorityRating");
-const sortEstimatedTime = document.getElementById("sortEstimatedTime");
+// const sortDateCreated = document.getElementById("sortDateCreated");
+// const sortDueDate = document.getElementById("sortDueDate");
+// const sortPriorityRating = document.getElementById("sortPriorityRating");
+// const sortEstimatedTime = document.getElementById("sortEstimatedTime");
 
 // sortDueDate.addEventListener("click", () => {
 //   console.log(taskList);
@@ -535,9 +632,9 @@ const sortEstimatedTime = document.getElementById("sortEstimatedTime");
 
 
 var columns = [
-  {id: 'toDo', title: "To Do", item: [], color: "#178bff" },
-  {id: 'inProgress', title:"In Progress", item: [], color: "#ffc31e" },
-  {id: 'done', title: "Done", item: [], color: "#3dd66b"}
+  { id: 'toDo', title: "To Do", item: [], color: "#178bff" },
+  { id: 'inProgress', title: "In Progress", item: [], color: "#ffc31e" },
+  { id: 'done', title: "Done", item: [], color: "#3dd66b" }
 ];
 
 function editableBoardTitle() {
@@ -563,45 +660,45 @@ function resizeBoards() {
   document.querySelectorAll(".kanban-board").forEach((board) => {
     // console.log(JSON.stringify(kanbanBoard.boardContainer.length));
     let boardNum = kanbanBoard.boardContainer.length;
-    let boardWidth = (100 / (boardNum))- 2;
+    let boardWidth = (100 / (boardNum)) - 2;
     board.style.width = boardWidth.toString() + "%";
   })
 }
 
 var kanbanBoard = new jKanban({
-  element          : '#myKanban',                                  // selector of the kanban container
+  element: '#myKanban',                                  // selector of the kanban container
   // gutter           : '15px',                                    // gutter of the board
   // widthBoard       : '250px',                                   // width of the board
   responsivePercentage: true,                                      // if it is true I use percentage in the width of the boards and it is not necessary gutter and widthBoard
-  dragItems        : true,                                         // if false, all items are not draggable
-  boards           : [],                                      // json of boards
-  dragBoards       : true,                                         // the boards are draggable, if false only item can be dragged
+  dragItems: true,                                         // if false, all items are not draggable
+  boards: [],                                      // json of boards
+  dragBoards: true,                                         // the boards are draggable, if false only item can be dragged
   itemAddOptions: {
-      enabled: false,                                              // add a button to board for easy item creation
-      content: '+',                                                // text or html content of the board button   
-      class: 'kanban-title-button btn btn-default btn-xs',         // default class of the button
-      footer: false                                                // position the button on footer
-  },    
-  itemHandleOptions: {
-      enabled             : false,                                 // if board item handle is enabled or not
-      handleClass         : "item_handle",                         // css class for your custom item handle
-      customCssHandler    : "drag_handler",                        // when customHandler is undefined, jKanban will use this property to set main handler class
-      customCssIconHandler: "drag_handler_icon",                   // when customHandler is undefined, jKanban will use this property to set main icon handler class. If you want, you can use font icon libraries here
-      customHandler       : "<span class='item_handle'>+</span> %title% "  // your entirely customized handler. Use %title% to position item title 
-                                                                           // any key's value included in item collection can be replaced with %key%
+    enabled: false,                                              // add a button to board for easy item creation
+    content: '+',                                                // text or html content of the board button   
+    class: 'kanban-title-button btn btn-default btn-xs',         // default class of the button
+    footer: false                                                // position the button on footer
   },
-  click            : function (el) {},                             // callback when any board's item are clicked
-  context          : function (el, event) {},                      // callback when any board's item are right clicked
-  dragEl           : function (el, source) {},                     // callback when any board's item are dragged
-  dragendEl        : function (el) {},                             // callback when any board's item stop drag
-  dropEl           : function (el, target, source, sibling) {},    // callback when any board's item drop in a board
-  dragBoard        : function (el, source) {},                     // callback when any board stop drag
-  dragendBoard     : function (el) {},                             // callback when any board stop drag
-  buttonClick      : function(el, boardId) {}                      // callback when the board's button is clicked
+  itemHandleOptions: {
+    enabled: false,                                 // if board item handle is enabled or not
+    handleClass: "item_handle",                         // css class for your custom item handle
+    customCssHandler: "drag_handler",                        // when customHandler is undefined, jKanban will use this property to set main handler class
+    customCssIconHandler: "drag_handler_icon",                   // when customHandler is undefined, jKanban will use this property to set main icon handler class. If you want, you can use font icon libraries here
+    customHandler: "<span class='item_handle'>+</span> %title% "  // your entirely customized handler. Use %title% to position item title 
+    // any key's value included in item collection can be replaced with %key%
+  },
+  click: function (el) { },                             // callback when any board's item are clicked
+  context: function (el, event) { },                      // callback when any board's item are right clicked
+  dragEl: function (el, source) { },                     // callback when any board's item are dragged
+  dragendEl: function (el) { },                             // callback when any board's item stop drag
+  dropEl: function (el, target, source, sibling) { },    // callback when any board's item drop in a board
+  dragBoard: function (el, source) { },                     // callback when any board stop drag
+  dragendBoard: function (el) { },                             // callback when any board stop drag
+  buttonClick: function (el, boardId) { }                      // callback when the board's button is clicked
 });
 
-$(document).ready(function() {
-  for(let i = 0; i < columns.length; i++) {
+$(document).ready(function () {
+  for (let i = 0; i < columns.length; i++) {
     let board = columns[i];
     kanbanBoard.addBoards([board]);
     resizeBoards();
@@ -642,9 +739,9 @@ addBoardBtn.addEventListener("click", () => {
     let boardTitle = boardNameInput.value.toString()
 
     let board = {
-      id    : boardTitle,             
-      title : boardTitle,              
-      item  : []
+      id: boardTitle,
+      title: boardTitle,
+      item: []
     }
     kanbanBoard.addBoards([board]);
     resizeBoards();

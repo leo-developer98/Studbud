@@ -599,9 +599,10 @@ taskBtn.addEventListener('click', () => {
     taskOpen = false;
   }
 });
-// close Task List when main page is clicked
-kanban.addEventListener('click', function () {
-  if (taskOpen) {
+$("#myKanban").click(function (event) {
+  // console.log(event.target);
+  // Disable closing tasklist when the following elements were clicked
+  if ($(event.target).is('.kanbanItemBtn, .kanban-title-board, .kanban-board-header') || $(event.target).is("i, input")) {} else if (taskOpen) {
     taskBtn.classList.remove('open');
     taskAll.classList.remove('open');
     taskWrapper.classList.remove('open');
@@ -609,6 +610,20 @@ kanban.addEventListener('click', function () {
     taskOpen = false;
   }
 });
+// // close Task List when main page is clicked
+// kanban.addEventListener('click', function (event) {
+// // alert($(event.target).attr('class'));
+// if($(event.target).hasClass('kanban-board')){
+// alert("triggered");
+// }
+// if (taskOpen) {
+// taskBtn.classList.remove('open');
+// taskAll.classList.remove('open');
+// taskWrapper.classList.remove('open');
+// kanban.classList.remove('open');
+// taskOpen = false;
+// }
+// })
 // close Add Tasks when Task Grid is clicked
 taskAll.onclick = function () {
   if (addOpen) {
@@ -879,7 +894,7 @@ function showTask(task) {
   // let toDoButtonText = document.createTextNode("To Do");
   // toDoButton.appendChild(toDoButtonText);
   toDoButton.innerHTML = "<i class='fas fa-chevron-right'></i>";
-  toDoButton.setAttribute('class', "btn btn-outline-primary");
+  toDoButton.setAttribute('class', "btn btn-outline-primary btn-sm");
   toDoButton.classList.add("moveBtn");
   toDoButton.addEventListener("click", function (event) {
     event.preventDefault();
@@ -901,7 +916,7 @@ function showTask(task) {
   // let delButtonText = document.createTextNode("Delete");
   // delButton.appendChild(delButtonText);
   delButton.innerHTML = "<i class='fas fa-trash-alt'></i></button>";
-  delButton.setAttribute('class', "btn btn-outline-danger");
+  delButton.setAttribute('class', "btn btn-outline-danger btn-sm");
   delButton.classList.add('deleteBtn');
   // delButton.setAttribute("data-bs-toggle", "tooltip");
   // delButton.setAttribute("data-bs-placement", "top");
@@ -921,12 +936,23 @@ function showTask(task) {
   });
   buttons.appendChild(toDoButton);
   buttons.appendChild(delButton);
-  item_body.appendChild(buttons);
+  // item_body.appendChild(buttons);
   item.appendChild(item_body);
+  item.appendChild(buttons);
   tasks.appendChild(item);
   form.reset();
 }
 // Helper functions
+function compareDateCreated(a, b) {
+  // if (a.id < b.id) {
+  // return -1;
+  // } else if (a.id > b.id) {
+  // return 1;
+  // } else {
+  // return 0;
+  // }
+  return a.id - b.id;
+}
 function compareDueDate(a, b) {
   // if (a.dueDate < b.dueDate) {
   // return -1;
@@ -935,25 +961,59 @@ function compareDueDate(a, b) {
   // } else {
   // return 0;
   // }
-  return parseInt(a.dueDate) - parseInt(b.dueDate);
+  // equal items sort equally
+  if (a.dueDate === b.dueDate) {
+    return 0;
+      // nulls sort after anything else
+} else // nulls sort after anything else
+  if (a.dueDate === "") {
+    return 1;
+  } else if (b.dueDate === "") {
+    return -1;
+  } else {
+    return a.dueDate < b.dueDate ? -1 : 1;
+  }
 }
 function comparePriority(a, b) {
-  if (a.priorityRatingIndex < b.priorityRatingIndex) {
-    return -1;
-  } else if (a.priorityRatingIndex > b.priorityRatingIndex) {
-    return 1;
-  } else {
+  // if (a.priorityRatingIndex < b.priorityRatingIndex) {
+  // return 1;
+  // } else if (a.priorityRatingIndex > b.priorityRatingIndex) {
+  // return -1;
+  // } else {
+  // return 0;
+  // }
+  if (a.priorityRatingIndex === b.priorityRatingIndex) {
     return 0;
+      // nulls sort after anything else
+} else // nulls sort after anything else
+  if (a.priorityRatingIndex == "") {
+    return 1;
+  } else if (b.priorityRatingIndex == "") {
+    return -1;
+  } else {
+    return parseInt(a.priorityRatingIndex) < parseInt(b.priorityRatingIndex) ? 1 : -1;
   }
 }
 function compareEstimatedTime(a, b) {
-  if (a.estimatedTime < b.estimatedTime) {
-    return -1;
-  } else if (a.estimatedTime > b.estimatedTime) {
-    return 1;
-  } else {
+  // if (a.estimatedTime < b.estimatedTime) {
+  // return -1;
+  // } else if (a.estimatedTime > b.estimatedTime) {
+  // return 1;
+  // } else {
+  // return 0;
+  // }
+  if (a.estimatedTime === b.estimatedTime) {
     return 0;
+      // nulls sort after anything else
+} else // nulls sort after anything else
+  if (a.estimatedTime == "") {
+    return 1;
+  } else if (b.estimatedTime == "") {
+    return -1;
+  } else {
+    return parseInt(a.estimatedTime) < parseInt(b.estimatedTime) ? -1 : 1;
   }
+  return a.estimatedTime - b.estimatedTime;
 }
 function removeItemFromArray(arr, index) {
   if (index > -1) {
@@ -961,13 +1021,34 @@ function removeItemFromArray(arr, index) {
   }
   return arr;
 }
+$("#sortDateCreated").click(function (event) {
+  // alert("clicked");
+  taskList.sort(compareDateCreated);
+  console.log(taskList.sort(compareDateCreated));
+  console.log(taskList);
+});
+$("#sortDueDate").click(function (event) {
+  taskList.sort(compareDueDate);
+  console.log(taskList.sort(compareDueDate));
+  console.log(taskList);
+});
+$("#sortPriorityRating").click(function (event) {
+  taskList.sort(comparePriority);
+  console.log(taskList.sort(comparePriority));
+  console.log(taskList);
+});
+$("#sortEstimatedTime").click(function (event) {
+  taskList.sort(compareEstimatedTime);
+  console.log(taskList.sort(compareEstimatedTime));
+  console.log(taskList);
+});
 // a = {dueDate}
 // console.log(JSON.stringify(taskList));
 // console.log(JSON.stringify(taskList.sort(compareDueDate())));
-const sortDateCreated = document.getElementById("sortDateCreated");
-const sortDueDate = document.getElementById("sortDueDate");
-const sortPriorityRating = document.getElementById("sortPriorityRating");
-const sortEstimatedTime = document.getElementById("sortEstimatedTime");
+// const sortDateCreated = document.getElementById("sortDateCreated");
+// const sortDueDate = document.getElementById("sortDueDate");
+// const sortPriorityRating = document.getElementById("sortPriorityRating");
+// const sortEstimatedTime = document.getElementById("sortEstimatedTime");
 // sortDueDate.addEventListener("click", () => {
 // console.log(taskList);
 // console.log(taskList.sort(compareDueDate()));
@@ -11046,16 +11127,7 @@ var define;
 const searchBtn = document.getElementById("dicSearchBtn");
 const searchInput = document.getElementById("searchBox");
 
-searchBtn.addEventListener("click", function() {
-    let word = searchInput.value;
-    // var request = new XMLHttpRequest();
-
-    // request.open('GET', `https://api.dictionaryapi.dev/api/v2/entries/en_UK/${word}`);
-
-    // request.onload = function() {
-    //     console.log(this.response);
-    // }
-
+function wordSearch(word) {
     var settings = {
         "async": true,
         "crossDomain": true,
@@ -11066,26 +11138,107 @@ searchBtn.addEventListener("click", function() {
             "x-rapidapi-host": "wordsapiv1.p.rapidapi.com"
         }
     };
-    
+
     $.ajax(settings).done(function (response) {
         console.log(response);
         let resultLength = response.results.length;
         $("#word").html(response.word);
         $("#pronunciation").html(response.pronunciation.all);
+        let synonyms = [];
+        $("#definitions").empty();
         for (let i = 0; i < resultLength; i++) {
             let result = response.results[i];
-            let box = $("<div></div>");
-            let def = $("<p></p>").text(result.definition);
-            let mode = $("<p></p>").text(result.partOfSpeech);
-            $("#definitions").append(box);
+            let allResults = $("<div class='results'></div>")
+            let box = $("<div class='eachDefinition'></div>");
+            let def = $("<p class='definition'></p>").text(result.definition);
+            let mode = $("<p class='partOfSpeech'></p>").text(result.partOfSpeech);
+
             box.append(mode);
             box.append(def);
+            allResults.append(box);
+            let synonyms = $('<div class="synonyms"></div>');
+            if (result.hasOwnProperty('synonyms')) {
+                // for (let i=0;i<result.synonyms.length;i++) {
+                //     synonyms.push(result.synonyms[i]);
+
+                // }
+
+                if (result.synonyms.length > 4) {
+                    let seeMore = $("<button class='btn btn-outline-primary btn-sm seeMoreBtn'>SEE MORE</button>");
+                    synonyms.append(seeMore);
+
+                    seeMore.click(function() {
+                        synonyms.css('max-height', 'none');
+                        seeMore.css("display", "none");
+                        seeLess.css("display", "flex");
+                        // synonyms.css('background-color', 'black');
+                    })
+
+                    let seeLess = $("<button class='btn btn-outline-primary btn-sm seeLessBtn'>SEE LESS</button>");
+                    seeLess.css("display", "none");
+                    synonyms.append(seeLess);
+
+                    seeLess.click(function() {
+                        synonyms.css('max-height', '65px');
+                        // synonyms.css('background-color', 'black');
+                        seeLess.css("display", "none");
+                        seeMore.css("display", "flex");
+                    })
+                }
+
+                for (let i = 0; i < result.synonyms.length; i++) {
+                    let synonymBox = $("<button class='synonym btn btn-outline-primary btn-sm'></button>").text(result.synonyms[i]);
+                    synonyms.append(synonymBox);
+
+                    synonymBox.click(function () {
+                        let word = synonymBox.text();
+                        console.log(word);
+                        searchInput.value = word;
+                        searchBtn.click();
+                        // wordSearch()
+                    });
+                }
+
+                // seeMore.click(function() {
+                //     synonyms.css('max-height', '');
+                // })
+            }
+            allResults.append(synonyms);
+            $("#definitions").append(allResults);
         }
+        // // console.log(synonyms);
+        // $('#synonyms').empty();
+        // for (let i=0;i<synonyms.length; i++) {
+        //     let synonymBox = $("<button class='synonym btn btn-outline-primary'></button>").text(synonyms[i]);
+        //     $('#synonyms').append(synonymBox);
+
+        //     synonymBox.click(function() {
+        //         let word = synonymBox.text();
+        //         console.log(word);
+        //         searchInput.value = word;
+        //         searchBtn.click();
+        //         // wordSearch()
+        //     });
+        // }
     });
 
-    $.ajax(settings).fail(function() {
+    $.ajax(settings).fail(function () {
         console.log("No word found");
+        $('#word').html("No result found");
     })
+}
+
+
+searchBtn.addEventListener("click", function () {
+    let word = searchInput.value;
+    wordSearch(word);
+    // var request = new XMLHttpRequest();
+
+    // request.open('GET', `https://api.dictionaryapi.dev/api/v2/entries/en_UK/${word}`);
+
+    // request.onload = function() {
+    //     console.log(this.response);
+    // }
 })
 
 },{}],"6m8Cd":[function(require,module,exports) {
@@ -11094,6 +11247,12 @@ const musicPlayer = document.getElementById("musicPlayer");
 // $(window).on("click", function(e) {
 //     musicPlayer.classList.remove('show');
 //   });
+
+$()
+
+$("#myKanban").click(function(event) {
+    $("#musicPlayer").removeClass('show');
+})
 },{}]},["27Rzb","4OAbU"], "4OAbU", "parcelRequiref77e")
 
 //# sourceMappingURL=index.8a5bc16d.js.map
