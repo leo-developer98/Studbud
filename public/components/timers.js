@@ -1,5 +1,4 @@
 import '../libraries/easytimer.js/dist/easytimer.min.js';
-// import '../libraries/circular-slider/dist/circular-slider.js';
 
 // MIT License
 
@@ -32,22 +31,19 @@ const pomoStartBtn = document.getElementById("pomo-startBtn");
 const pomoPauseBtn = document.getElementById("pomo-pauseBtn");
 const pomoStopBtn = document.getElementById("pomo-stopBtn");
 const pomoResetBtn = document.getElementById("pomo-resetBtn");
+const pomodoroDisplay = document.getElementById("pomodoroTime");
+const stopwatchDisplay = document.getElementById("stopwatchTime");
+const studyTimeInput = document.getElementById("studyTimeInput");
+const sbTimeInput = document.getElementById("sbTimeInput");
+const lbTimeInput = document.getElementById("lbTimeInput");
+const timerModalWhole = document.getElementById("timersModalWhole");
 
 const swStartBtn = document.getElementById("sw-startBtn");
 const swPauseBtn = document.getElementById("sw-pauseBtn");
 const swStopBtn = document.getElementById("sw-stopBtn");
 const swResetBtn = document.getElementById("sw-resetBtn");
 const swLapBtn = document.getElementById("sw-lapBtn");
-
 const lapList = document.getElementById("lapTimeList");
-
-const pomodoroDisplay = document.getElementById("pomodoroTime");
-const stopwatchDisplay = document.getElementById("stopwatchTime");
-
-const studyTimeInput = document.getElementById("studyTimeInput");
-const sbTimeInput = document.getElementById("sbTimeInput");
-const lbTimeInput = document.getElementById("lbTimeInput");
-const timerModalWhole = document.getElementById("timersModalWhole");
 
 
 $(document).ready(function () {
@@ -59,16 +55,8 @@ $(document).ready(function () {
         timerP.classList.remove("active");
         timerS.classList.add('active');
     });
-
     $('#pomodoroTime .seconds').html(study);
 });
-
-// function showVal(newVal) {
-//     console.log(newVal.toString());
-// }
-
-// new timer?
-
 
 var { Timer } = require('../libraries/easytimer.js/dist/easytimer');
 
@@ -172,7 +160,6 @@ pomodoro.addEventListener('secondsUpdated', function (e) {
     $('#pomodoroTime .minutes').html(pomodoro.getTimeValues().minutes);
     $('#pomodoroTime .seconds').html(pomodoro.getTimeValues().seconds);
     $('#pomodoroLoop').html(loop);
-    // $("#progress" + progressIndex.toString()).addClass("progress-bar-striped progress-bar-animated");
 });
 
 pomodoro.addEventListener('started', function (e) {
@@ -185,7 +172,6 @@ pomodoro.addEventListener('started', function (e) {
 pomodoro.addEventListener('reset', function (e) {
     $('#pomodoroTime .minutes').html(pomodoro.getTimeValues().minutes);
     $('#pomodoroTime .seconds').html(pomodoro.getTimeValues().seconds);
-    // $('#pomodoroLoop').html(loop);
     $("#progress" + progressIndex.toString()).removeClass("progress-bar-animated");
     study = parseInt(studyTimeInput.value);
     shortBreak = parseInt(sbTimeInput.value);
@@ -193,17 +179,11 @@ pomodoro.addEventListener('reset', function (e) {
 });
 
 pomodoro.addEventListener('paused', function (e) {
-    // $('#pomodoroTime .minutes').html(pomodoro.getTimeValues().minutes);
-    // $('#pomodoroTime .seconds').html(pomodoro.getTimeValues().seconds);
-    // $('#pomodoroLoop').html(loop);
     $("#progress" + (progressIndex % 8).toString()).removeClass("progress-bar-animated");
 
 });
 
 pomodoro.addEventListener('stopped', function (e) {
-    // $('#pomodoroTime .minutes').html(pomodoro.getTimeValues().minutes);
-    // $('#pomodoroTime .seconds').html(pomodoro.getTimeValues().seconds);
-    // $('#pomodoroLoop').html(loop);
     $(".progress-bar").removeClass("progress-bar-striped progress-bar-animated");
 });
 
@@ -268,6 +248,7 @@ $('#sw-resetBtn').click(function () {
     }
 });
 
+// Adding Lapped times when lap button is clicked
 var lapNum = 1;
 $('#sw-lapBtn').click(function () {
     let time = stopWatch.getTimeValues().toString(['minutes', 'seconds']);
@@ -293,6 +274,3 @@ stopWatch.addEventListener('started', function (e) {
 stopWatch.addEventListener('reset', function (e) {
     $('#stopwatchTime').html(stopWatch.getTimeValues().toString(['minutes', 'seconds']));
 });
-
-// const options = {container: 'slider', color: "#5d3b6d", max: 100, min: 0, step: 1, radius: 190, valueChange: val => console.log("Value changed: " + val)};
-// var slider = new CircularSlider(options);

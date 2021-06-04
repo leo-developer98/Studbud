@@ -1,13 +1,12 @@
 export default class TaskStorage {
   constructor() {
-    // if item by key `tasks` is not defined JSON.parse return null, so I use `or empty array`
+    // if item by key `tasks` is not defined, is empty array
     this.tasks = JSON.parse(localStorage.getItem('tasks')) || [];
   }
 
   // Creates a task and update the local storage
   create(item, name) {
     item.name = name;
-
     let index = this.getIndexByName(name);
 
     if (index === -1) {
@@ -24,7 +23,6 @@ export default class TaskStorage {
         return i;
       }
     }
-
     return -1;
   }
 
@@ -33,7 +31,6 @@ export default class TaskStorage {
 
     if (index !== -1) {
       this.tasks[index] = item;
-
       localStorage.setItem('tasks', JSON.stringify(this.tasks));
     } else {
       console.log("Task doesn't exist in the list")
@@ -45,7 +42,6 @@ export default class TaskStorage {
 
     if (index !== -1) {
       this.tasks.splice(index, 1);
-
       localStorage.setItem('tasks', JSON.stringify(this.tasks));
     } else {
       console.log("Task doesn't exist in the list")

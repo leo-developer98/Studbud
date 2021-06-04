@@ -262,32 +262,40 @@ nav .nav_links .nav_item .nav_btn.active {
   display: block;
   border-radius: 100%;
 }
-#taskWrapper #taskgrid #taskList .task_item .task_details {
-  color: #383838;
-  width: 60%;
+#taskWrapper #taskgrid #taskList .task_item .task-left {
+  width: 70%;
+  display: inline-block;
 }
-#taskWrapper #taskgrid #taskList .task_item .task_details .card-text {
+#taskWrapper #taskgrid #taskList .task_item .task-left .task_details {
+  color: #383838;
+}
+#taskWrapper #taskgrid #taskList .task_item .task-left .task_details .card-text {
   margin-left: 10px;
 }
-#taskWrapper #taskgrid #taskList .task_item .task_details.low_pr {
+#taskWrapper #taskgrid #taskList .task_item .task-left .task_details.low_pr {
   color: #293eff;
 }
-#taskWrapper #taskgrid #taskList .task_item .task_details.medium_pr {
+#taskWrapper #taskgrid #taskList .task_item .task-left .task_details.medium_pr {
   color: #fcb500;
 }
-#taskWrapper #taskgrid #taskList .task_item .task_details.high_pr {
+#taskWrapper #taskgrid #taskList .task_item .task-left .task_details.high_pr {
   color: #c91400;
 }
-#taskWrapper #taskgrid #taskList .task_item .task_details i {
+#taskWrapper #taskgrid #taskList .task_item .task-left .task_details i {
   display: inline-block;
 }
-#taskWrapper #taskgrid #taskList .task_item .task_details p {
+#taskWrapper #taskgrid #taskList .task_item .task-left .task_details p {
   display: inline-block;
   color: #383838;
 }
-#taskWrapper #taskgrid #taskList .task_item .task_buttons {
+#taskWrapper #taskgrid #taskList .task_item .task-right {
+  display: inline-block;
+  flex-direction: column;
+  width: 30%;
+}
+#taskWrapper #taskgrid #taskList .task_item .task-right .task_buttons {
   display: flex;
-  float: right;
+  align-self: flex-end;
 }
 #taskWrapper #addTask {
   display: block;
@@ -771,6 +779,6 @@ nav .nav_links .nav_item .nav_btn.active {
 }
 #musicPlayer .offcanvas-body {
   padding: 0;
-  height: 500px;
+  height: 250px;
 }
 /*# sourceMappingURL=index.0c72b7db.css.map */

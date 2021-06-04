@@ -6,9 +6,6 @@
         background-color: #43519d;
         border: none;
 
-        // .btn-close {
-        // }
-
         #timerNav {
             position: absolute;
             display: flex;
@@ -18,8 +15,6 @@
             #timerTabs {
                 display: flex;
                 background-color: #252e59;
-                // box-shadow: 0 0 1px 0 rgba(24, 94, 224, .15),
-                //             0 6px 12px 0 rgba(24, 94, 224, .15);
                 padding: 0.75rem;
                 border-radius: 8px;
                 align-items: center;
@@ -78,7 +73,6 @@
     .modal-body {
         display: flex;
         height: 600px;
-        // color: white;
 
         #timers_p {
             display: none;
@@ -131,17 +125,6 @@
                 height: 100%;
             }
 
-            // #stopwatchTimeParent {
-            //     height: 100%;
-            //     text-align: center;
-
-            //     &::before {      /* create a full-height inline block pseudo-element */
-            //         content: ' ';
-            //         display: inline-block;
-            //         vertical-align: middle; /* vertical alignment of the inline element */
-            //         height: 100%;
-            //     }
-
             #stopwatchTime {
                 display: inline-block;
                 vertical-align: middle;
@@ -149,7 +132,6 @@
                 margin: auto;
                 text-align: center;
             }
-            // }
 
             #lapTime {
                 display: flex;

@@ -567,10 +567,6 @@ var priorityRating = document.getElementById("pr");
 var estimatedTime = document.getElementById("et");
 var labelName = document.getElementById("newLabelInput");
 var labelColour = document.getElementById("labelColourInput");
-// var completionStatus = document.getElementById("cs");
-// var y = priorityRating.options;
-// var x = priorityRating.selectedIndex;
-// var prIndex = priorityRating.options[priorityRating.selectedIndex].index;
 Date.prototype.toDateInputValue = function () {
   var local = new Date(this);
   local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
@@ -610,20 +606,6 @@ $("#myKanban").click(function (event) {
     taskOpen = false;
   }
 });
-// // close Task List when main page is clicked
-// kanban.addEventListener('click', function (event) {
-// // alert($(event.target).attr('class'));
-// if($(event.target).hasClass('kanban-board')){
-// alert("triggered");
-// }
-// if (taskOpen) {
-// taskBtn.classList.remove('open');
-// taskAll.classList.remove('open');
-// taskWrapper.classList.remove('open');
-// kanban.classList.remove('open');
-// taskOpen = false;
-// }
-// })
 // close Add Tasks when Task Grid is clicked
 taskAll.onclick = function () {
   if (addOpen) {
@@ -759,6 +741,7 @@ function updateLabelDropdown() {
   });
   updateEmpty();
 }
+// Add task in the local storage & call showTask()
 function addTask(taskDescription, dueDate, completionTime, priorityRating, priorityRatingIndex, estimatedTime, completionStatus, label) {
   let task = {
     id: Date.now(),
@@ -794,10 +777,9 @@ function addTask(taskDescription, dueDate, completionTime, priorityRating, prior
   }
   closeBtn.click();
 }
+// showing task in regards with its properties
 function showTask(task) {
   updateLabelDropdown();
-  // taskList.forEach((task) => {
-  // })
   let item = document.createElement("div");
   item.setAttribute('class', 'card');
   item.classList.add('task_item');
@@ -822,20 +804,24 @@ function showTask(task) {
       title: task.taskDescription + "<button type='button' class='btn btn-outline-danger btn-sm kanbanItemBtn' id=" + task.taskDescription + "><i class='fas fa-trash-alt'></i></button>"
     };
     kanbanBoard.addElement("done", element);
-    // kanbanStorage.addItem("done", element);
+    // Disable the done button
     doneBtn.setAttribute("disabled", "true");
+    // If task deleted from the kanban board, remove the task from the board and enable done button
     document.querySelectorAll('.kanbanItemBtn').forEach(button => {
       button.addEventListener("click", () => {
         kanbanBoard.removeElement(button.id);
-        // kanbanStorage.removeItem()
         doneBtn.removeAttribute("disabled");
       });
     });
   });
+  let left_body = document.createElement("div");
+  let right_body = document.createElement("div");
+  left_body.classList.add("task-left");
+  right_body.classList.add("task-right");
   item_top.appendChild(doneBtn);
   item_top.appendChild(item_title);
   item_body.appendChild(item_top);
-  // Add details only when they exist
+  // Task label shown when theres an input value
   if (task.hasOwnProperty('label') && task['label']) {
     if (task.label !== null) {
       let labelName = task.label.name;
@@ -848,6 +834,7 @@ function showTask(task) {
       item_top.appendChild(item_tag);
     }
   }
+  // Due date shown when theres an input value
   if (task.hasOwnProperty('dueDate') && task['dueDate']) {
     let dd = document.createElement("div");
     dd.setAttribute('class', 'task_details');
@@ -856,11 +843,13 @@ function showTask(task) {
     item_dd.setAttribute('class', 'card-text');
     item_dd.appendChild(document.createTextNode(task.dueDate));
     dd.appendChild(item_dd);
-    item_body.appendChild(dd);
+    left_body.appendChild(dd);
   }
+  // Priority rating shown when theres an input value
   if (task.hasOwnProperty('priorityRating') && task['priorityRating']) {
     let pr = document.createElement("div");
     pr.setAttribute('class', 'task_details');
+    // add classes corresponding to the priority rating input
     if (task['priorityRating'] == "Low") {
       pr.classList.add("low_pr");
     } else if (task['priorityRating'] == "Medium") {
@@ -873,9 +862,9 @@ function showTask(task) {
     item_pr.setAttribute('class', 'card-text');
     item_pr.appendChild(document.createTextNode(task.priorityRating));
     pr.appendChild(item_pr);
-    item_body.appendChild(pr);
+    left_body.appendChild(pr);
   }
-  // add estimated time input when theres an input value
+  // Estimated time shown when theres an input value
   if (task.hasOwnProperty('estimatedTime') && task['estimatedTime']) {
     let et = document.createElement("div");
     et.setAttribute('class', 'task_details');
@@ -884,17 +873,16 @@ function showTask(task) {
     item_et.setAttribute('class', 'card-text');
     item_et.appendChild(document.createTextNode(task.estimatedTime + " hours"));
     et.appendChild(item_et);
-    item_body.appendChild(et);
+    left_body.appendChild(et);
   }
+  item_body.appendChild(left_body);
   let buttons = document.createElement("span");
   buttons.classList.add("btn-group");
   buttons.classList.add("btn-group-sm");
   buttons.classList.add("task_buttons");
   buttons.setAttribute("role", "group");
-  // Create "Move to Kanban" Button
+  // "Move to Kanban" Button for each tasks
   let toDoButton = document.createElement("button");
-  // let toDoButtonText = document.createTextNode("To Do");
-  // toDoButton.appendChild(toDoButtonText);
   toDoButton.innerHTML = "<i class='fas fa-chevron-right'></i>";
   toDoButton.setAttribute('class', "btn btn-outline-primary btn-sm");
   toDoButton.classList.add("moveBtn");
@@ -913,10 +901,8 @@ function showTask(task) {
       });
     });
   });
-  // add Delete Button
+  // Delete Button for each tasks
   let delButton = document.createElement("button");
-  // let delButtonText = document.createTextNode("Delete");
-  // delButton.appendChild(delButtonText);
   delButton.innerHTML = "<i class='fas fa-trash-alt'></i></button>";
   delButton.setAttribute('class', "btn btn-outline-danger btn-sm");
   delButton.classList.add('deleteBtn');
@@ -926,10 +912,6 @@ function showTask(task) {
   // $('[data-toggle="tooltip"]').tooltip();
   delButton.addEventListener("click", function (event) {
     event.preventDefault();
-    // let id = event.target.parentElement.getAttribute('data-id');
-    // let index = taskList.findIndex(task => task.id === Number(id));
-    // removeItemFromArray(taskList, index);
-    // console.log(taskList);
     if (confirm('Are you sure you want to delete this task from task list?')) {
       taskStorage.delete(task.taskDescription.toString());
       item.remove();
@@ -939,12 +921,14 @@ function showTask(task) {
   buttons.appendChild(toDoButton);
   buttons.appendChild(delButton);
   // item_body.appendChild(buttons);
+  right_body.appendChild(buttons);
+  item_body.appendChild(right_body);
   item.appendChild(item_body);
-  item.appendChild(buttons);
+  // item.appendChild(buttons);
   tasks.appendChild(item);
   form.reset();
 }
-// Helper functions
+// Helper Compare functions for sorting
 function compareDateCreated(a, b) {
   // if (a.id < b.id) {
   // return -1;
@@ -1023,50 +1007,52 @@ function removeItemFromArray(arr, index) {
   }
   return arr;
 }
+// Add task by hitting "Enter" on keyboard
+$(".addTaskInputs").keypress(function (e) {
+  if (e.which == 13) {
+    $("#uploadBtn").click();
+  }
+});
+// Add board by hitting "Enter" on keyboard
+$(".kanbanBoard-inputs").keypress(function (e) {
+  if (e.which == 13) {
+    $("#addBoardBtn").click();
+  }
+});
+// Sorting items in taskList(storage) and re-showing them via showTask() function
 $("#sortDateCreated").click(function (event) {
-  // alert("clicked");
   taskList.sort(compareDateCreated);
-  console.log(taskList.sort(compareDateCreated));
   console.log(taskList);
-  // $("#taskList").html.empty();
-  $("#taskList").innerHTML = "";
+  tasks.innerHTML = "<p id='emptyTaskList'>You haven\'t added any tasks yet.</p>";
+  taskList.forEach(task => {
+    showTask(task);
+  });
 });
 $("#sortDueDate").click(function (event) {
   taskList.sort(compareDueDate);
-  console.log(taskList.sort(compareDueDate));
   console.log(taskList);
-  $("#taskList").html.empty();
+  tasks.innerHTML = "<p id='emptyTaskList'>You haven\'t added any tasks yet.</p>";
+  taskList.forEach(task => {
+    showTask(task);
+  });
 });
 $("#sortPriorityRating").click(function (event) {
   taskList.sort(comparePriority);
-  console.log(taskList.sort(comparePriority));
   console.log(taskList);
-  $("#taskList").html.empty();
+  tasks.innerHTML = "<p id='emptyTaskList'>You haven\'t added any tasks yet.</p>";
   taskList.forEach(task => {
     showTask(task);
   });
 });
 $("#sortEstimatedTime").click(function (event) {
   taskList.sort(compareEstimatedTime);
-  console.log(taskList.sort(compareEstimatedTime));
   console.log(taskList);
-  // $("#taskList").html.empty();
-  // taskList.forEach((task) => {
-  // showTask(task);
-  // })
-  $("#taskList").innerHTML = "";
+  tasks.innerHTML = "<p id='emptyTaskList'>You haven\'t added any tasks yet.</p>";
+  taskList.forEach(task => {
+    showTask(task);
+  });
 });
-// a = {dueDate}
-// console.log(JSON.stringify(taskList));
-// console.log(JSON.stringify(taskList.sort(compareDueDate())));
-// const sortDateCreated = document.getElementById("sortDateCreated");
-// const sortDueDate = document.getElementById("sortDueDate");
-// const sortPriorityRating = document.getElementById("sortPriorityRating");
-// const sortEstimatedTime = document.getElementById("sortEstimatedTime");
-// sortDueDate.addEventListener("click", () => {
-// console.log(taskList);
-// console.log(taskList.sort(compareDueDate()));
-// })
+// Default columns for Kanban Board
 var columns = [{
   id: 'toDo',
   title: "To Do",
@@ -1083,19 +1069,19 @@ var columns = [{
   item: [],
   color: "#3dd66b"
 }];
+// Allowing editing on the board titles
 function editableBoardTitle() {
   document.querySelectorAll('.kanban-title-board').forEach(boardName => {
     boardName.setAttribute("contenteditable", "true");
     boardName.addEventListener("click", () => {
-      // event.preventDefault();
       let name = boardName.innerHTML.toString();
       console.log(name);
     });
   });
 }
+// Resizing board's width
 function resizeBoards() {
   document.querySelectorAll(".kanban-board").forEach(board => {
-    // console.log(JSON.stringify(kanbanBoard.boardContainer.length));
     let boardNum = kanbanBoard.boardContainer.length;
     let boardWidth = 100 / boardNum - 2;
     board.style.width = boardWidth.toString() + "%";
@@ -1104,8 +1090,8 @@ function resizeBoards() {
 var kanbanBoard = new jKanban({
   element: '#myKanban',
   // selector of the kanban container
-  // gutter           : '15px',                                    // gutter of the board
-  // widthBoard       : '250px',                                   // width of the board
+  // gutter           : '15px',                                  // gutter of the board
+  // widthBoard       : '250px',                                 // width of the board
   responsivePercentage: true,
   // if it is true I use percentage in the width of the boards and it is not necessary gutter and widthBoard
   dragItems: true,
@@ -1173,12 +1159,10 @@ $(document).ready(function () {
   }
 });
 const addBoardWrapperBtn = document.getElementById("addBoardWrapperBtn");
-// addBoardBtn.addEventListener("click", () => {
-// $(".kanbanBoard-inputs").addClass("open");
-// })
 const addBoardBtn = document.getElementById("addBoardBtn");
 const boardNameInput = document.getElementById("boardNameInput");
 const boardColorInput = document.getElementById("boardColorInput");
+// Event Listenter for adding a new board in Kanban Board
 addBoardBtn.addEventListener("click", () => {
   if (boardNameInput.value == "") {
     alert("Board title required");
@@ -1191,8 +1175,6 @@ addBoardBtn.addEventListener("click", () => {
     };
     kanbanBoard.addBoards([board]);
     resizeBoards();
-    // console.log(document.querySelector(".kanban-board[data-id='board-id-1'] > .kanban-board-header"));
-    // console.log(boardColorInput.value);
     let boardHeader = document.querySelector(".kanban-board[data-id='" + board.id + "'] > .kanban-board-header");
     boardHeader.style.backgroundColor = boardColorInput.value;
     let deleteBtn = document.createElement("button");
@@ -1216,7 +1198,7 @@ var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
 _parcelHelpers.defineInteropFlag(exports);
 class TaskStorage {
   constructor() {
-    // if item by key `tasks` is not defined JSON.parse return null, so I use `or empty array`
+    // if item by key `tasks` is not defined, is empty array
     this.tasks = JSON.parse(localStorage.getItem('tasks')) || [];
   }
   /*Creates a task and update the local storage*/
@@ -1264,7 +1246,7 @@ var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
 _parcelHelpers.defineInteropFlag(exports);
 class LabelStorage {
   constructor() {
-    // if item by key `tasks` is not defined JSON.parse return null, so I use `or empty array`
+    // if item by key `tasks` is not defined, is empty array
     this.labels = JSON.parse(localStorage.getItem('labels')) || [];
   }
   /*Creates a new label and updates the Local Storage*/
@@ -1295,7 +1277,6 @@ class LabelStorage {
         return this.labels[i].colour.toString();
       }
     }
-    // return -1;
     console.log("cannot find the label: " + name.toString());
   }
   labelIsNew(label) {
@@ -9963,7 +9944,6 @@ var define;
 
 },{}],"1ujtl":[function(require,module,exports) {
 require('../libraries/easytimer.js/dist/easytimer.min.js');
-// import '../libraries/circular-slider/dist/circular-slider.js';
 // MIT License
 // Copyright (c) 2018 Albert González
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -9989,18 +9969,18 @@ const pomoStartBtn = document.getElementById("pomo-startBtn");
 const pomoPauseBtn = document.getElementById("pomo-pauseBtn");
 const pomoStopBtn = document.getElementById("pomo-stopBtn");
 const pomoResetBtn = document.getElementById("pomo-resetBtn");
-const swStartBtn = document.getElementById("sw-startBtn");
-const swPauseBtn = document.getElementById("sw-pauseBtn");
-const swStopBtn = document.getElementById("sw-stopBtn");
-const swResetBtn = document.getElementById("sw-resetBtn");
-const swLapBtn = document.getElementById("sw-lapBtn");
-const lapList = document.getElementById("lapTimeList");
 const pomodoroDisplay = document.getElementById("pomodoroTime");
 const stopwatchDisplay = document.getElementById("stopwatchTime");
 const studyTimeInput = document.getElementById("studyTimeInput");
 const sbTimeInput = document.getElementById("sbTimeInput");
 const lbTimeInput = document.getElementById("lbTimeInput");
 const timerModalWhole = document.getElementById("timersModalWhole");
+const swStartBtn = document.getElementById("sw-startBtn");
+const swPauseBtn = document.getElementById("sw-pauseBtn");
+const swStopBtn = document.getElementById("sw-stopBtn");
+const swResetBtn = document.getElementById("sw-resetBtn");
+const swLapBtn = document.getElementById("sw-lapBtn");
+const lapList = document.getElementById("lapTimeList");
 $(document).ready(function () {
   $('input[id="tabP"]').click(function () {
     timerP.classList.add("active");
@@ -10012,10 +9992,6 @@ $(document).ready(function () {
   });
   $('#pomodoroTime .seconds').html(study);
 });
-// function showVal(newVal) {
-// console.log(newVal.toString());
-// }
-// new timer?
 var {Timer} = require('../libraries/easytimer.js/dist/easytimer');
 var study = 25;
 var shortBreak = 5;
@@ -10125,22 +10101,15 @@ pomodoro.addEventListener('started', function (e) {
 pomodoro.addEventListener('reset', function (e) {
   $('#pomodoroTime .minutes').html(pomodoro.getTimeValues().minutes);
   $('#pomodoroTime .seconds').html(pomodoro.getTimeValues().seconds);
-  // $('#pomodoroLoop').html(loop);
   $("#progress" + progressIndex.toString()).removeClass("progress-bar-animated");
   study = parseInt(studyTimeInput.value);
   shortBreak = parseInt(sbTimeInput.value);
   longBreak = parseInt(lbTimeInput.value);
 });
 pomodoro.addEventListener('paused', function (e) {
-  // $('#pomodoroTime .minutes').html(pomodoro.getTimeValues().minutes);
-  // $('#pomodoroTime .seconds').html(pomodoro.getTimeValues().seconds);
-  // $('#pomodoroLoop').html(loop);
   $("#progress" + (progressIndex % 8).toString()).removeClass("progress-bar-animated");
 });
 pomodoro.addEventListener('stopped', function (e) {
-  // $('#pomodoroTime .minutes').html(pomodoro.getTimeValues().minutes);
-  // $('#pomodoroTime .seconds').html(pomodoro.getTimeValues().seconds);
-  // $('#pomodoroLoop').html(loop);
   $(".progress-bar").removeClass("progress-bar-striped progress-bar-animated");
 });
 pomodoro.addEventListener('targetAchieved', function (e) {
@@ -10224,6 +10193,7 @@ $('#sw-resetBtn').click(function () {
     lapNum = 1;
   }
 });
+// Adding Lapped times when lap button is clicked
 var lapNum = 1;
 $('#sw-lapBtn').click(function () {
   let time = stopWatch.getTimeValues().toString(['minutes', 'seconds']);
@@ -11027,20 +10997,16 @@ var define;
 },{}],"2jNHT":[function(require,module,exports) {
 
 },{}],"2aL5o":[function(require,module,exports) {
-// MIT License
-
+require("jquery");
 // Copyright (c) 2020 Jarrett Retz
-
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -11048,221 +11014,92 @@ var define;
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-
-
-
-// // Specifies a function to execute when the DOM is fully loaded.
-// $(document).ready(function(){
-//     // adds a submit listened to our <form> element
-//     $("form").submit(async (event) => {
-//         // prevents the page from reloading on subject
-//         event.preventDefault();
-//         // adds the text 'Loading...' to our word 
-//         // data container for UX purposes
-//         $('#word-info').html('Loading...');
-//         // collects the value in the input form element
-//         // by the id on the element
-//         const word = $("#word-input").val();
-//         // creates a variable that represents our
-//         // word info container
-//         let wordInfoList = document.querySelector('#word-info');
-//         try {
-//             // asynchronously calls our custome function
-//             const data = await (await fetch(`http://localhost:9000/.netlify/functions/getWord?word=${word}`, { mode: 'cors'})).json();
-//             // logs no results if word data is not found
-//             if (data.length < 1) {
-//                 return wordInfoList.appendChild(document.createTextNode('No results matched.'));
-//             }
-//             // clears the word container if it had
-//             // previous data
-//             $('#word-info').empty();
-//             data.map(val => {
-//                 // creates parent li element
-//                 const li = document.createElement('li');
-//                 li.classList.add('my-4', 'p-4', 'list-item');
-//                 // loops over the values for each definition
-//                 val.map(property => {
-//                     if (property.label === 'definition') {
-//                         // creates new heading-3 element
-//                         const def = document.createElement('h3');
-//                         // adds text to the element
-//                         def.innerText = property.value;
-//                         // appends class value for styling
-//                         def.classList.add(['definition']);
-//                         // adds the element to our list item
-//                         li.appendChild(def);
-//                     } else if (property.isString) {
-//                         const partOfSpeech = document.createElement('small');
-//                         partOfSpeech.innerText = property.value;
-//                         partOfSpeech.classList.add('lead','font-italic');
-//                         li.appendChild(partOfSpeech);
-//                     } else {
-//                         const characteristic = document.createElement('dl');
-//                         characteristic.className = 'row';
-//                         const label = document.createElement('dt');
-//                         label.innerText = property.label;
-//                         label.className = 'col-sm-3';
-//                         const value = document.createElement('dd');
-//                         value.innerText = property.value.join(', ');
-//                         value.className = 'col-sm-9';
-//                         characteristic.appendChild(label);
-//                         characteristic.appendChild(value);
-//                         li.appendChild(characteristic);
-//                     }
-//                 })
-//                 // appends the list item fully formed to
-//                 // the word data container
-//                 wordInfoList.appendChild(li);
-//             })
-//         } catch (e) {
-//             // logs the error if one exists
-//             console.log(e);
-//             // displays message to user if there is an error
-//             $('#word-info').html('There was an error fetching the word data');
-//         }
-//     });
-// });
-
-// const settings = {
-// 	"async": true,
-// 	"crossDomain": true,
-// 	"url": "https://wordsapiv1.p.rapidapi.com/words/example",
-// 	"method": "GET",
-// 	"headers": {
-// 		"x-rapidapi-key": "1a22e3887bmshe53e197fd1cbcacp187fc3jsnce0fb7bfef1a",
-// 		"x-rapidapi-host": "wordsapiv1.p.rapidapi.com"
-// 	}
-// };
-
-// $.ajax(settings).done(function (response) {
-// 	console.log(response);
-// });
-
 const searchBtn = document.getElementById("dicSearchBtn");
 const searchInput = document.getElementById("searchBox");
-
 function wordSearch(word) {
-    var settings = {
-        "async": true,
-        "crossDomain": true,
-        "url": `https://wordsapiv1.p.rapidapi.com/words/${word}`,
-        "method": "GET",
-        "headers": {
-            "x-rapidapi-key": "1a22e3887bmshe53e197fd1cbcacp187fc3jsnce0fb7bfef1a",
-            "x-rapidapi-host": "wordsapiv1.p.rapidapi.com"
-        }
-    };
-
-    $.ajax(settings).done(function (response) {
-        console.log(response);
-        let resultLength = response.results.length;
-        $("#word").html(response.word);
-        $("#pronunciation").html(response.pronunciation.all);
-        let synonyms = [];
-        $("#definitions").empty();
-        for (let i = 0; i < resultLength; i++) {
-            let result = response.results[i];
-            let allResults = $("<div class='results'></div>")
-            let box = $("<div class='eachDefinition'></div>");
-            let def = $("<p class='definition'></p>").text(result.definition);
-            let mode = $("<p class='partOfSpeech'></p>").text(result.partOfSpeech);
-
-            box.append(mode);
-            box.append(def);
-            allResults.append(box);
-            let synonyms = $('<div class="synonyms"></div>');
-            if (result.hasOwnProperty('synonyms')) {
-                // for (let i=0;i<result.synonyms.length;i++) {
-                //     synonyms.push(result.synonyms[i]);
-
-                // }
-
-                if (result.synonyms.length > 4) {
-                    let seeMore = $("<button class='btn btn-outline-primary btn-sm seeMoreBtn'>SEE MORE</button>");
-                    synonyms.append(seeMore);
-
-                    seeMore.click(function() {
-                        synonyms.css('max-height', 'none');
-                        seeMore.css("display", "none");
-                        seeLess.css("display", "flex");
-                        // synonyms.css('background-color', 'black');
-                    })
-
-                    let seeLess = $("<button class='btn btn-outline-primary btn-sm seeLessBtn'>SEE LESS</button>");
-                    seeLess.css("display", "none");
-                    synonyms.append(seeLess);
-
-                    seeLess.click(function() {
-                        synonyms.css('max-height', '65px');
-                        // synonyms.css('background-color', 'black');
-                        seeLess.css("display", "none");
-                        seeMore.css("display", "flex");
-                    })
-                }
-
-                for (let i = 0; i < result.synonyms.length; i++) {
-                    let synonymBox = $("<button class='synonym btn btn-outline-primary btn-sm'></button>").text(result.synonyms[i]);
-                    synonyms.append(synonymBox);
-
-                    synonymBox.click(function () {
-                        let word = synonymBox.text();
-                        console.log(word);
-                        searchInput.value = word;
-                        searchBtn.click();
-                        // wordSearch()
-                    });
-                }
-
-                // seeMore.click(function() {
-                //     synonyms.css('max-height', '');
-                // })
-            }
-            allResults.append(synonyms);
-            $("#definitions").append(allResults);
-        }
-        // // console.log(synonyms);
-        // $('#synonyms').empty();
-        // for (let i=0;i<synonyms.length; i++) {
-        //     let synonymBox = $("<button class='synonym btn btn-outline-primary'></button>").text(synonyms[i]);
-        //     $('#synonyms').append(synonymBox);
-
-        //     synonymBox.click(function() {
-        //         let word = synonymBox.text();
-        //         console.log(word);
-        //         searchInput.value = word;
-        //         searchBtn.click();
-        //         // wordSearch()
-        //     });
+  var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": `https://wordsapiv1.p.rapidapi.com/words/${word}`,
+    "method": "GET",
+    "headers": {
+      "x-rapidapi-key": "1a22e3887bmshe53e197fd1cbcacp187fc3jsnce0fb7bfef1a",
+      "x-rapidapi-host": "wordsapiv1.p.rapidapi.com"
+    }
+  };
+  $.ajax(settings).done(function (response) {
+    console.log(response);
+    let resultLength = response.results.length;
+    $("#word").html(response.word);
+    $("#pronunciation").html(response.pronunciation.all);
+    let synonyms = [];
+    $("#definitions").empty();
+    for (let i = 0; i < resultLength; i++) {
+      let result = response.results[i];
+      let allResults = $("<div class='results'></div>");
+      let box = $("<div class='eachDefinition'></div>");
+      let def = $("<p class='definition'></p>").text(result.definition);
+      let mode = $("<p class='partOfSpeech'></p>").text(result.partOfSpeech);
+      box.append(mode);
+      box.append(def);
+      allResults.append(box);
+      let synonyms = $('<div class="synonyms"></div>');
+      if (result.hasOwnProperty('synonyms')) {
+        // for (let i=0;i<result.synonyms.length;i++) {
+        // synonyms.push(result.synonyms[i]);
         // }
-    });
-
-    $.ajax(settings).fail(function () {
-        console.log("No word found");
-        $('#word').html("No result found");
-    })
+        if (result.synonyms.length > 4) {
+          let seeMore = $("<button class='btn btn-outline-primary btn-sm seeMoreBtn'>SEE MORE</button>");
+          synonyms.append(seeMore);
+          seeMore.click(function () {
+            synonyms.css('max-height', 'none');
+            seeMore.css("display", "none");
+            seeLess.css("display", "flex");
+          });
+          let seeLess = $("<button class='btn btn-outline-primary btn-sm seeLessBtn'>SEE LESS</button>");
+          seeLess.css("display", "none");
+          synonyms.append(seeLess);
+          seeLess.click(function () {
+            synonyms.css('max-height', '65px');
+            // synonyms.css('background-color', 'black');
+            seeLess.css("display", "none");
+            seeMore.css("display", "flex");
+          });
+        }
+        for (let i = 0; i < result.synonyms.length; i++) {
+          let synonymBox = $("<button class='synonym btn btn-outline-primary btn-sm'></button>").text(result.synonyms[i]);
+          synonyms.append(synonymBox);
+          synonymBox.click(function () {
+            let word = synonymBox.text();
+            console.log(word);
+            searchInput.value = word;
+            searchBtn.click();
+          });
+        }
+      }
+      allResults.append(synonyms);
+      $("#definitions").append(allResults);
+    }
+  });
+  $.ajax(settings).fail(function () {
+    console.log("No word found");
+    $('#word').html("No result found");
+  });
 }
-
-
 searchBtn.addEventListener("click", function () {
-    let word = searchInput.value;
-    wordSearch(word);
-    // var request = new XMLHttpRequest();
+  let word = searchInput.value;
+  wordSearch(word);
+});
+// search a word in Dictionary by hitting "Enter" on keyboard
+$("#searchBox").keypress(function (e) {
+  if (e.which == 13) {
+    e.preventDefault();
+    $("#dicSearchBtn").click();
+  }
+});
 
-    // request.open('GET', `https://api.dictionaryapi.dev/api/v2/entries/en_UK/${word}`);
-
-    // request.onload = function() {
-    //     console.log(this.response);
-    // }
-})
-
-},{}],"6m8Cd":[function(require,module,exports) {
+},{"jquery":"6Oaih"}],"6m8Cd":[function(require,module,exports) {
 const musicPlayer = document.getElementById("musicPlayer");
-
-// $(window).on("click", function(e) {
-//     musicPlayer.classList.remove('show');
-//   });
-
-$()
 
 $("#myKanban").click(function(event) {
     $("#musicPlayer").removeClass('show');

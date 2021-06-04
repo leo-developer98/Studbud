@@ -18,24 +18,16 @@ var estimatedTime = document.getElementById("et");
 var labelName = document.getElementById("newLabelInput");
 var labelColour = document.getElementById("labelColourInput");
 
-// var completionStatus = document.getElementById("cs");
-
-// var y = priorityRating.options;
-// var x = priorityRating.selectedIndex;
-// var prIndex = priorityRating.options[priorityRating.selectedIndex].index;
-
 Date.prototype.toDateInputValue = (function () {
   var local = new Date(this);
   local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
   return local.toJSON().slice(0, 10);
 });
 
-
 const addBtn = document.getElementById('addBtn');
 const addPage = document.getElementById('addTask');
 const uploadBtn = document.getElementById('uploadBtn');
 const closeBtn = document.getElementById('closeAdd');
-
 const taskBtn = document.querySelector('.task_btn');
 const kanban = document.getElementById('kanban');
 
@@ -57,7 +49,6 @@ taskBtn.addEventListener('click', () => {
   }
 })
 
-
 $("#myKanban").click(function(event) {
   // console.log(event.target);
   // Disable closing tasklist when the following elements were clicked
@@ -70,21 +61,6 @@ $("#myKanban").click(function(event) {
     taskOpen = false;
   }
 })
-
-// // close Task List when main page is clicked
-// kanban.addEventListener('click', function (event) {
-//   // alert($(event.target).attr('class'));
-//   if($(event.target).hasClass('kanban-board')){
-//     alert("triggered");
-//   }
-//   if (taskOpen) {
-//     taskBtn.classList.remove('open');
-//     taskAll.classList.remove('open');
-//     taskWrapper.classList.remove('open');
-//     kanban.classList.remove('open');
-//     taskOpen = false;
-//   }
-// })
 
 // close Add Tasks when Task Grid is clicked
 taskAll.onclick = function () {
@@ -141,9 +117,7 @@ uploadBtn.addEventListener("click", function (event) {
   }
 })
 
-
 // var taskList = [];
-
 // localStorage.setItem('tasks', JSON.stringify(taskList));
 
 // Object.keys(localStorage).forEach(function (key) {
@@ -157,8 +131,6 @@ uploadBtn.addEventListener("click", function (event) {
 //   let taskObj = JSON.parse(task);
 //   showTask(taskObj);
 // });
-
-
 
 // Task Storage
 const taskStorage = new TaskStorage();
@@ -179,19 +151,6 @@ $(document).ready(function () {
   updateLabelDropdown();
   editableBoardTitle();
   resizeBoards();
-
-  // let toDo = {id: 'toDo', title: "To Do", item: [], color: "#178bff" };
-  // let inProgress = {id: 'inProgress', title:"In Progress", item: [], color: "#178bff" };
-  // let done = {id: 'done', title: "Done", item: [], color: "#3dd66b"};
-
-  // // kanbanStorage.addColumn(toDo);
-  // // kanbanStorage.addColumn(inProgress);
-  // // kanbanStorage.addColumn(done);
-  // // console.log(JSON.stringify(kanbanStorage.columns));
-
-  // kanbanColumns.push(toDo);
-  // kanbanColumns.push(inProgress);
-  // kanbanColumns.push(done);
 });
 
 // Updates the Empty Status for Task List and Task Label Dropdown
@@ -260,6 +219,7 @@ function updateLabelDropdown() {
   updateEmpty();
 }
 
+// Add task in the local storage & call showTask()
 function addTask(taskDescription, dueDate, completionTime, priorityRating, priorityRatingIndex, estimatedTime, completionStatus, label) {
   let task = {
     id: Date.now(),
@@ -281,7 +241,6 @@ function addTask(taskDescription, dueDate, completionTime, priorityRating, prior
 
   else {
     let key = (task.taskDescription).toString();
-
     // If created task doesn't exits (task name):
     if (taskStorage.getIndexByName(key) === -1) {
       // If there is no label input, empty label for the task
@@ -298,15 +257,13 @@ function addTask(taskDescription, dueDate, completionTime, priorityRating, prior
       alert("Task " + key + " is already exists in the list")
     }
   }
-
   closeBtn.click();
 }
 
+// showing task in regards with its properties
 function showTask(task) {
   updateLabelDropdown();
-  // taskList.forEach((task) => {
 
-  // })
   let item = document.createElement("div");
   item.setAttribute('class', 'card');
   item.classList.add('task_item');
@@ -335,27 +292,30 @@ function showTask(task) {
       id: task.taskDescription,
       title: task.taskDescription + "<button type='button' class='btn btn-outline-danger btn-sm kanbanItemBtn' id=" + task.taskDescription + "><i class='fas fa-trash-alt'></i></button>"
     }
-
     kanbanBoard.addElement("done", element);
-    // kanbanStorage.addItem("done", element);
+    
+    // Disable the done button
     doneBtn.setAttribute("disabled", "true");
+
+    // If task deleted from the kanban board, remove the task from the board and enable done button
     document.querySelectorAll('.kanbanItemBtn').forEach((button) => {
       button.addEventListener("click", () => {
         kanbanBoard.removeElement(button.id);
-        // kanbanStorage.removeItem()
         doneBtn.removeAttribute("disabled");
       })
-
     })
-
-
   })
+
+  let left_body = document.createElement("div");
+  let right_body = document.createElement("div");
+  left_body.classList.add("task-left");
+  right_body.classList.add("task-right");
+
   item_top.appendChild(doneBtn);
   item_top.appendChild(item_title);
-
   item_body.appendChild(item_top);
 
-  // Add details only when they exist
+  // Task label shown when theres an input value
   if (task.hasOwnProperty('label') && task['label']) {
     if (task.label !== null) {
       let labelName = task.label.name;
@@ -366,9 +326,11 @@ function showTask(task) {
       item_tag.appendChild(document.createTextNode(labelName));
       item_tag.style.backgroundColor = task.label.colour;
       item_top.appendChild(item_tag);
+      // item_top.appendChild(item_tag);
     }
   }
 
+  // Due date shown when theres an input value
   if (task.hasOwnProperty('dueDate') && task['dueDate']) {
     let dd = document.createElement("div");
     dd.setAttribute('class', 'task_details');
@@ -377,15 +339,16 @@ function showTask(task) {
     let item_dd = document.createElement("p");
     item_dd.setAttribute('class', 'card-text');
     item_dd.appendChild(document.createTextNode(task.dueDate));
-
     dd.appendChild(item_dd);
-    item_body.appendChild(dd);
+    left_body.appendChild(dd);
   }
 
+  // Priority rating shown when theres an input value
   if (task.hasOwnProperty('priorityRating') && task['priorityRating']) {
     let pr = document.createElement("div");
     pr.setAttribute('class', 'task_details');
 
+    // add classes corresponding to the priority rating input
     if (task['priorityRating'] == "Low") {
       pr.classList.add("low_pr");
     }
@@ -395,30 +358,31 @@ function showTask(task) {
     else if (task['priorityRating'] == "High") {
       pr.classList.add("high_pr");
     }
+
     pr.innerHTML = '<i class="fas fa-flag"></i>';
 
     let item_pr = document.createElement("p");
     item_pr.setAttribute('class', 'card-text');
     item_pr.appendChild(document.createTextNode(task.priorityRating));
-
     pr.appendChild(item_pr);
-    item_body.appendChild(pr);
+    left_body.appendChild(pr);
   }
 
-  // add estimated time input when theres an input value
+  // Estimated time shown when theres an input value
   if (task.hasOwnProperty('estimatedTime') && task['estimatedTime']) {
     let et = document.createElement("div");
     et.setAttribute('class', 'task_details');
     et.innerHTML = '<i class="far fa-clock"></i>';
 
     let item_et = document.createElement("p");
+
     item_et.setAttribute('class', 'card-text');
     item_et.appendChild(document.createTextNode(task.estimatedTime + " hours"));
-
     et.appendChild(item_et);
-    item_body.appendChild(et);
+    left_body.appendChild(et);
   }
 
+  item_body.appendChild(left_body);
 
   let buttons = document.createElement("span");
   buttons.classList.add("btn-group");
@@ -426,13 +390,10 @@ function showTask(task) {
   buttons.classList.add("task_buttons");
   buttons.setAttribute("role", "group");
 
-  // Create "Move to Kanban" Button
+  // "Move to Kanban" Button for each tasks
   let toDoButton = document.createElement("button");
-  // let toDoButtonText = document.createTextNode("To Do");
-  // toDoButton.appendChild(toDoButtonText);
 
   toDoButton.innerHTML = "<i class='fas fa-chevron-right'></i>";
-
   toDoButton.setAttribute('class', "btn btn-outline-primary btn-sm");
   toDoButton.classList.add("moveBtn");
 
@@ -442,25 +403,20 @@ function showTask(task) {
       id: task.taskDescription,
       title: task.taskDescription + "<button type='button' class='btn btn-outline-danger btn-sm kanbanItemBtn' id=" + task.taskDescription + "><i class='fas fa-trash-alt'></i></button>"
     }
-    kanbanBoard.addElement("toDo", element);
 
+    kanbanBoard.addElement("toDo", element);
     toDoButton.setAttribute("disabled", "true");
 
     document.querySelectorAll('.kanbanItemBtn').forEach((button) => {
       button.addEventListener("click", () => {
         kanbanBoard.removeElement(button.id);
         toDoButton.removeAttribute("disabled");
-        // if (confirm("Remove the task from task list?")) {
-        //   delButton.click()
-        // }
       })
     })
   })
 
-  // add Delete Button
+  // Delete Button for each tasks
   let delButton = document.createElement("button");
-  // let delButtonText = document.createTextNode("Delete");
-  // delButton.appendChild(delButtonText);
   delButton.innerHTML = "<i class='fas fa-trash-alt'></i></button>";
 
   delButton.setAttribute('class', "btn btn-outline-danger btn-sm");
@@ -470,14 +426,8 @@ function showTask(task) {
   // delButton.setAttribute("title", "Delete Task")
   // $('[data-toggle="tooltip"]').tooltip();
 
-
   delButton.addEventListener("click", function (event) {
     event.preventDefault();
-    // let id = event.target.parentElement.getAttribute('data-id');
-    // let index = taskList.findIndex(task => task.id === Number(id));
-    // removeItemFromArray(taskList, index);
-    // console.log(taskList);
-
     if (confirm('Are you sure you want to delete this task from task list?')) {
       taskStorage.delete(task.taskDescription.toString());
       item.remove();
@@ -489,16 +439,17 @@ function showTask(task) {
   buttons.appendChild(delButton);
   // item_body.appendChild(buttons);
 
+  right_body.appendChild(buttons);
+  item_body.appendChild(right_body);  
   item.appendChild(item_body);
-  item.appendChild(buttons);
+  // item.appendChild(buttons);
   tasks.appendChild(item);
 
   form.reset();
 }
 
 
-// Helper functions
-
+// Helper Compare functions for sorting 
 function compareDateCreated(a,b) {
   // if (a.id < b.id) {
   //   return -1;
@@ -590,90 +541,78 @@ function removeItemFromArray(arr, index) {
   return arr;
 }
 
+
+// Add task by hitting "Enter" on keyboard
+$(".addTaskInputs").keypress(function(e) {
+  if (e.which == 13) {
+    $("#uploadBtn").click();
+  }
+})
+// Add board by hitting "Enter" on keyboard
+$(".kanbanBoard-inputs").keypress(function(e) {
+  if (e.which == 13) {
+    $("#addBoardBtn").click();
+  }
+})
+
+// Sorting items in taskList(storage) and re-showing them via showTask() function 
 $("#sortDateCreated").click(function(event) {
-  // alert("clicked");
-  taskList.sort(compareDateCreated)
-  console.log(taskList.sort(compareDateCreated));
+  taskList.sort(compareDateCreated);
   console.log(taskList);
-  // $("#taskList").html.empty();
-  $("#taskList").innerHTML = "";
-  // taskList.forEach((task) => {
-  //   showTask(task);
-  // })
+  tasks.innerHTML = "<p id='emptyTaskList'>You haven\'t added any tasks yet.</p>";
+  taskList.forEach((task) => {
+    showTask(task);
+  })
 })
 
 $("#sortDueDate").click(function(event) {
-  taskList.sort(compareDueDate)
-  console.log(taskList.sort(compareDueDate));
+  taskList.sort(compareDueDate);
   console.log(taskList);
-  $("#taskList").html.empty();
+  tasks.innerHTML = "<p id='emptyTaskList'>You haven\'t added any tasks yet.</p>";
+  taskList.forEach((task) => {
+    showTask(task);
+  })
 })
 
 $("#sortPriorityRating").click(function(event) {
-  taskList.sort(comparePriority)
-  console.log(taskList.sort(comparePriority));
+  taskList.sort(comparePriority);
   console.log(taskList);
-  $("#taskList").html.empty();
+  tasks.innerHTML = "<p id='emptyTaskList'>You haven\'t added any tasks yet.</p>";
   taskList.forEach((task) => {
     showTask(task);
   })
 })
 
 $("#sortEstimatedTime").click(function(event) {
-  taskList.sort(compareEstimatedTime)
-  console.log(taskList.sort(compareEstimatedTime));
+  taskList.sort(compareEstimatedTime);
   console.log(taskList);
-  // $("#taskList").html.empty();
-  // taskList.forEach((task) => {
-  //   showTask(task);
-  // })
-  $("#taskList").innerHTML = "";
+  tasks.innerHTML = "<p id='emptyTaskList'>You haven\'t added any tasks yet.</p>";
+  taskList.forEach((task) => {
+    showTask(task);
+  })
 })
 
-
-// a = {dueDate}
-// console.log(JSON.stringify(taskList));
-// console.log(JSON.stringify(taskList.sort(compareDueDate())));
-
-// const sortDateCreated = document.getElementById("sortDateCreated");
-// const sortDueDate = document.getElementById("sortDueDate");
-// const sortPriorityRating = document.getElementById("sortPriorityRating");
-// const sortEstimatedTime = document.getElementById("sortEstimatedTime");
-
-// sortDueDate.addEventListener("click", () => {
-//   console.log(taskList);
-//   console.log(taskList.sort(compareDueDate()));
-// })
-
-
+// Default columns for Kanban Board
 var columns = [
   { id: 'toDo', title: "To Do", item: [], color: "#178bff" },
   { id: 'inProgress', title: "In Progress", item: [], color: "#ffc31e" },
   { id: 'done', title: "Done", item: [], color: "#3dd66b" }
 ];
 
+// Allowing editing on the board titles
 function editableBoardTitle() {
   document.querySelectorAll('.kanban-title-board').forEach((boardName) => {
     boardName.setAttribute("contenteditable", "true");
     boardName.addEventListener("click", () => {
-      // event.preventDefault();
       let name = boardName.innerHTML.toString();
       console.log(name);
-      // let input = document.createElement("input");
-      // input.setAttribute("type", "text");
-      // input.setAttribute("placeholder", name);
-      // input.classList.add("form-control", "form-control-sm");
-      // boardName.innerHTML = "";
-      // boardName.appendChild(input);
-      // boardName.innerHTML = "<input type='text' placeholder='"+name+"'class='form-control form-control-sm'>"
-      // kanbanBoard.addForm("toDo", input);
     })
   })
 }
 
+// Resizing board's width
 function resizeBoards() {
   document.querySelectorAll(".kanban-board").forEach((board) => {
-    // console.log(JSON.stringify(kanbanBoard.boardContainer.length));
     let boardNum = kanbanBoard.boardContainer.length;
     let boardWidth = (100 / (boardNum)) - 2;
     board.style.width = boardWidth.toString() + "%";
@@ -681,13 +620,13 @@ function resizeBoards() {
 }
 
 var kanbanBoard = new jKanban({
-  element: '#myKanban',                                  // selector of the kanban container
-  // gutter           : '15px',                                    // gutter of the board
-  // widthBoard       : '250px',                                   // width of the board
-  responsivePercentage: true,                                      // if it is true I use percentage in the width of the boards and it is not necessary gutter and widthBoard
-  dragItems: true,                                         // if false, all items are not draggable
-  boards: [],                                      // json of boards
-  dragBoards: true,                                         // the boards are draggable, if false only item can be dragged
+  element: '#myKanban',                                          // selector of the kanban container
+  // gutter           : '15px',                                  // gutter of the board
+  // widthBoard       : '250px',                                 // width of the board
+  responsivePercentage: true,                                    // if it is true I use percentage in the width of the boards and it is not necessary gutter and widthBoard
+  dragItems: true,                                               // if false, all items are not draggable
+  boards: [],                                                    // json of boards
+  dragBoards: true,                                              // the boards are draggable, if false only item can be dragged
   itemAddOptions: {
     enabled: false,                                              // add a button to board for easy item creation
     content: '+',                                                // text or html content of the board button   
@@ -695,21 +634,21 @@ var kanbanBoard = new jKanban({
     footer: false                                                // position the button on footer
   },
   itemHandleOptions: {
-    enabled: false,                                 // if board item handle is enabled or not
-    handleClass: "item_handle",                         // css class for your custom item handle
-    customCssHandler: "drag_handler",                        // when customHandler is undefined, jKanban will use this property to set main handler class
-    customCssIconHandler: "drag_handler_icon",                   // when customHandler is undefined, jKanban will use this property to set main icon handler class. If you want, you can use font icon libraries here
+    enabled: false,                                               // if board item handle is enabled or not
+    handleClass: "item_handle",                                   // css class for your custom item handle
+    customCssHandler: "drag_handler",                             // when customHandler is undefined, jKanban will use this property to set main handler class
+    customCssIconHandler: "drag_handler_icon",                    // when customHandler is undefined, jKanban will use this property to set main icon handler class. If you want, you can use font icon libraries here
     customHandler: "<span class='item_handle'>+</span> %title% "  // your entirely customized handler. Use %title% to position item title 
-    // any key's value included in item collection can be replaced with %key%
+                                                                  // any key's value included in item collection can be replaced with %key%
   },
-  click: function (el) { },                             // callback when any board's item are clicked
-  context: function (el, event) { },                      // callback when any board's item are right clicked
-  dragEl: function (el, source) { },                     // callback when any board's item are dragged
-  dragendEl: function (el) { },                             // callback when any board's item stop drag
-  dropEl: function (el, target, source, sibling) { },    // callback when any board's item drop in a board
-  dragBoard: function (el, source) { },                     // callback when any board stop drag
-  dragendBoard: function (el) { },                             // callback when any board stop drag
-  buttonClick: function (el, boardId) { }                      // callback when the board's button is clicked
+  click: function (el) { },                                       // callback when any board's item are clicked
+  context: function (el, event) { },                              // callback when any board's item are right clicked
+  dragEl: function (el, source) { },                              // callback when any board's item are dragged
+  dragendEl: function (el) { },                                   // callback when any board's item stop drag
+  dropEl: function (el, target, source, sibling) { },             // callback when any board's item drop in a board
+  dragBoard: function (el, source) { },                           // callback when any board stop drag
+  dragendBoard: function (el) { },                                // callback when any board stop drag
+  buttonClick: function (el, boardId) { }                         // callback when the board's button is clicked
 });
 
 $(document).ready(function () {
@@ -738,30 +677,25 @@ $(document).ready(function () {
 })
 
 const addBoardWrapperBtn = document.getElementById("addBoardWrapperBtn");
-
-// addBoardBtn.addEventListener("click", () => {
-//   $(".kanbanBoard-inputs").addClass("open");
-// })
-
 const addBoardBtn = document.getElementById("addBoardBtn");
 const boardNameInput = document.getElementById("boardNameInput");
 const boardColorInput = document.getElementById("boardColorInput");
 
+// Event Listenter for adding a new board in Kanban Board
 addBoardBtn.addEventListener("click", () => {
   if (boardNameInput.value == "") {
     alert("Board title required");
   } else {
     let boardTitle = boardNameInput.value.toString()
-
     let board = {
       id: boardTitle,
       title: boardTitle,
       item: []
     }
+
     kanbanBoard.addBoards([board]);
     resizeBoards();
-    // console.log(document.querySelector(".kanban-board[data-id='board-id-1'] > .kanban-board-header"));
-    // console.log(boardColorInput.value);
+
     let boardHeader = document.querySelector(".kanban-board[data-id='" + board.id + "'] > .kanban-board-header");
     boardHeader.style.backgroundColor = boardColorInput.value;
 
@@ -782,5 +716,3 @@ addBoardBtn.addEventListener("click", () => {
     editableBoardTitle();
   }
 })
-
-// console.log(kanbanBoard);

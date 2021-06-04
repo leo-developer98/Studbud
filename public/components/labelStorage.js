@@ -1,6 +1,6 @@
 export default class LabelStorage {
     constructor() {
-      // if item by key `tasks` is not defined JSON.parse return null, so I use `or empty array`
+      // if item by key `tasks` is not defined, is empty array
       this.labels = JSON.parse(localStorage.getItem('labels')) || [];
     }
   
@@ -10,7 +10,6 @@ export default class LabelStorage {
       label.colour = colour;
 
       let index = this.getIndex(label);
-  
       if (index === -1) {
         this.labels.push(label);
         localStorage.setItem('labels', JSON.stringify(this.labels));
@@ -27,7 +26,6 @@ export default class LabelStorage {
           return i;
         }
       }
-  
       return -1;
     }
 
@@ -37,9 +35,7 @@ export default class LabelStorage {
           return this.labels[i].colour.toString();
         } 
       }
-      
-        // return -1;
-        console.log("cannot find the label: " + name.toString());
+      console.log("cannot find the label: " + name.toString());
     }
 
     labelIsNew(label) {
@@ -52,16 +48,14 @@ export default class LabelStorage {
           return false;
         }
       }
-
       return true;
     }
   
     update(label) {
       let index = this.getIndex(label);
-  
+
       if (index !== -1) {
         this.labels[index] = label;
-  
         localStorage.setItem('labels', JSON.stringify(this.labels));
       } else {
         console.log("Label doesn't exist in the list")
@@ -70,10 +64,8 @@ export default class LabelStorage {
   
     delete(label) {
       let index = this.getIndex(label);
-  
       if (index !== -1) {
         this.labels.splice(index, 1);
-  
         localStorage.setItem('labels', JSON.stringify(this.labels));
       } else {
         console.log("Label doesn't exist in the list")

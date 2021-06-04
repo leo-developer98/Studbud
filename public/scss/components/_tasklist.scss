@@ -26,7 +26,6 @@
             overflow-y: scroll;
             overflow-x: hidden;
             margin-top: 10px;
-            // transition: all 0.25s ease-in-out;
 
             &.open {
                 background-color: rgb(56, 56, 56);
@@ -75,42 +74,48 @@
                         }
                     }
                 }
-
-                .task_details {
-                    // display: inline-block;
-                    color: rgb(56, 56, 56);
-                    width: 60%;
-                    .card-text {
-                        margin-left: 10px;
-                    }
-
-                    &.low_pr {
-                        color: rgb(41, 62, 255);
-                    }
-
-                    &.medium_pr {
-                        color: rgb(252, 181, 0);
-                    }
-
-                    &.high_pr {
-                        color: rgb(201, 20, 0);
-                    }
-
-                    i {
-                        display: inline-block;
-                    }
-
-                    p {
-                        display: inline-block;
+                .task-left {
+                    width: 70%;
+                    display: inline-block;
+                    .task_details {
                         color: rgb(56, 56, 56);
+                        .card-text {
+                            margin-left: 10px;
+                        }
+    
+                        &.low_pr {
+                            color: rgb(41, 62, 255);
+                        }
+    
+                        &.medium_pr {
+                            color: rgb(252, 181, 0);
+                        }
+    
+                        &.high_pr {
+                            color: rgb(201, 20, 0);
+                        }
+    
+                        i {
+                            display: inline-block;
+                        }
+    
+                        p {
+                            display: inline-block;
+                            color: rgb(56, 56, 56);
+                        }
                     }
                 }
 
-                .task_buttons {
-                    display: flex;
-                    float: right;
-                    // margin-top: 10px;
-                    // width: 100%;
+                .task-right {
+                    display: inline-block;
+                    flex-direction: column;
+                    width: 30%;
+                    .task_buttons {
+                        display: flex;
+                        align-self: flex-end;
+                        // margin-top: 10px;
+                        // width: 100%;
+                    }
                 }
             }
         }
@@ -253,15 +258,6 @@
 
     #kanbanAddInputGroup {
         width: 25%;
-
-        // .kanbanBoard-inputs {
-        //     width: 0;
-        //     transition: all 1s ease-in-out;
-        //     &.open {
-        //         display: flex;
-        //         width: 100%;
-        //     }
-        // }
     }
 
     #myKanban {
@@ -284,15 +280,12 @@
 
 .kanban-board {
     height: 620px;
-    // height: 100%;
-    // box-shadow:5px 5px 5px rgb(158, 158, 158);
 
     .kanban-title-board {
         color: white;
     }
 
     &[data-id="toDo"] {
-        // border: 10px solid #6b86ff;
         .kanban-board-header {
             background-color: #178bff;
         }
@@ -302,14 +295,12 @@
         .kanban-board-header {
             background-color: #ffc31e;
         }
-        // border: 10px solid #ffc43b;
     }
 
     &[data-id="done"] {
         .kanban-board-header {
             background-color: #3dd66b;
         }
-        // border: 10px solid #b8ff9c;
     }
 
     .boardDeleteBtn {
@@ -361,38 +352,3 @@
         }
     }
 }
-
-// From jKanban example:
-
-// #myKanban {
-//     overflow-x: auto;
-//     padding: 0;
-// }
-
-// .success {
-//     background: #00b961;
-// }
-
-// .info {
-//     background: #2a92bf;
-// }
-
-// .warning {
-//     background: #f4ce46;
-// }
-
-// .error {
-//     background: #fb7d44;
-// }
-
-// .custom-button {
-//     background-color: #4caf50;
-//     border: none;
-//     color: white;
-//     padding: 7px 15px;
-//     margin: 10px;
-//     text-align: center;
-//     text-decoration: none;
-//     display: inline-block;
-//     font-size: 16px;
-// }
