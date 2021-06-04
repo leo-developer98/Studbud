@@ -6,6 +6,7 @@
     transition: all 0.25s ease-in-out;
     background-color: rgb(225, 225, 225);
     left: -270px;
+    // top: 56px;
 
     &.open {
         left: 0px;
@@ -13,7 +14,9 @@
 
     #taskgrid {
         display: block;
-
+        height: calc(100vh - 132px);
+        
+        top: 56px;
         h3 {
             margin: 10px 20px;
         }
@@ -21,11 +24,12 @@
         #taskList {
             display: block;
             background-color: rgb(225, 225, 225);
-            height: 650px;
+            height: calc(100vh - 132px);
             width: 100%;
             overflow-y: scroll;
             overflow-x: hidden;
             margin-top: 10px;
+            margin-bottom: 10px;
 
             &.open {
                 background-color: rgb(56, 56, 56);
@@ -41,6 +45,10 @@
                 border-radius: 8px;
                 background-color: whitesmoke;
                 list-style: none;
+
+                &:last-of-type {
+                    margin-bottom: 0;
+                }
 
                 .item_top {
                     display: block;
@@ -161,19 +169,23 @@
 #uploadBtnContainer {
     display: flex;
     width: 270px;
+    height: 55px;
     position: absolute;
-    z-index: 1;
+    z-index: 3;
     bottom: 26px;
-    justify-content: center;
+    justify-content: space-around;
     align-items: center;
 
     #addBtn {
         display: inline-block;
+        width: 56px;
+        height: 55px;
         justify-content: center;
         align-items: center;
         color: #43519d;
         cursor: pointer;
-        padding: 0 4px;
+        padding-left: 4px;
+        padding-right: 4px;
         background-color: whitesmoke;
         border-radius: 50%;
         border: 10px solid whitesmoke;
@@ -191,15 +203,17 @@
 
     #uploadBtn {
         display: none;
-
         &.open {
             display: inline-block;
+            width: 56px;
+            height: 55px;
             justify-content: center;
             align-items: center;
             color: #43519d;
             cursor: pointer;
             background-color: whitesmoke;
-            padding: 0 4px;
+            padding-left: 4px;
+            padding-right: 4px;
             border-radius: 50%;
             border: 10px solid whitesmoke;
 
@@ -220,15 +234,19 @@
     bottom: 0;
     background-color: #252e59;
     align-items: center;
+    flex-direction: row;
+    justify-content: center;
+    // padding:auto;
 
     #sortTasksBtn {
-        display: flex;
         align-items: center;
         justify-content: center;
         background-color: #252e59;
         color: white;
         border: none;
-        height: 60%;
+        margin-left: auto;
+        margin-right: 5px;
+        // height: 60%;
         float: right;
     }
 }

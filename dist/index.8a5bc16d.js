@@ -1253,6 +1253,7 @@ class LabelStorage {
   create(label, name, colour) {
     label.name = name;
     label.colour = colour;
+    label.links = [];
     let index = this.getIndex(label);
     if (index === -1) {
       this.labels.push(label);
@@ -10046,7 +10047,7 @@ lbTimeInput.addEventListener("input", () => {
 // Pomodoro Timer
 var pomodoro = new Timer();
 $('#pomo-startBtn').click(function () {
-  console.log(study);
+  // console.log(study);
   pomodoro.start({
     countdown: true,
     startValues: {
@@ -11102,7 +11103,10 @@ $("#searchBox").keypress(function (e) {
 const musicPlayer = document.getElementById("musicPlayer");
 
 $("#myKanban").click(function(event) {
-    $("#musicPlayer").removeClass('show');
+    if ($("#musicPlayer").hasClass('show')) {
+        $('#musicPlayerButton').click();
+        // $("#musicPlayer").removeClass('show');
+    }
 })
 },{}]},["27Rzb","4OAbU"], "4OAbU", "parcelRequiref77e")
 

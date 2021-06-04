@@ -8,6 +8,7 @@ export default class LabelStorage {
     create(label, name, colour) {
       label.name = name;
       label.colour = colour;
+      label.links = [];
 
       let index = this.getIndex(label);
       if (index === -1) {

@@ -118,7 +118,7 @@ lbTimeInput.addEventListener("input", () => {
 var pomodoro = new Timer();
 
 $('#pomo-startBtn').click(function () {
-    console.log(study);
+    // console.log(study);
     pomodoro.start({ countdown: true, startValues: { seconds: study }, target: { minutes: 0 } });
     pomoStartBtn.classList.remove("running");
     pomoPauseBtn.classList.add("running");
