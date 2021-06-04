@@ -796,6 +796,8 @@ function addTask(taskDescription, dueDate, completionTime, priorityRating, prior
 }
 function showTask(task) {
   updateLabelDropdown();
+  // taskList.forEach((task) => {
+  // })
   let item = document.createElement("div");
   item.setAttribute('class', 'card');
   item.classList.add('task_item');
@@ -861,9 +863,9 @@ function showTask(task) {
     pr.setAttribute('class', 'task_details');
     if (task['priorityRating'] == "Low") {
       pr.classList.add("low_pr");
-    } else if (task['priorityRating']) {
+    } else if (task['priorityRating'] == "Medium") {
       pr.classList.add("medium_pr");
-    } else if (task['priorityRating']) {
+    } else if (task['priorityRating'] == "High") {
       pr.classList.add("high_pr");
     }
     pr.innerHTML = '<i class="fas fa-flag"></i>';
@@ -1026,21 +1028,33 @@ $("#sortDateCreated").click(function (event) {
   taskList.sort(compareDateCreated);
   console.log(taskList.sort(compareDateCreated));
   console.log(taskList);
+  // $("#taskList").html.empty();
+  $("#taskList").innerHTML = "";
 });
 $("#sortDueDate").click(function (event) {
   taskList.sort(compareDueDate);
   console.log(taskList.sort(compareDueDate));
   console.log(taskList);
+  $("#taskList").html.empty();
 });
 $("#sortPriorityRating").click(function (event) {
   taskList.sort(comparePriority);
   console.log(taskList.sort(comparePriority));
   console.log(taskList);
+  $("#taskList").html.empty();
+  taskList.forEach(task => {
+    showTask(task);
+  });
 });
 $("#sortEstimatedTime").click(function (event) {
   taskList.sort(compareEstimatedTime);
   console.log(taskList.sort(compareEstimatedTime));
   console.log(taskList);
+  // $("#taskList").html.empty();
+  // taskList.forEach((task) => {
+  // showTask(task);
+  // })
+  $("#taskList").innerHTML = "";
 });
 // a = {dueDate}
 // console.log(JSON.stringify(taskList));
