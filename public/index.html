@@ -24,18 +24,20 @@
     <!-- Navigation -->
     <nav class="top_nav">
         <div class="task_btn"><i class="fas fa-list"></i></div>
-        <button type="button" id="pTimerIndicator" class="btn btn-danger">
-            <i class="fas fa-hourglass"></i>
-            <span class="indicatorTimes">
-                <span class="minutes">12</span><span>:</span><span class="seconds">12</span>
-            </span>
-        </button>
-        <button type="button" id="sTimerIndicator" class="btn btn-danger">
-            <i class="fas fa-stopwatch"></i>
-            <span class="indicatorTimes">
-                00:00
-            </span>
-        </button>
+        <div id="timerIndicators"> 
+            <button type="button" id="pTimerIndicator" class="btn btn-danger btn-sm">
+                <i class="fas fa-hourglass"></i>
+                <span class="indicatorTimes">
+                    00:00
+                </span>
+            </button>
+            <button type="button" id="sTimerIndicator" class="btn btn-danger btn-sm">
+                <i class="fas fa-stopwatch"></i>
+                <span class="indicatorTimes">
+                    00:00
+                </span>
+            </button>
+        </div>
         <ul class="nav_links">
             <li class="nav_item"><a href="#home" class="active">Home</a></li>
             <li class="nav_item"><button type="button" class="btn nav_btn" data-bs-toggle="modal"

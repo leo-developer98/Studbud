@@ -149,31 +149,39 @@ nav .task_btn.open {
   background-color: #252e59;
   border-color: #252e59;
 }
-nav #pTimerIndicator {
+nav #timerIndicators {
+  display: flex;
+  float: right;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  height: 100%;
+  margin-left: auto;
+}
+nav #timerIndicators #pTimerIndicator {
   display: none;
   float: right;
   justify-content: center;
   align-items: center;
 }
-nav #pTimerIndicator.show {
+nav #timerIndicators #pTimerIndicator.show {
   display: flex;
 }
-nav #pTimerIndicator .indicatorTimes {
+nav #timerIndicators #pTimerIndicator .indicatorTimes {
   margin-left: 10px;
-}
-nav #pTimerIndicator .indicatorTimes span {
   font-weight: 700;
 }
-nav #sTimerIndicator {
+nav #timerIndicators #sTimerIndicator {
   display: none;
+  margin-left: 10px;
   float: right;
   justify-content: center;
   align-items: center;
 }
-nav #sTimerIndicator.show {
+nav #timerIndicators #sTimerIndicator.show {
   display: flex;
 }
-nav #sTimerIndicator .indicatorTimes {
+nav #timerIndicators #sTimerIndicator .indicatorTimes {
   margin-left: 10px;
   font-weight: 700;
 }

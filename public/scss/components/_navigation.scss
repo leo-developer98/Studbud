@@ -28,39 +28,45 @@ nav {
         }
     }
 
-    #pTimerIndicator {
-        display: none;
+    #timerIndicators {
+        display: flex;
         float: right;
-        justify-content: center;
-        align-items: center;
+        width:fit-content;
+        height: 100%;
+        margin-left: auto;
 
-        &.show {
-            display: flex;
-        }
-
-        .indicatorTimes {
-            margin-left: 10px;
-
-            span {
+        #pTimerIndicator {
+            display: none;
+            float: right;
+            justify-content: center;
+            align-items: center;
+    
+            &.show {
+                display: flex;
+            }
+    
+            .indicatorTimes {
+                margin-left: 10px;
                 font-weight:700;
             }
         }
-    }
-
-    #sTimerIndicator {
-        display: none;
-        float: right;
-        justify-content: center;
-        align-items: center;
-
-        &.show {
-            display: flex;
-        }
-
-        .indicatorTimes {
+    
+        #sTimerIndicator {
+            display: none;
             margin-left: 10px;
-            font-weight:700;
-            
+            float: right;
+            justify-content: center;
+            align-items: center;
+    
+            &.show {
+                display: flex;
+            }
+    
+            .indicatorTimes {
+                margin-left: 10px;
+                font-weight:700;
+                
+            }
         }
     }
 

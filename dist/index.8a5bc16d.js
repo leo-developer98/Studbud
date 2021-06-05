@@ -10111,8 +10111,8 @@ $('#pomo-stopBtn').click(function () {
   loop = 1;
   pomodoro.stop();
   $('#pomodoroLoop').html("0");
-  $(' .minutes').html(study);
-  $(' .seconds').html("0");
+  $('#pomodoroTime .minutes').html(study);
+  $('#pomodoroTime .seconds').html("0");
   pomoPauseBtn.classList.remove("running");
   pomoStartBtn.classList.add("running");
   studyTimeInput.removeAttribute("disabled");
@@ -10121,19 +10121,22 @@ $('#pomo-stopBtn').click(function () {
   $("#pTimerIndicator").removeClass("show");
 });
 pomodoro.addEventListener('secondsUpdated', function (e) {
-  $(' .minutes').html(pomodoro.getTimeValues().minutes);
-  $(' .seconds').html(pomodoro.getTimeValues().seconds);
+  $('#pomodoroTime .minutes').html(pomodoro.getTimeValues().minutes);
+  $('#pomodoroTime .seconds').html(pomodoro.getTimeValues().seconds);
   $('#pomodoroLoop').html(loop);
+  $("#pTimerIndicator .indicatorTimes").html(pomodoro.getTimeValues().toString(['minutes', 'seconds']));
 });
 pomodoro.addEventListener('started', function (e) {
-  $(' .minutes').html(pomodoro.getTimeValues().minutes);
-  $(' .seconds').html(pomodoro.getTimeValues().seconds);
+  $('#pomodoroTime .minutes').html(pomodoro.getTimeValues().minutes);
+  $('#pomodoroTime .seconds').html(pomodoro.getTimeValues().seconds);
   $('#pomodoroLoop').html(loop);
   $("#progress" + (progressIndex % 8).toString()).addClass("progress-bar-striped progress-bar-animated");
+  $("#pTimerIndicator .indicatorTimes").html(pomodoro.getTimeValues().toString(['minutes', 'seconds']));
 });
 pomodoro.addEventListener('reset', function (e) {
-  $(' .minutes').html(pomodoro.getTimeValues().minutes);
-  $(' .seconds').html(pomodoro.getTimeValues().seconds);
+  $('#pomodoroTime .minutes').html(pomodoro.getTimeValues().minutes);
+  $('#pomodoroTime .seconds').html(pomodoro.getTimeValues().seconds);
+  $("#pTimerIndicator .indicatorTimes").html(pomodoro.getTimeValues().toString(['minutes', 'seconds']));
   $("#progress" + progressIndex.toString()).removeClass("progress-bar-animated");
   study = parseInt(studyTimeInput.value);
   shortBreak = parseInt(sbTimeInput.value);
@@ -10141,6 +10144,7 @@ pomodoro.addEventListener('reset', function (e) {
 });
 pomodoro.addEventListener('paused', function (e) {
   $("#progress" + (progressIndex % 8).toString()).removeClass("progress-bar-animated");
+  $("#pTimerIndicator .indicatorTimes").html(pomodoro.getTimeValues().toString(['minutes', 'seconds']));
 });
 pomodoro.addEventListener('stopped', function (e) {
   $(".progress-bar").removeClass("progress-bar-striped progress-bar-animated");
@@ -10259,6 +10263,16 @@ stopWatch.addEventListener('started', function (e) {
 stopWatch.addEventListener('reset', function (e) {
   $('#stopwatchTime').html(stopWatch.getTimeValues().toString(['minutes', 'seconds']));
   $("#sTimerIndicator .indicatorTimes").html(stopWatch.getTimeValues().toString(['minutes', 'seconds']));
+});
+$("#pTimerIndicator").click(function (e) {
+  e.preventDefault();
+  $("#tabP").prop("checked", true);
+  $('#timers').modal('show');
+});
+$("#sTimerIndicator").click(function (e) {
+  e.preventDefault();
+  $("#tabS").prop("checked", true);
+  $('#timers').modal('show');
 });
 
 },{"../libraries/easytimer.js/dist/easytimer.min.js":"4Dhzm","../libraries/easytimer.js/dist/easytimer":"2zh7Q"}],"4Dhzm":[function(require,module,exports) {
