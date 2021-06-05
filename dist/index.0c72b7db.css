@@ -149,6 +149,34 @@ nav .task_btn.open {
   background-color: #252e59;
   border-color: #252e59;
 }
+nav #pTimerIndicator {
+  display: none;
+  float: right;
+  justify-content: center;
+  align-items: center;
+}
+nav #pTimerIndicator.show {
+  display: flex;
+}
+nav #pTimerIndicator .indicatorTimes {
+  margin-left: 10px;
+}
+nav #pTimerIndicator .indicatorTimes span {
+  font-weight: 700;
+}
+nav #sTimerIndicator {
+  display: none;
+  float: right;
+  justify-content: center;
+  align-items: center;
+}
+nav #sTimerIndicator.show {
+  display: flex;
+}
+nav #sTimerIndicator .indicatorTimes {
+  margin-left: 10px;
+  font-weight: 700;
+}
 nav .nav_links {
   list-style: none;
   display: flex;
@@ -213,7 +241,10 @@ nav .nav_links .nav_item .nav_btn.active {
   background-color: #252e59;
   border-color: #252e59;
 }
-@media only screen and (max-width: 450px) {
+.mobile_menus {
+  display: none;
+}
+@media only screen and (max-width: 730px) {
   .top_nav {
     display: none;
   }
@@ -229,21 +260,35 @@ nav .nav_links .nav_item .nav_btn.active {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    z-index: 0;
+  }
+  #mobile_nav .mobile_menu_btn {
+    background-color: #43519d;
+  }
+  #mobile_nav .mobile_menu_btn.open {
+    background-color: #252e59;
   }
 
   .mobile_menus {
+    transform: translate(0, 50px);
     display: block;
-    width: 100vw;
-    height: calc(100vh - 56px);
-    background-color: antiquewhite;
+    top: 56px;
+    left: -56px;
+    width: 56px;
+    height: calc(100vh - 50px);
+    background-color: #252e59;
     flex-direction: column;
+    justify-content: space-between;
   }
-  .mobile_menus .nav_items {
+  .mobile_menus .nav_item {
     display: flex;
     width: 100%;
+    justify-content: center;
+    color: whitesmoke;
   }
-  .mobile_menus .nav_items .nav_btn {
+  .mobile_menus .nav_item .nav_btn {
     display: block;
+    color: whitesmoke;
   }
 }
 #taskWrapper {
@@ -405,9 +450,9 @@ nav .nav_links .nav_item .nav_btn.active {
   cursor: pointer;
   padding-left: 4px;
   padding-right: 4px;
-  background-color: whitesmoke;
+  background-color: #e3e9ff;
   border-radius: 50%;
-  border: 10px solid whitesmoke;
+  border: 10px solid #e3e9ff;
 }
 #uploadBtnContainer #addBtn:hover {
   background-color: #43519d;
@@ -428,11 +473,11 @@ nav .nav_links .nav_item .nav_btn.active {
   align-items: center;
   color: #43519d;
   cursor: pointer;
-  background-color: whitesmoke;
+  background-color: #e3e9ff;
   padding-left: 4px;
   padding-right: 4px;
   border-radius: 50%;
-  border: 10px solid whitesmoke;
+  border: 10px solid #e3e9ff;
 }
 #uploadBtnContainer #uploadBtn.open:hover {
   background-color: #43519d;
@@ -525,7 +570,7 @@ nav .nav_links .nav_item .nav_btn.active {
   float: right;
   margin: auto;
 }
-@media only screen and (max-width: 500px) {
+@media only screen and (max-width: 730px) {
   #kanban {
     display: none;
   }
@@ -534,13 +579,22 @@ nav .nav_links .nav_item .nav_btn.active {
     left: 0;
     width: 100%;
     height: 100%;
+    z-index: 0;
+    top: 50px;
+  }
+  #taskWrapper #taskgrid #taskList {
+    height: calc(100vh - 66px);
   }
   #taskWrapper #addTask {
     width: 100%;
-    bottom: -500px;
+    bottom: -600px;
+    height: 600px;
   }
   #taskWrapper #addTask.open {
-    bottom: 0;
+    bottom: 0px;
+  }
+  #taskWrapper #addTask #taskForm label {
+    display: block;
   }
   #taskWrapper #task_bottom {
     width: 100%;
@@ -548,6 +602,7 @@ nav .nav_links .nav_item .nav_btn.active {
   }
   #taskWrapper #uploadBtnContainer {
     width: 100%;
+    bottom: 70px;
   }
 }
 #timers .modal-header {
@@ -572,6 +627,9 @@ nav .nav_links .nav_item .nav_btn.active {
 }
 #timers .modal-header #timerNav #timerTabs > * {
   z-index: 2;
+}
+#timers .modal-header #timerNav #timerTabs i {
+  margin-left: 10px;
 }
 #timers .modal-header #timerNav #timerTabs .tab {
   display: flex;
@@ -650,9 +708,13 @@ nav .nav_links .nav_item .nav_btn.active {
 #timers .modal-body #timers_s > .row {
   height: 100%;
 }
-#timers .modal-body #timers_s #stopwatchTime {
-  display: inline-block;
-  vertical-align: middle;
+#timers .modal-body #timers_s #stopwatchTimeParent {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#timers .modal-body #timers_s #stopwatchTimeParent #stopwatchTime {
+  display: flex;
   font-size: 100px;
   margin: auto;
   text-align: center;
@@ -661,7 +723,8 @@ nav .nav_links .nav_item .nav_btn.active {
   display: flex;
   flex-direction: column-reverse;
   overflow-y: scroll;
-  height: 87%;
+  height: 100%;
+  width: 100%;
   border-top: 3px solid darkgray;
   border-bottom: 3px solid darkgray;
 }

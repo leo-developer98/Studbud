@@ -186,9 +186,9 @@
         cursor: pointer;
         padding-left: 4px;
         padding-right: 4px;
-        background-color: whitesmoke;
+        background-color: #e3e9ff;
         border-radius: 50%;
-        border: 10px solid whitesmoke;
+        border: 10px solid #e3e9ff;
 
         &:hover {
             background-color: #43519d;
@@ -211,11 +211,11 @@
             align-items: center;
             color: #43519d;
             cursor: pointer;
-            background-color: whitesmoke;
+            background-color: #e3e9ff;
             padding-left: 4px;
             padding-right: 4px;
             border-radius: 50%;
-            border: 10px solid whitesmoke;
+            border: 10px solid #e3e9ff;
 
             &:hover {
                 background-color: #43519d;
@@ -341,7 +341,7 @@
     }
 }
 
-@media only screen and (max-width: 500px) {
+@media only screen and (max-width: 730px) {
     #kanban {
         display: none;
     }
@@ -350,13 +350,27 @@
         left: 0;
         width: 100%;
         height: 100%;
+        z-index: 0;
+        top: 50px;
+
+        #taskgrid {
+            #taskList {
+                height: calc(100vh - 66px);
+            }
+        }
 
         #addTask {
             width: 100%;
-            bottom: -500px;
-
+            bottom: -600px;
+            height: 600px;
             &.open {
-                bottom: 0;
+                bottom: 0px;
+            }
+
+            #taskForm {
+                label {
+                    display: block;
+                }
             }
         }
 
@@ -367,6 +381,7 @@
 
         #uploadBtnContainer {
             width: 100%;
+            bottom: 70px;
         }
     }
 }

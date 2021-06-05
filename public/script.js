@@ -30,3 +30,6 @@ subNav.links.forEach((link) => {
   })
 })
 
+$(function () {
+  $('[data-toggle="popover"]').popover();
+})

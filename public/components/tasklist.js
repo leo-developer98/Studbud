@@ -392,6 +392,7 @@ function updateLabelDropdown() {
     labelBtn.style.fontWeight = "550";
 
     labelBtn.addEventListener('click', function (e) {
+      e.preventDefault();
       let labelTitle = labelBtn.innerHTML;
       document.getElementById("newLabelInput").value = labelTitle.toString();
       let colour = labelStorage.getColour(labelTitle.toString());
@@ -916,5 +917,24 @@ addBoardBtn.addEventListener("click", () => {
 
     boardHeader.appendChild(deleteBtn);
     editableBoardTitle();
+  }
+})
+
+let mobileMenuOpen = false;
+$(".mobile_menu_btn").click(function(e) {
+  e.preventDefault();
+  if (mobileMenuOpen === false) {
+    $(".mobile_menu_btn").addClass("open");
+    $(".mobile_menus").addClass("open");
+    $("#taskWrapper").css("transform", "translate(56px, 0)");
+    $("#taskWrapper").css("width", "calc(100vw - 56px)");
+    $("#taskWrapper").css("float", "right");
+    mobileMenuOpen = true;
+  } else {
+    $(".mobile_menu_btn").removeClass("open");
+    $(".mobile_menus").removeClass("open");
+    $("#taskWrapper").css("transform", "translate(0, 0)");
+    $("#taskWrapper").css("width", "100%");
+    mobileMenuOpen = false;
   }
 })

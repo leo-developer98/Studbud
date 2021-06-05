@@ -22,7 +22,9 @@
                 & > * {
                     z-index: 2;
                 }
-
+                i {
+                    margin-left: 10px;
+                }
                 .tab {
                     display: flex;
                     align-items: center;
@@ -125,19 +127,24 @@
                 height: 100%;
             }
 
-            #stopwatchTime {
-                display: inline-block;
-                vertical-align: middle;
-                font-size: 100px;
-                margin: auto;
-                text-align: center;
+            #stopwatchTimeParent {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                #stopwatchTime {
+                    display: flex;
+                    font-size: 100px;
+                    margin: auto;
+                    text-align: center;
+                }
             }
 
             #lapTime {
                 display: flex;
                 flex-direction: column-reverse;
                 overflow-y: scroll;
-                height: 87%;
+                height: 100%;
+                width: 100%;
                 border-top: 3px solid darkgray;
                 border-bottom: 3px solid darkgray;
 

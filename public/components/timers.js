@@ -55,7 +55,8 @@ $(document).ready(function () {
         timerP.classList.remove("active");
         timerS.classList.add('active');
     });
-    $('#pomodoroTime .seconds').html(study);
+    $('#pomodoroTime .minutes').html(study);
+    $('#pomodoroTime .seconds').html("0");
 });
 
 var { Timer } = require('../libraries/easytimer.js/dist/easytimer');
@@ -71,7 +72,7 @@ var progressIndex = 1;
 // Setting study time from Input
 studyTimeInput.addEventListener("input", () => {
     study = parseInt(studyTimeInput.value);
-    $('#pomodoroTime .seconds').html(study);
+    $('#pomodoroTime .minutes').html(study);
     let all = (4 * study) + (3 * shortBreak) + longBreak;
     let pForMinute = 100 / all;
     let studyWidth = pForMinute * study;
@@ -119,18 +120,23 @@ var pomodoro = new Timer();
 
 $('#pomo-startBtn').click(function () {
     // console.log(study);
-    pomodoro.start({ countdown: true, startValues: { seconds: study }, target: { minutes: 0 } });
+    pomodoro.start({ countdown: true, startValues: { minutes: study }, target: { minutes: 0 } });
     pomoStartBtn.classList.remove("running");
     pomoPauseBtn.classList.add("running");
     studyTimeInput.setAttribute("disabled", "true");
     sbTimeInput.setAttribute("disabled", "true");
     lbTimeInput.setAttribute("disabled", "true");
+    $("#pTimerIndicator").addClass("show    ");
+    $("#pTimerIndicator").addClass("btn-danger");
+    $("#pTimerIndicator").removeClass("btn-primary");
 });
 
 $('#pomo-pauseBtn').click(function () {
     pomodoro.pause();
     pomoPauseBtn.classList.remove("running");
     pomoStartBtn.classList.add("running");
+    $("#pTimerIndicator").removeClass("btn-danger");
+    $("#pTimerIndicator").addClass("btn-primary");
 });
 
 $('#pomo-resetBtn').click(function () {
@@ -139,6 +145,8 @@ $('#pomo-resetBtn').click(function () {
     pomodoro.pause();
     pomoPauseBtn.classList.remove("running");
     pomoStartBtn.classList.add("running");
+    $("#pTimerIndicator").removeClass("btn-danger");
+    $("#pTimerIndicator").addClass("btn-primary");
 });
 
 $('#pomo-stopBtn').click(function () {
@@ -147,31 +155,33 @@ $('#pomo-stopBtn').click(function () {
     loop = 1;
     pomodoro.stop();
     $('#pomodoroLoop').html("0");
-    $('#pomodoroTime .seconds').html(study);
+    $(' .minutes').html(study);
+    $(' .seconds').html("0");
     pomoPauseBtn.classList.remove("running");
     pomoStartBtn.classList.add("running");
     studyTimeInput.removeAttribute("disabled");
     sbTimeInput.removeAttribute("disabled");
     lbTimeInput.removeAttribute("disabled");
+    $("#pTimerIndicator").removeClass("show");
 });
 
 
 pomodoro.addEventListener('secondsUpdated', function (e) {
-    $('#pomodoroTime .minutes').html(pomodoro.getTimeValues().minutes);
-    $('#pomodoroTime .seconds').html(pomodoro.getTimeValues().seconds);
+    $(' .minutes').html(pomodoro.getTimeValues().minutes);
+    $(' .seconds').html(pomodoro.getTimeValues().seconds);
     $('#pomodoroLoop').html(loop);
 });
 
 pomodoro.addEventListener('started', function (e) {
-    $('#pomodoroTime .minutes').html(pomodoro.getTimeValues().minutes);
-    $('#pomodoroTime .seconds').html(pomodoro.getTimeValues().seconds);
+    $(' .minutes').html(pomodoro.getTimeValues().minutes);
+    $(' .seconds').html(pomodoro.getTimeValues().seconds);
     $('#pomodoroLoop').html(loop);
     $("#progress" + (progressIndex % 8).toString()).addClass("progress-bar-striped progress-bar-animated");
 });
 
 pomodoro.addEventListener('reset', function (e) {
-    $('#pomodoroTime .minutes').html(pomodoro.getTimeValues().minutes);
-    $('#pomodoroTime .seconds').html(pomodoro.getTimeValues().seconds);
+    $(' .minutes').html(pomodoro.getTimeValues().minutes);
+    $(' .seconds').html(pomodoro.getTimeValues().seconds);
     $("#progress" + progressIndex.toString()).removeClass("progress-bar-animated");
     study = parseInt(studyTimeInput.value);
     shortBreak = parseInt(sbTimeInput.value);
@@ -192,18 +202,18 @@ pomodoro.addEventListener('targetAchieved', function (e) {
     if (isBreak) {
         // Executing Study (minutes)
         loop = loop + 1;
-        pomodoro.start({ countdown: true, startValues: { seconds: study }, target: { minutes: 0 } });
+        pomodoro.start({ countdown: true, startValues: { minutes: study }, target: { minutes: 0 } });
         isBreak = false;
         $("#progress" + (progressIndex % 8).toString()).addClass("progress-bar-striped progress-bar-animated");
     } else {
         if (loop % pomodoroLoop === 0) {
             // Executing Long Break (minutes)
-            pomodoro.start({ countdown: true, startValues: { seconds: longBreak }, target: { minutes: 0 } });
+            pomodoro.start({ countdown: true, startValues: { minutes: longBreak }, target: { minutes: 0 } });
             isBreak = true;
             $("#progress" + (progressIndex % 8).toString()).addClass("progress-bar-striped progress-bar-animated");
         } else {
             // Executing Short Break (minutes)
-            pomodoro.start({ countdown: true, startValues: { seconds: shortBreak }, target: { minutes: 0 } });
+            pomodoro.start({ countdown: true, startValues: { minutes: shortBreak }, target: { minutes: 0 } });
             isBreak = true;
             $("#progress" + (progressIndex % 8).toString()).addClass("progress-bar-striped progress-bar-animated");
         }
@@ -219,6 +229,9 @@ $('#sw-startBtn').click(function () {
     swLapBtn.classList.add("running");
     swStartBtn.classList.remove("running");
     swPauseBtn.classList.add("running");
+    $("#sTimerIndicator").addClass("show");
+    $("#sTimerIndicator").addClass("btn-danger");
+    $("#sTimerIndicator").removeClass("btn-primary");
 });
 
 $('#sw-pauseBtn').click(function () {
@@ -227,6 +240,8 @@ $('#sw-pauseBtn').click(function () {
     swLapBtn.classList.remove("running");
     swPauseBtn.classList.remove("running");
     swStartBtn.classList.add("running");
+    $("#sTimerIndicator").removeClass("btn-danger");
+    $("#sTimerIndicator").addClass("btn-primary");
 });
 
 $('#sw-stopBtn').click(function () {
@@ -235,6 +250,8 @@ $('#sw-stopBtn').click(function () {
     swLapBtn.classList.remove("running");
     swPauseBtn.classList.remove("running");
     swStartBtn.classList.add("running");
+    $("#sTimerIndicator").removeClass("btn-danger");
+    $("#sTimerIndicator").addClass("btn-primary");
 });
 
 $('#sw-resetBtn').click(function () {
@@ -246,6 +263,7 @@ $('#sw-resetBtn').click(function () {
         lapList.innerHTML = "";
         lapNum = 1;
     }
+    $("#sTimerIndicator").removeClass("show");
 });
 
 // Adding Lapped times when lap button is clicked
@@ -265,12 +283,21 @@ $('#sw-lapBtn').click(function () {
 
 stopWatch.addEventListener('secondsUpdated', function (e) {
     $('#stopwatchTime').html(stopWatch.getTimeValues().toString(['minutes', 'seconds']));
+    $("#sTimerIndicator .indicatorTimes").html(stopWatch.getTimeValues().toString(['minutes', 'seconds']));
+    // $('#stopwatchTime .minutes').html(stopWatch.getTimeValues().minutes);
+    // $('#stopwatchTime .seconds').html(stopWatch.getTimeValues().seconds);
 });
 
 stopWatch.addEventListener('started', function (e) {
     $('#stopwatchTime').html(stopWatch.getTimeValues().toString(['minutes', 'seconds']));
+    $("#sTimerIndicator .indicatorTimes").html(stopWatch.getTimeValues().toString(['minutes', 'seconds']));
+    // $('#stopwatchTime .minutes').html(stopWatch.getTimeValues().minutes);
+    // $('#stopwatchTime .seconds').html(stopWatch.getTimeValues().seconds);
 });
 
 stopWatch.addEventListener('reset', function (e) {
     $('#stopwatchTime').html(stopWatch.getTimeValues().toString(['minutes', 'seconds']));
+    $("#sTimerIndicator .indicatorTimes").html(stopWatch.getTimeValues().toString(['minutes', 'seconds']));
+    // $('#stopwatchTime .minutes').html(stopWatch.getTimeValues().minutes);
+    // $('#stopwatchTime .seconds').html(stopWatch.getTimeValues().seconds);
 });
