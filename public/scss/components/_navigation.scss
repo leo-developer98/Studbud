@@ -1,6 +1,6 @@
 nav {
     display: flex;
-    position: sticky;
+    // position:fixed;
     background-color: #43519d;
     color: white;
     justify-content: space-around;
@@ -28,12 +28,37 @@ nav {
         }
     }
 
+    .mobile_menu_btn {
+        display: none;
+        float: left;
+        cursor: pointer;
+        transition: all 0.3s ease-in-out;
+        color: white;
+        height: 56px;
+        width: 56px;
+        justify-content: center;
+        align-items: center;
+
+        &:hover {
+            background-color: #252e59;
+            border-color: #252e59;
+        }
+
+        &.open {
+            color: whitesmoke;
+            background-color: #252e59;
+            border-color: #252e59;
+        }
+    }
+
     #timerIndicators {
         display: flex;
         float: right;
         width:fit-content;
         height: 100%;
         margin-left: auto;
+        justify-content: center;
+        align-items: center;
 
         #pTimerIndicator {
             display: none;
@@ -42,7 +67,7 @@ nav {
             align-items: center;
     
             &.show {
-                display: flex;
+                display: inline-block;
             }
     
             .indicatorTimes {
@@ -70,10 +95,27 @@ nav {
         }
     }
 
+    #mobileSortTasks {
+        display: none;
+        align-items: center;
+        justify-content: center;
+        background-color:#43519d;
+        color: white;
+        border: none;
+        margin-left: auto;
+        margin-right: 5px;
+        // height: 60%;
+        float: right;
+    }
+
 
     .nav_links {
         list-style: none;
         display: flex;
+
+        &#mobileNavLinks {
+            display: none;
+        }
 
         .nav_item {
             a {
@@ -120,96 +162,120 @@ nav {
     }
 }
 
-.top_nav {
-    height: 100%;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+// .top_nav {
+//     height: 100%;
+//     width: 100%;
+//     display: flex;
+//     justify-content: space-between;
+//     align-items: center;
+// }
 
-#mobile_nav {
-    display: none;
+// #mobile_nav {
+//     display: none;
 
-    .mobile_menu_btn {
-        display: flex;
-        float: left;
-        cursor: pointer;
-        transition: all 0.3s ease-in-out;
-        color: white;
-        height: 56px;
-        width: 56px;
-        justify-content: center;
-        align-items: center;
+//     .mobile_menu_btn {
+//         display: flex;
+//         float: left;
+//         cursor: pointer;
+//         transition: all 0.3s ease-in-out;
+//         color: white;
+//         height: 56px;
+//         width: 56px;
+//         justify-content: center;
+//         align-items: center;
     
-        &:hover {
-            background-color: #252e59;
-            border-color: #252e59;
-        }
+//         &:hover {
+//             background-color: #252e59;
+//             border-color: #252e59;
+//         }
     
-        &.open {
-            color: whitesmoke;
-            background-color: #252e59;
-            border-color: #252e59;
-        }
-    }
-}
+//         &.open {
+//             color: whitesmoke;
+//             background-color: #252e59;
+//             border-color: #252e59;
+//         }
+//     }
+// }
 
 .mobile_menus {
     display: none;
 }
 
-@media only screen and (max-width: 730px) {
-    .top_nav {
-        display: none;
-    }
-
-    nav {
+@media only screen and (max-width: 769px) {
+    // .top_nav {
+    //     display: none;
+    // }
         // position:absolute;
+        // position: fixed;
+        // display: block;
+
+    .task_btn {
+        display: none !important;
+    }
+
+    .mobile_menu_btn {
+        display: flex !important;
+    }
+
+    #desktopNavLinks {
+        display: none !important;
+    }
+
+    #mobileNavLinks {
+        display: block !important;
         position: fixed;
-        display: block;
-    }
+        height: 100vh;
+        width: 100%;
+        background:#252e59;
+        left: calc(-100vw);
+        top: 50px;
+        z-index: 10;
+        transition: all 0.25s ease-in-out;
 
-    #mobile_nav {
-        height: 50px;
-        width: 100vw;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        z-index: 0;
-
-        .mobile_menu_btn {
-            background-color: #43519d;
-            &.open {
-                background-color: #252e59;
-            }
+        &.open {
+            left: 0;
         }
-    }
 
-    .mobile_menus {
-        // position: relative;
-        transform: translate(0, 50px);
-        display: block;
-        // width: 56px;
-        top: 56px;
-        left: -56px;
-        width: 56px;
-        height: calc(100vh - 50px);
-        background-color: #252e59;
-        flex-direction: column;
-        justify-content: space-between;
-        // left: -56px;
-
-        .nav_item {
-            display: flex;
+        .nav_link {
             width: 100%;
-            justify-content: center;
-            color: whitesmoke;
-            // margin-top: 10px;
-            .nav_btn {
-                display: block;
-                color: whitesmoke;
-            }
+            height: 100%;
         }
     }
+
+    #mobileSortTasks {
+        display: flex !important;
+    }
+
+    // .top_nav {
+    //     z-index: 10;
+    // }
+
+    // .mobile_menus {
+    //     // transform: translate(0, 50px);
+    //     display: none;
+    //     // width: 56px;
+    //     // top: 56px;
+    //     // left: -56px;
+    //     // width: 56px;
+    //     // height: calc(100vh - 50px);
+    //     position: fixed;
+    //     width: 100%;
+    //     height: 100vh;
+    //     background-color: #252e59;
+    //     flex-direction: column;
+    //     justify-content: space-between;
+    //     // left: -56px;
+
+    //     .nav_item {
+    //         display: flex;
+    //         width: 100%;
+    //         justify-content: center;
+    //         color: whitesmoke;
+    //         // margin-top: 10px;
+    //         .nav_btn {
+    //             display: block;
+    //             color: whitesmoke;
+    //         }
+    //     }
+    // }
 }

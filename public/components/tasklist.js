@@ -204,7 +204,7 @@ import TaskStorage from './taskStorage.js';
 import LabelStorage from './labelStorage.js';
 import KanbanStorage from './kanbanStorage.js';
 import '../libraries/jkanban.min.js';
-import { event } from 'jquery';
+import { event, nodeName } from 'jquery';
 
 const taskWrapper = document.getElementById("taskWrapper");
 const taskAll = document.getElementById("taskgrid");
@@ -298,8 +298,9 @@ closeBtn.addEventListener('click', () => {
 
 // Event Listener: Upload Tasks
 uploadBtn.addEventListener("click", function (event) {
+  // console.log(addOpen); 
   if (addOpen) {
-    event.preventDefault();
+    // event.preventDefault();
     let td = taskDescription.value;
     let dd = String(dueDate.value);
     let ct = String(completionTime.value);
@@ -313,9 +314,6 @@ uploadBtn.addEventListener("click", function (event) {
     }
 
     addTask(td, dd, ct, pr, prIndex, et, cs, label);
-    console.log(taskList);
-    // console.log(y[x].index);
-    // console.log(prIndex);
   }
 })
 
@@ -408,7 +406,7 @@ function updateLabelDropdown() {
     // delButton.classList.add('deleteBtn');
 
     delButton.addEventListener("click", function (event) {
-      event.preventDefault();
+      // event.preventDefault();
       if (confirm('Are you sure you want to delete this label from task labels?')) {
         labelStorage.delete(element);
         labelSelect.remove();
@@ -439,31 +437,44 @@ function addTask(taskDescription, dueDate, completionTime, priorityRating, prior
   // Alert if there is no user input for the task name:
   if (document.forms["taskForm"]["taskName"].value == "") {
     alert("Task Description must be filled out");
-    return false;
   }
 
   else {
     let key = (task.taskDescription).toString();
     // If created task doesn't exits (task name):
     if (taskStorage.getIndexByName(key) === -1) {
+      // console.log(task.label)
       // If there is no label input, empty label for the task
       if (task.label.name == "") {
         task.label = null;
+        taskStorage.create(task, key);
+        showTask(task);
+        closeBtn.click();
+      } else if (labelStorage.labelNameExists(task.label)) {
+        let colour = labelStorage.getColour(task.label.name);
+        task.label.colour = colour;
+        // Add a task in Task Storage 
+        taskStorage.create(task, key);
+        showTask(task);
+        closeBtn.click();
+
+        console.log("add task end");
+      } else if (labelStorage.labelColourExists(task.label)) {
+        alert("Label colour already exists");
       } else {
         labelStorage.create(task.label, task.label.name, task.label.colour);
+        // Add a task in Task Storage 
+        taskStorage.create(task, key);
+        showTask(task);
+        closeBtn.click();
       }
-      // Add a task in Task Storage 
-      taskStorage.create(task, key);
-      showTask(task);
-
     } else {
       alert("Task " + key + " is already exists in the list")
     }
   }
-  closeBtn.click();
 }
 
-// showing task in regards with its properties
+// showing task visually in regards with its properties
 function showTask(task) {
   updateLabelDropdown();
 
@@ -471,6 +482,9 @@ function showTask(task) {
   item.setAttribute('class', 'card');
   item.classList.add('task_item');
   item.setAttribute('data-id', task.id);
+  item.setAttribute('data-taskname', task.taskDescription);
+
+  item.setAttribute("data-kanban", "");
 
   let item_body = document.createElement('div');
   item_body.setAttribute('class', 'card-body');
@@ -489,25 +503,60 @@ function showTask(task) {
   doneBtn.classList.add('btn');
   doneBtn.classList.add('btn-outline-success');
   doneBtn.classList.add('checkBtn');
-
   doneBtn.addEventListener('click', () => {
     let element = {
       id: task.taskDescription,
-      title: task.taskDescription + "<button type='button' class='btn btn-outline-danger btn-sm kanbanItemBtn' id=" + task.taskDescription + "><i class='fas fa-trash-alt'></i></button>"
+      title: task.taskDescription + "<button type='button' class='btn btn-outline-danger btn-sm kanbanItemBtn' data-target=" + task.taskDescription + "><i class='fas fa-trash-alt'></i></button>"
     }
     kanbanBoard.addElement("done", element);
     
     // Disable the done button
     doneBtn.setAttribute("disabled", "true");
+    toDoButton.setAttribute("disabled", "true");
+
+    // Style the item in the task list
+    item_title.style.textDecoration = "line-through";
+    item.style.backgroundColor = "#c2c2c2";
+
+    let taskDelBtn = $(item).children(".card-body").children(".task-right").children(".task_buttons").children(".deleteBtn")[0];
+    taskDelBtn.classList.add("btn-danger");
+    taskDelBtn.classList.remove("btn-outline-danger");
+
+    let boardHeader = $(`button[data-target="${task.taskDescription}"]`).closest(".kanban-board").children(".kanban-board-header")[0];
+    let color = boardHeader.style.backgroundColor;
+    let text = boardHeader.firstChild.innerHTML;
+    
+    let itemKanban = {
+      name: text,
+      color: color
+    }
+    $(item).attr("data-kanban", JSON.stringify(itemKanban));
+
+    let el = $(`.kanban-item[data-eid="${task.taskDescription}"]`)[0];
+
+    el.style.backgroundColor = color;
+    $(el).effect("slide", {direction: "left"}, 400)
+          .animate({
+            backgroundColor: "white"
+          }, {duration: 1000, queue: false});
+    
+    // el.style.backgroundColor = "white";
+
 
     // If task deleted from the kanban board, remove the task from the board and enable done button
-    document.querySelectorAll('.kanbanItemBtn').forEach((button) => {
-      button.addEventListener("click", () => {
-        kanbanBoard.removeElement(button.id);
-        doneBtn.removeAttribute("disabled");
-      })
+    $(`button[data-target="${task.taskDescription}"]`).click(function(event) {
+      kanbanBoard.removeElement(this.dataset.target);
+      toDoButton.removeAttribute("disabled");
+      doneBtn.removeAttribute("disabled");
+      // reset the style
+      item_title.style.textDecoration = "none";
+      item.style.backgroundColor = "whitesmoke";
+      item.style.border = "none";
+      taskDelBtn.classList.remove("btn-danger");
+      taskDelBtn.classList.add("btn-outline-danger");
     })
   })
+
 
   let left_body = document.createElement("div");
   let right_body = document.createElement("div");
@@ -601,20 +650,49 @@ function showTask(task) {
   toDoButton.classList.add("moveBtn");
 
   toDoButton.addEventListener("click", function (event) {
-    event.preventDefault();
+    // event.preventDefault();
     let element = {
       id: task.taskDescription,
-      title: task.taskDescription + "<button type='button' class='btn btn-outline-danger btn-sm kanbanItemBtn' id=" + task.taskDescription + "><i class='fas fa-trash-alt'></i></button>"
+      title: task.taskDescription + "<button type='button' class='btn btn-outline-danger btn-sm kanbanItemBtn' data-target=" + task.taskDescription + "><i class='fas fa-trash-alt'></i></button><div class='kanban-item-bg'></div>" 
     }
 
     kanbanBoard.addElement("toDo", element);
     toDoButton.setAttribute("disabled", "true");
+    doneBtn.setAttribute("disabled", "true");
 
-    document.querySelectorAll('.kanbanItemBtn').forEach((button) => {
-      button.addEventListener("click", () => {
-        kanbanBoard.removeElement(button.id);
-        toDoButton.removeAttribute("disabled");
-      })
+    let boardHeader = $(`button[data-target="${task.taskDescription}"]`).closest(".kanban-board").children(".kanban-board-header")[0];
+    let color = boardHeader.style.backgroundColor;
+    let text = boardHeader.firstChild.innerHTML;
+
+    item.style.border = `3px solid ${color}`;
+    
+    let itemKanban = {
+      name: text,
+      color: color
+    }
+    $(item).attr("data-kanban", JSON.stringify(itemKanban));
+
+    let taskDelBtn = $(item).children(".card-body").children(".task-right").children(".task_buttons").children(".deleteBtn")[0];
+
+    let el = $(`.kanban-item[data-eid="${task.taskDescription}"]`)[0];
+
+    el.style.backgroundColor = color;
+    $(el).effect("slide", {direction: "left"}, 400)
+          .animate({
+            backgroundColor: "white"
+          }, {duration: 1000, queue: false});
+
+    $(`button[data-target="${task.taskDescription}"]`).click(function(event) {
+      kanbanBoard.removeElement(this.dataset.target);
+      toDoButton.removeAttribute("disabled");
+      doneBtn.removeAttribute("disabled");
+      item_title.style.textDecoration = "none";
+      item.style.backgroundColor = "whitesmoke";
+      item.style.border = "none";
+      taskDelBtn.classList.remove("btn-danger");
+      taskDelBtn.classList.add("btn-outline-danger");
+
+      $(item).attr("data-kanban", "");
     })
   })
 
@@ -630,7 +708,7 @@ function showTask(task) {
   // $('[data-toggle="tooltip"]').tooltip();
 
   delButton.addEventListener("click", function (event) {
-    event.preventDefault();
+    // event.preventDefault();
     if (confirm('Are you sure you want to delete this task from task list?')) {
       taskStorage.delete(task.taskDescription.toString());
       item.remove();
@@ -748,51 +826,58 @@ function removeItemFromArray(arr, index) {
 // Add task by hitting "Enter" on keyboard
 $(".addTaskInputs").keypress(function(e) {
   if (e.which == 13) {
+    e.preventDefault();
+    // alert("enter clicked");
     $("#uploadBtn").click();
   }
 })
 // Add board by hitting "Enter" on keyboard
 $(".kanbanBoard-inputs").keypress(function(e) {
   if (e.which == 13) {
+    e.preventDefault();
     $("#addBoardBtn").click();
   }
 })
 
 // Sorting items in taskList(storage) and re-showing them via showTask() function 
-$("#sortDateCreated").click(function(event) {
+$(".sortDateCreated").click(function(event) {
   taskList.sort(compareDateCreated);
   console.log(taskList);
   tasks.innerHTML = "<p id='emptyTaskList'>You haven\'t added any tasks yet.</p>";
   taskList.forEach((task) => {
     showTask(task);
   })
+  $("#closeAdd").click();
 })
 
-$("#sortDueDate").click(function(event) {
+$(".sortDueDate").click(function(event) {
   taskList.sort(compareDueDate);
   console.log(taskList);
   tasks.innerHTML = "<p id='emptyTaskList'>You haven\'t added any tasks yet.</p>";
   taskList.forEach((task) => {
     showTask(task);
   })
+  $("#closeAdd").click();
 })
 
-$("#sortPriorityRating").click(function(event) {
+$(".sortPriorityRating").click(function(event) {
   taskList.sort(comparePriority);
   console.log(taskList);
   tasks.innerHTML = "<p id='emptyTaskList'>You haven\'t added any tasks yet.</p>";
   taskList.forEach((task) => {
     showTask(task);
   })
+  $("#closeAdd").click();
 })
 
-$("#sortEstimatedTime").click(function(event) {
+$(".sortEstimatedTime").click(function(event) {
   taskList.sort(compareEstimatedTime);
   console.log(taskList);
   tasks.innerHTML = "<p id='emptyTaskList'>You haven\'t added any tasks yet.</p>";
   taskList.forEach((task) => {
     showTask(task);
   })
+  $("#closeAdd").click();
 })
 
 // Default columns for Kanban Board
@@ -846,9 +931,60 @@ var kanbanBoard = new jKanban({
   },
   click: function (el) { },                                       // callback when any board's item are clicked
   context: function (el, event) { },                              // callback when any board's item are right clicked
-  dragEl: function (el, source) { },                              // callback when any board's item are dragged
+  dragEl: function (el, source) { 
+    let color = source.previousElementSibling.style.backgroundColor;
+    // el.style.backgroundImage = `linear-gradient(to right, white 50%, ${color} 50%)`;
+    // el.style.backgroundPosition = "-100% 0";  
+
+  },                                                              // callback when any board's item are dragged
   dragendEl: function (el) { },                                   // callback when any board's item stop drag
-  dropEl: function (el, target, source, sibling) { },             // callback when any board's item drop in a board
+  dropEl: function (el, target, source, sibling) { 
+    let boardColor = target.previousElementSibling.style.backgroundColor;
+    let boardName = target.previousElementSibling.firstChild.innerHTML;
+
+    let itemKanban = {
+      name: boardName,
+      color: boardColor
+    }
+
+    let taskname = $(el).data("eid");
+    let item = $("#taskList").children(`.task_item[data-taskname=${taskname}]`)[0];
+    $(item).attr("data-kanban", JSON.stringify(itemKanban));
+
+    let item_title = $(item).children(".card-body").children(".item_top").children(".card-title")[0];
+
+    // console.log(target.previousElementSibling.parentElement.dataset.id);
+    let boardId = target.previousElementSibling.parentElement.dataset.id;
+    if (boardId == "done") {
+      item_title.style.textDecoration = "line-through";
+      item.style.backgroundColor = "#c2c2c2";
+
+      let taskDelBtn = $(item).children(".card-body").children(".task-right").children(".task_buttons").children(".deleteBtn")[0];
+      taskDelBtn.classList.add("btn-danger");
+      taskDelBtn.classList.remove("btn-outline-danger");
+      item.style.border = `none`;
+    } else {
+      item_title.style.textDecoration = "none";
+      item.style.backgroundColor = "white";
+      item.style.border = `3px solid ${boardColor}`;
+    }
+
+    el.style.backgroundColor = boardColor;
+    $(el).effect("slide", {direction: "left"}, 400)
+          .animate({
+            backgroundColor: "white"
+          }, {duration: 1000, queue: false});
+
+    // $(el).animate({
+    //   backgroundColor: "white"
+    // }, 150);
+
+    // let bg = el.lastChild;
+    // el.style.backgroundImage = `linear-gradient(to right, white 50%, ${color} 50%)`;
+    // el.style.backgroundPosition = "-100% 0";  
+
+
+  },                                                              // callback when any board's item drop in a board
   dragBoard: function (el, source) { },                           // callback when any board stop drag
   dragendBoard: function (el) { },                                // callback when any board stop drag
   buttonClick: function (el, boardId) { }                         // callback when the board's button is clicked
@@ -917,24 +1053,6 @@ addBoardBtn.addEventListener("click", () => {
 
     boardHeader.appendChild(deleteBtn);
     editableBoardTitle();
-  }
-})
-
-let mobileMenuOpen = false;
-$(".mobile_menu_btn").click(function(e) {
-  e.preventDefault();
-  if (mobileMenuOpen === false) {
-    $(".mobile_menu_btn").addClass("open");
-    $(".mobile_menus").addClass("open");
-    $("#taskWrapper").css("transform", "translate(56px, 0)");
-    $("#taskWrapper").css("width", "calc(100vw - 56px)");
-    $("#taskWrapper").css("float", "right");
-    mobileMenuOpen = true;
-  } else {
-    $(".mobile_menu_btn").removeClass("open");
-    $(".mobile_menus").removeClass("open");
-    $("#taskWrapper").css("transform", "translate(0, 0)");
-    $("#taskWrapper").css("width", "100%");
-    mobileMenuOpen = false;
+    boardNameInput.value = "";
   }
 })

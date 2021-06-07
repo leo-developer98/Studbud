@@ -287,6 +287,20 @@ $('#sw-lapBtn').click(function () {
 
 stopWatch.addEventListener('secondsUpdated', function (e) {
     $('#stopwatchTime').html(stopWatch.getTimeValues().toString(['minutes', 'seconds']));
+    // $(function () {
+    //     var startAnim = function () {
+    //         $("#stopwatchTime").animate({
+    //             "opacity": "25%"
+    //         }, 1000, "easeInOutBack", resetAnim)
+    //     }
+    //     var resetAnim = function () {
+    //         $("#stopwatchTime").css({
+    //             "opacity": "100%"
+    //         });
+    //         startAnim();
+    //     }
+    //     startAnim()
+    // });
     $("#sTimerIndicator .indicatorTimes").html(stopWatch.getTimeValues().toString(['minutes', 'seconds']));
     // $('#stopwatchTime .minutes').html(stopWatch.getTimeValues().minutes);
     // $('#stopwatchTime .seconds').html(stopWatch.getTimeValues().seconds);
@@ -306,6 +320,7 @@ stopWatch.addEventListener('reset', function (e) {
     // $('#stopwatchTime .seconds').html(stopWatch.getTimeValues().seconds);
 });
 
+// Timer Indicator linked to Timer modal
 $("#pTimerIndicator").click(function(e) {
     e.preventDefault();
     $("#tabP").prop("checked", true);

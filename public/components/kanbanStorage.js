@@ -5,7 +5,7 @@ export default class KanbanStorage {
   }
 
   updateColumn(column) {
-    let index = this.getIndex(column);
+    let index = this.getColumnIndex(column);
 
     if (index !== -1) {
       this.columns[index] = column;
@@ -25,6 +25,7 @@ export default class KanbanStorage {
     return -1;
   }
 
+  // returns the item index with a list of [columnIndex, itemIndex] in this.columns
   getItemIndex(item, column) {
     let columnIndex = this.getColumnIndex(column);
     if (columnIndex === -1) {
@@ -51,21 +52,22 @@ export default class KanbanStorage {
   }
 
   removeItem(item) {
-    // let columnIndex = this.getColumnIndex(column);
-    // let itemIndex = this.getItemIndex(item, column);
-    // if (itemIndex !== -1 && columnIndex !== -1) {
-    //   this.columns[columnIndex].remove(item);
-    //   this.updateColumn(column);
-    // } else {
-    //   console.log("Column doesn't exist or item doesn't exists");
-    // }
-    for (let i = 0; i < this.columns.length; i++) {
-      if (this.getItemIndex()) {
-        return i;
-      }
+    let columnIndex = this.getColumnIndex(column);
+    let itemIndex = this.getItemIndex(item, column);
+    if (itemIndex !== -1 && columnIndex !== -1) {
+      this.columns[columnIndex].remove(item);
+      this.updateColumn(column);
+    } else {
+      console.log("Column doesn't exist or item doesn't exists");
     }
-    return -1;
   }
+  //   for (let i = 0; i < this.columns.length; i++) {
+  //     if (this.getItemIndex()) {
+  //       return i;
+  //     }
+  //   }
+  //   return -1;
+  // }
 
   addColumn(column) {
     let index = this.getIndex(column);

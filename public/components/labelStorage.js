@@ -21,11 +21,13 @@ export default class LabelStorage {
   
     getIndex(label) {
       for (let i = 0; i < this.labels.length; i++) {
-        if (this.labels[i].colour == label.colour) {
+        if (this.labels[i].name == label.name) {
           return i;
-        } else if (this.labels[i].name == label.name) {
-          return i;
-        }
+        } 
+        
+        // else if (this.labels[i].colour == label.colour) {
+        //   return i;
+        // }
       }
       return -1;
     }
@@ -39,17 +41,29 @@ export default class LabelStorage {
       console.log("cannot find the label: " + name.toString());
     }
 
-    labelIsNew(label) {
+    labelColourExists(label) {
       for (let i = 0; i < this.labels.length; i++) {
-        if (this.labels[i].name == label.name) {
-          alert("Label name already exists");
-          return false;
-        } else if (this.labels[i].colour == label.colour) {
-          alert("Label colour already exists");
-          return false;
+        // if (this.labels[i].name == label.name) {
+        //   // alert("Label name already exists");
+        //   return true;
+        // } else 
+        
+        if (this.labels[i].colour == label.colour) {
+          // alert("Label colour already exists");
+          return true;
         }
       }
-      return true;
+      return false;
+    }
+
+    labelNameExists(label) {
+      for (let i = 0; i < this.labels.length; i++) {
+        if (this.labels[i].name == label.name) {
+          // alert("Label name already exists");
+          return true;
+        }
+      }
+      return false;
     }
   
     update(label) {
