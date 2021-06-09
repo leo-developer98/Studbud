@@ -119,8 +119,13 @@ lbTimeInput.addEventListener("input", () => {
 var pomodoro = new Timer();
 
 $('#pomo-startBtn').click(function () {
-    // console.log(study);
-    pomodoro.start({ countdown: true, startValues: { minutes: study }, target: { minutes: 0 } });
+    $("#pomodoroCircle").effect("bounce", {distance: 20,times: 3} ,550);
+    if(loop === 1) {
+        $("#pomodoroCircle").addClass("studyMode");
+    }
+    $("#pomodoroCircle").removeClass("paused");
+    // Change Here!!!
+    pomodoro.start({ countdown: true, startValues: { seconds: study }, target: { minutes: 0 } });
     pomoStartBtn.classList.remove("running");
     pomoPauseBtn.classList.add("running");
     studyTimeInput.setAttribute("disabled", "true");
@@ -132,6 +137,8 @@ $('#pomo-startBtn').click(function () {
 });
 
 $('#pomo-pauseBtn').click(function () {
+    $("#pomodoroCircle").effect("bounce", {distance: 20,times: 3} ,550);
+    $("#pomodoroCircle").addClass("paused");
     pomodoro.pause();
     pomoPauseBtn.classList.remove("running");
     pomoStartBtn.classList.add("running");
@@ -140,6 +147,7 @@ $('#pomo-pauseBtn').click(function () {
 });
 
 $('#pomo-resetBtn').click(function () {
+    if (confirm("Reset the current Pomodoro session?")) {
     pomodoro.reset();
     pomodoro.start();
     pomodoro.pause();
@@ -147,22 +155,30 @@ $('#pomo-resetBtn').click(function () {
     pomoStartBtn.classList.add("running");
     $("#pTimerIndicator").removeClass("btn-danger");
     $("#pTimerIndicator").addClass("btn-primary");
+    }
 });
 
 $('#pomo-stopBtn').click(function () {
-    isBreak = false;
-    progressIndex = 1;
-    loop = 1;
-    pomodoro.stop();
-    $('#pomodoroLoop').html("0");
-    $('#pomodoroTime .minutes').html(study);
-    $('#pomodoroTime .seconds').html("0");
-    pomoPauseBtn.classList.remove("running");
-    pomoStartBtn.classList.add("running");
-    studyTimeInput.removeAttribute("disabled");
-    sbTimeInput.removeAttribute("disabled");
-    lbTimeInput.removeAttribute("disabled");
-    $("#pTimerIndicator").removeClass("show");
+    if (confirm("Stop the current Pomodoro timer?")) {
+        $("#pomodoroCircle").effect("puff", { mode : "hide"},   300);
+        $("#pomodoroCircle").effect("puff", { mode : "show"},   300);
+        $("#pomodoroCircle").removeClass("studyMode");
+        $("#pomodoroCircle").removeClass("sbMode");
+        $("#pomodoroCircle").removeClass("lbMode");
+        isBreak = false;
+        progressIndex = 1;
+        loop = 1;
+        pomodoro.stop();
+        $('#pomodoroLoop').html("0");
+        $('#pomodoroTime .minutes').html(study);
+        $('#pomodoroTime .seconds').html("0");
+        pomoPauseBtn.classList.remove("running");
+        pomoStartBtn.classList.add("running");
+        studyTimeInput.removeAttribute("disabled");
+        sbTimeInput.removeAttribute("disabled");
+        lbTimeInput.removeAttribute("disabled");
+        $("#pTimerIndicator").removeClass("show");
+    }
 });
 
 
@@ -202,9 +218,14 @@ pomodoro.addEventListener('stopped', function (e) {
 });
 
 pomodoro.addEventListener('targetAchieved', function (e) {
+    $("#pomodoroCircle").effect("shake", 750);
     progressIndex = progressIndex + 1;
     if (isBreak) {
         // Executing Study (minutes)
+        $("#pomodoroCircle").removeClass("sbMode");
+        $("#pomodoroCircle").removeClass("lbMode");
+        $("#pomodoroCircle").addClass("studyMode");
+
         loop = loop + 1;
         pomodoro.start({ countdown: true, startValues: { minutes: study }, target: { minutes: 0 } });
         isBreak = false;
@@ -212,11 +233,19 @@ pomodoro.addEventListener('targetAchieved', function (e) {
     } else {
         if (loop % pomodoroLoop === 0) {
             // Executing Long Break (minutes)
+            $("#pomodoroCircle").removeClass("sbMode");
+            $("#pomodoroCircle").removeClass("studyMode");
+            $("#pomodoroCircle").addClass("lbMode");
+
             pomodoro.start({ countdown: true, startValues: { minutes: longBreak }, target: { minutes: 0 } });
             isBreak = true;
             $("#progress" + (progressIndex % 8).toString()).addClass("progress-bar-striped progress-bar-animated");
         } else {
             // Executing Short Break (minutes)
+            $("#pomodoroCircle").removeClass("lbMode");
+            $("#pomodoroCircle").removeClass("studyMode");
+            $("#pomodoroCircle").addClass("sbMode");
+
             pomodoro.start({ countdown: true, startValues: { minutes: shortBreak }, target: { minutes: 0 } });
             isBreak = true;
             $("#progress" + (progressIndex % 8).toString()).addClass("progress-bar-striped progress-bar-animated");
@@ -228,6 +257,8 @@ pomodoro.addEventListener('targetAchieved', function (e) {
 var stopWatch = new Timer();
 
 $('#sw-startBtn').click(function () {
+    $("#stopwatchCircle").addClass("active");
+    $("#stopwatchCircle").effect("bounce", {distance: 20,times: 3} ,550);
     stopWatch.start({ precision: 'seconds' });
     swResetBtn.classList.remove("running");
     swLapBtn.classList.add("running");
@@ -239,6 +270,8 @@ $('#sw-startBtn').click(function () {
 });
 
 $('#sw-pauseBtn').click(function () {
+    $("#stopwatchCircle").removeClass("active");
+    $("#stopwatchCircle").effect("bounce", {distance: 20,times: 3} ,550);
     stopWatch.pause();
     swResetBtn.classList.add("running");
     swLapBtn.classList.remove("running");
@@ -249,25 +282,29 @@ $('#sw-pauseBtn').click(function () {
 });
 
 $('#sw-stopBtn').click(function () {
-    stopWatch.stop();
-    swResetBtn.classList.add("running");
-    swLapBtn.classList.remove("running");
-    swPauseBtn.classList.remove("running");
-    swStartBtn.classList.add("running");
-    $("#sTimerIndicator").removeClass("btn-danger");
-    $("#sTimerIndicator").addClass("btn-primary");
+    if (confirm("Stop the curren Stopwatch? (current lap times won't be deleted)")) {
+        stopWatch.stop();
+        swResetBtn.classList.add("running");
+        swLapBtn.classList.remove("running");
+        swPauseBtn.classList.remove("running");
+        swStartBtn.classList.add("running");
+        $("#sTimerIndicator").removeClass("btn-danger");
+        $("#sTimerIndicator").addClass("btn-primary");
+    }
 });
 
 $('#sw-resetBtn').click(function () {
-    if (confirm("Current lap times will be deleted")) {
+    if (confirm("Reset the current Stopwatch? (current lap times will be deleted)")) {
+        $("#stopwatchCircle").effect("puff", { mode : "hide"},   300);
+        $("#stopwatchCircle").effect("puff", { mode : "show"},   300);
         stopWatch.reset();
         stopWatch.pause();
         swResetBtn.classList.add("running");
         swLapBtn.classList.remove("running");
         lapList.innerHTML = "";
         lapNum = 1;
+        $("#sTimerIndicator").removeClass("show");
     }
-    $("#sTimerIndicator").removeClass("show");
 });
 
 // Adding Lapped times when lap button is clicked
@@ -287,20 +324,13 @@ $('#sw-lapBtn').click(function () {
 
 stopWatch.addEventListener('secondsUpdated', function (e) {
     $('#stopwatchTime').html(stopWatch.getTimeValues().toString(['minutes', 'seconds']));
-    // $(function () {
-    //     var startAnim = function () {
-    //         $("#stopwatchTime").animate({
-    //             "opacity": "25%"
-    //         }, 1000, "easeInOutBack", resetAnim)
-    //     }
-    //     var resetAnim = function () {
-    //         $("#stopwatchTime").css({
-    //             "opacity": "100%"
-    //         });
-    //         startAnim();
-    //     }
-    //     startAnim()
-    // });
+    $("#sTimerIndicator .indicatorTimes").html(stopWatch.getTimeValues().toString(['minutes', 'seconds']));
+    // $('#stopwatchTime .minutes').html(stopWatch.getTimeValues().minutes);
+    // $('#stopwatchTime .seconds').html(stopWatch.getTimeValues().seconds);
+});
+
+stopWatch.addEventListener('stopped', function (e) {
+    $('#stopwatchTime').html(stopWatch.getTimeValues().toString(['minutes', 'seconds']));
     $("#sTimerIndicator .indicatorTimes").html(stopWatch.getTimeValues().toString(['minutes', 'seconds']));
     // $('#stopwatchTime .minutes').html(stopWatch.getTimeValues().minutes);
     // $('#stopwatchTime .seconds').html(stopWatch.getTimeValues().seconds);
@@ -332,3 +362,9 @@ $("#sTimerIndicator").click(function(e) {
     $("#tabS").prop("checked", true);
     $('#timers').modal('show');
 })
+
+// var pw = $("#pomodoroCircle").width();
+// console.log(pw);
+// $('#pomodoroCircle').css({
+//     'height': pw + "px"
+// });

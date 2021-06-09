@@ -131,3 +131,10 @@
         }
     }
 }
+
+@media only screen and (max-width: 769px) {
+    .input-group {
+        width: 80% !important;
+        margin-left: 15px;
+    }
+}

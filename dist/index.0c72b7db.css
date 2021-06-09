@@ -124,6 +124,7 @@ body {
 }
 nav {
   display: flex;
+  height: 56px;
   background-color: #43519d;
   color: white;
   justify-content: space-around;
@@ -170,12 +171,12 @@ nav .mobile_menu_btn.open {
 }
 nav #timerIndicators {
   display: flex;
-  float: right;
   width: -webkit-fit-content;
   width: -moz-fit-content;
   width: fit-content;
-  height: 100%;
+  height: 56px;
   margin-left: auto;
+  margin-right: 15px;
   justify-content: center;
   align-items: center;
 }
@@ -213,7 +214,6 @@ nav #mobileSortTasks {
   background-color: #43519d;
   color: white;
   border: none;
-  margin-left: auto;
   margin-right: 5px;
   float: right;
 }
@@ -257,13 +257,23 @@ nav .nav_links .nav_item .nav_btn.active {
 .mobile_menus {
   display: none;
 }
+.modal-header {
+  background-color: #43519d;
+  color: white;
+}
 @media only screen and (max-width: 769px) {
+  .top_nav {
+    height: 56px;
+  }
+
   .task_btn {
     display: none !important;
   }
 
   .mobile_menu_btn {
     display: flex !important;
+    height: 56px;
+    width: 56px;
   }
 
   #desktopNavLinks {
@@ -273,11 +283,11 @@ nav .nav_links .nav_item .nav_btn.active {
   #mobileNavLinks {
     display: block !important;
     position: fixed;
-    height: 100vh;
+    height: calc(100vh - 56px);
     width: 100%;
     background: #252e59;
     left: calc(-100vw);
-    top: 50px;
+    top: 56px;
     z-index: 10;
     transition: all 0.25s ease-in-out;
   }
@@ -285,12 +295,25 @@ nav .nav_links .nav_item .nav_btn.active {
     left: 0;
   }
   #mobileNavLinks .nav_link {
+    display: flex;
+    margin-bottom: 16px;
     width: 100%;
     height: 100%;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+  }
+  #mobileNavLinks .nav_link i {
+    display: flex;
+    margin-right: 20px;
   }
 
   #mobileSortTasks {
     display: flex !important;
+  }
+
+  #timerIndicators {
+    height: 50px;
   }
 }
 #taskWrapper {
@@ -618,7 +641,7 @@ nav .nav_links .nav_item .nav_btn.active {
     width: 100%;
     height: 100%;
     z-index: 0;
-    top: 50px;
+    top: 56px;
   }
   #taskWrapper #taskgrid #taskList {
     height: calc(100vh - 66px);
@@ -636,6 +659,9 @@ nav .nav_links .nav_item .nav_btn.active {
   }
   #taskWrapper #addTask #taskForm label {
     display: block;
+  }
+  #taskWrapper #addTask #taskForm .input-group {
+    width: 100% !important;
   }
   #taskWrapper #task_bottom {
     width: 100%;
@@ -714,7 +740,7 @@ nav .nav_links .nav_item .nav_btn.active {
 }
 #timers .modal-body #timers_p {
   display: none;
-  margin: 20px;
+  margin: 0 !important;
 }
 #timers .modal-body #timers_p.active {
   display: block;
@@ -723,20 +749,70 @@ nav .nav_links .nav_item .nav_btn.active {
   height: 100%;
 }
 #timers .modal-body #timers_p #pomodoroContainer {
-  margin-top: 20px;
-  justify-content: space-between;
+  display: flex;
+  height: 100%;
+  padding: 0;
+  justify-content: center;
+  align-items: center;
+}
+#timers .modal-body #timers_p #pomodoroContainer .progress {
+  padding: 0;
+  width: 100%;
 }
 #timers .modal-body #timers_p #pomodoroContainer #pInputContainer {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: center;
+  height: 100%;
+  border: none;
+}
+#timers .modal-body #timers_p #pomodoroContainer #pInputContainer #sliderBtn {
+  width: 80%;
+  margin-bottom: auto;
+}
+#timers .modal-body #timers_p #pomodoroContainer #pInputContainer #slider {
+  position: absolute;
+  bottom: 0;
+  width: 80%;
+}
+#timers .modal-body #timers_p #pomodoroContainer #pInputContainer #slider .slider-values {
+  float: right;
 }
 #timers .modal-body #timers_p #pomodoroContainer #pomodoroDisplays {
   display: flex;
   justify-content: center;
   align-items: center;
 }
-#timers .modal-body #timers_p #pomodoroContainer #pomodoroDisplays #pomodoroTime {
+#timers .modal-body #timers_p #pomodoroContainer #pomodoroDisplays #pomodoroCircle {
+  width: 420px;
+  height: 420px;
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 400;
+  background-color: #252e59;
+  background-color: #252e59 !important;
+}
+#timers .modal-body #timers_p #pomodoroContainer #pomodoroDisplays #pomodoroCircle.studyMode {
+  background-color: #43519d !important;
+}
+#timers .modal-body #timers_p #pomodoroContainer #pomodoroDisplays #pomodoroCircle.studyMode.paused {
+  background-color: #252e59 !important;
+}
+#timers .modal-body #timers_p #pomodoroContainer #pomodoroDisplays #pomodoroCircle.sbMode {
+  background-color: #63cf63 !important;
+}
+#timers .modal-body #timers_p #pomodoroContainer #pomodoroDisplays #pomodoroCircle.sbMode.paused {
+  background-color: #459945 !important;
+}
+#timers .modal-body #timers_p #pomodoroContainer #pomodoroDisplays #pomodoroCircle.lbMode {
+  background-color: #63cf63 !important;
+}
+#timers .modal-body #timers_p #pomodoroContainer #pomodoroDisplays #pomodoroCircle.lbMode.paused {
+  background-color: #499749 !important;
+}
+#timers .modal-body #timers_p #pomodoroContainer #pomodoroDisplays #pomodoroCircle #pomodoroTime {
   position: relative;
   display: flex;
   font-weight: 600;
@@ -744,17 +820,20 @@ nav .nav_links .nav_item .nav_btn.active {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  color: whitesmoke;
 }
-#timers .modal-body #timers_p #pomodoroContainer #pomodoroDisplays #pomodoroTime #loopDisplay {
+#timers .modal-body #timers_p #pomodoroContainer #pomodoroDisplays #pomodoroCircle #pomodoroTime #loopDisplay {
   display: none;
   font-size: 50px;
 }
-#timers .modal-body #timers_p #slider {
-  position: absolute;
-  bottom: 0;
+#timers .modal-body #timers_p .studyMode {
+  background-color: #43519d !important;
 }
-#timers .modal-body #timers_p #slider .slider-values {
-  float: right;
+#timers .modal-body #timers_p .sbMode {
+  background-color: #63cf63;
+}
+#timers .modal-body #timers_p .lbMode {
+  background-color: #63cf63;
 }
 #timers .modal-body #timers_s {
   display: none;
@@ -773,9 +852,23 @@ nav .nav_links .nav_item .nav_btn.active {
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 0;
 }
-#timers .modal-body #timers_s #stopwatchTimeParent #stopwatchTime {
+#timers .modal-body #timers_s #stopwatchTimeParent #stopwatchCircle {
   display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 420px;
+  height: 420px;
+  border-radius: 100%;
+  background-color: #252e59;
+}
+#timers .modal-body #timers_s #stopwatchTimeParent #stopwatchCircle.active {
+  background-color: #43519d;
+}
+#timers .modal-body #timers_s #stopwatchTimeParent #stopwatchCircle #stopwatchTime {
+  display: flex;
+  color: whitesmoke;
   font-size: 100px;
   font-weight: 600;
   margin: auto;
@@ -785,7 +878,7 @@ nav .nav_links .nav_item .nav_btn.active {
   display: flex;
   flex-direction: column-reverse;
   overflow-y: scroll;
-  height: 100%;
+  height: 500px;
   width: 100%;
   border-top: 3px solid darkgray;
   border-bottom: 3px solid darkgray;
@@ -807,6 +900,7 @@ nav .nav_links .nav_item .nav_btn.active {
   flex-direction: column;
   justify-content: space-evenly;
   align-items: center;
+  height: 100%;
 }
 #timers .modal-body .timerBtnContainer .row {
   height: 33%;
@@ -868,87 +962,143 @@ nav .nav_links .nav_item .nav_btn.active {
   width: 300px;
   height: 300px;
 }
-#container {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  position: relative;
-}
-#outerContainer {
-  width: 100%;
-  height: 100%;
-}
-.item i {
-  width: 150px;
-  height: 150px;
-}
-.circle {
-  border-radius: 50%;
-  background-color: deepskyblue;
-  width: 150px;
-  height: 150px;
-  position: absolute;
-  opacity: 0;
-}
-.circle {
-  border-radius: 50%;
-  background-color: deepskyblue;
-  width: 150px;
-  height: 150px;
-  position: absolute;
-  opacity: 0;
-  -webkit-animation: scaleIn 10s infinite cubic-bezier(0.36, 0.11, 0.89, 0.32);
-          animation: scaleIn 10s infinite cubic-bezier(0.36, 0.11, 0.89, 0.32);
-}
-@-webkit-keyframes scaleIn {
-  from {
-    transform: scale(0.5, 0.5);
-    opacity: 0.5;
-  }
-  to {
-    transform: scale(1.5, 1.5);
-    opacity: 0;
-  }
-}
-@keyframes scaleIn {
-  from {
-    transform: scale(0.5, 0.5);
-    opacity: 0.5;
-  }
-  to {
-    transform: scale(1.5, 1.5);
-    opacity: 0;
-  }
-}
-@-webkit-keyframes time {
-  0% {
-    opacity: 100%;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-@keyframes time {
-  0% {
-    opacity: 100%;
-  }
-  100% {
-    opacity: 0;
-  }
-}
 @media only screen and (max-width: 769px) {
+  .modal-header {
+    padding: 0 !important;
+  }
+  .modal-header .btn-close {
+    width: 5px !important;
+    height: 5px !important;
+    padding: 5px;
+    margin-right: 15px;
+  }
+  .modal-header #timerNav {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .modal-header #timerNav #timerTabs {
+    display: flex;
+    background-color: #252e59;
+    padding: 0.75rem;
+    border-radius: 8px;
+    align-items: center;
+  }
+  .modal-header #timerNav #timerTabs > * {
+    z-index: 2;
+  }
+  .modal-header #timerNav #timerTabs i {
+    margin-left: 10px;
+  }
+  .modal-header #timerNav #timerTabs .tab {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 15px !important;
+    width: 90px !important;
+    border-radius: 10px;
+    font-size: 0.9rem !important;
+    font-weight: 0.25rem;
+  }
+  .modal-header #timerNav #timerTabs .glider {
+    height: 25px !important;
+    width: 90px !important;
+    border-radius: 7px;
+  }
+
   .modal-body {
     padding: 10px;
+    height: calc(100vh * 0.85) !important;
+    overflow-y: scroll;
   }
   .modal-body #timers_p {
     margin: 5px !important;
     padding: 0;
   }
+  .modal-body #timers_p #pomodoroContainer {
+    display: block !important;
+    position: relative;
+    height: 100%;
+    justify-content: space-evenly !important;
+  }
+  .modal-body #timers_p #pomodoroContainer #pInputContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start !important;
+    height: 100px !important;
+    overflow-y: scroll;
+    border: 2px solid black;
+  }
+  .modal-body #timers_p #pomodoroContainer #pInputContainer #sliderBtn {
+    display: block !important;
+  }
+  .modal-body #timers_p #pomodoroContainer #pInputContainer #slider {
+    margin-top: 5%;
+    margin-bottom: 5%;
+    position: relative !important;
+    width: 100% !important;
+    height: -webkit-fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    vertical-align: middle;
+  }
+  .modal-body #timers_p #pomodoroContainer #pInputContainer #slider .slider-values {
+    float: right;
+  }
+  .modal-body #timers_p #pomodoroContainer #pomodoroDisplays {
+    margin-top: 5%;
+  }
+  .modal-body #timers_p #pomodoroContainer #pomodoroDisplays #pomodoroCircle {
+    width: 270px !important;
+    height: 270px !important;
+  }
+  .modal-body #timers_p #pomodoroContainer #pomodoroDisplays #pomodoroCircle #pomodoroTime {
+    font-weight: 600;
+    font-size: 35px !important;
+  }
   .modal-body #timers_s {
     margin: 5px !important;
+    padding: 0;
+  }
+  .modal-body #timers_s #stopwatchContainer {
+    position: relative;
+    height: 100% !important;
+    width: 100%;
+    margin: 0;
+  }
+  .modal-body #timers_s #stopwatchContainer #stopwatchTimeParent {
+    height: -webkit-fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    margin-top: 5%;
+  }
+  .modal-body #timers_s #stopwatchContainer #stopwatchTimeParent #stopwatchCircle {
+    width: 260px !important;
+    height: 260px !important;
+  }
+  .modal-body #timers_s #stopwatchContainer #stopwatchTimeParent #stopwatchCircle #stopwatchTime {
+    display: flex;
+    color: whitesmoke;
+    font-size: 70px !important;
+    font-weight: 600;
+  }
+  .modal-body #timers_s #stopwatchContainer #lapTime {
+    height: 100% !important;
+    width: 100%;
+    margin: 0 !important;
+  }
+  .modal-body #timers_s #stopwatchContainer #lapTime #lapTimeList {
+    list-style: none;
+    margin-bottom: 0;
+  }
+  .modal-body #timers_s #stopwatchContainer #lapTime #lapTimeList .lapTimeItems {
+    font-weight: 500;
+    font-size: 20px !important;
+  }
+  .modal-body #timers_s #stopwatchContainer #lapTime #lapTimeList .lapTimeItems .lappedTimes {
+    float: right;
+    margin-right: 40px;
   }
 
   .container {
@@ -956,7 +1106,20 @@ nav .nav_links .nav_item .nav_btn.active {
   }
 
   .timerBtnContainer {
+    position: absolute;
+    width: 100%;
     flex-direction: row !important;
+    height: -webkit-fit-content !important;
+    height: -moz-fit-content !important;
+    height: fit-content !important;
+    bottom: 2%;
+    left: 0;
+    padding: 0;
+  }
+  .timerBtnContainer .timerBtns {
+    width: 60px !important;
+    height: 60px !important;
+    font-size: 0.75rem;
   }
 }
 #dictionary .modal-header {
@@ -1062,6 +1225,12 @@ nav .nav_links .nav_item .nav_btn.active {
 }
 #dictionary .modal-body #moreDefinitionsBtn:hover {
   background-color: #252e59;
+}
+@media only screen and (max-width: 769px) {
+  .input-group {
+    width: 80% !important;
+    margin-left: 15px;
+  }
 }
 #musicPlayer .offcanvas-header {
   background-color: #43519d;

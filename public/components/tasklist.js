@@ -342,7 +342,7 @@ const labelList = labelStorage.labels;
 
 // Kanban Storage
 const kanbanStorage = new KanbanStorage();
-const kanbanColumns = kanbanStorage.columns;
+const kanbanColumns = kanbanStorage.boards;
 
 $(document).ready(function () {
   taskList.forEach((element) => {
@@ -474,7 +474,7 @@ function addTask(taskDescription, dueDate, completionTime, priorityRating, prior
   }
 }
 
-// showing task visually in regards with its properties
+// ShowTask: showing task visually in regards with its properties
 function showTask(task) {
   updateLabelDropdown();
 
@@ -506,32 +506,20 @@ function showTask(task) {
   doneBtn.addEventListener('click', () => {
     let element = {
       id: task.taskDescription,
-      title: task.taskDescription + "<button type='button' class='btn btn-outline-danger btn-sm kanbanItemBtn' data-target=" + task.taskDescription + "><i class='fas fa-trash-alt'></i></button>"
+      title: task.taskDescription + "<button type='button' class='btn btn-outline-danger btn-sm kanbanItemBtn' data-target=" + task.taskDescription + "><i class='fas fa-trash-alt'></i></button>",
+      currentBoard: "done"
     }
+    kanbanStorage.addItem(element, "done");
     kanbanBoard.addElement("done", element);
     
-    // Disable the done button
-    doneBtn.setAttribute("disabled", "true");
-    toDoButton.setAttribute("disabled", "true");
+    // let itemKanban = {
+    //   name: text,
+    //   color: color
+    // }
+    // $(item).attr("data-kanban", JSON.stringify(itemKanban));
 
-    // Style the item in the task list
-    item_title.style.textDecoration = "line-through";
-    item.style.backgroundColor = "#c2c2c2";
-
-    let taskDelBtn = $(item).children(".card-body").children(".task-right").children(".task_buttons").children(".deleteBtn")[0];
-    taskDelBtn.classList.add("btn-danger");
-    taskDelBtn.classList.remove("btn-outline-danger");
-
-    let boardHeader = $(`button[data-target="${task.taskDescription}"]`).closest(".kanban-board").children(".kanban-board-header")[0];
-    let color = boardHeader.style.backgroundColor;
-    let text = boardHeader.firstChild.innerHTML;
-    
-    let itemKanban = {
-      name: text,
-      color: color
-    }
-    $(item).attr("data-kanban", JSON.stringify(itemKanban));
-
+    let board = kanbanColumns[kanbanStorage.getColumnIndex(element.currentBoard)];  
+    let color = board.color;
     let el = $(`.kanban-item[data-eid="${task.taskDescription}"]`)[0];
 
     el.style.backgroundColor = color;
@@ -540,21 +528,7 @@ function showTask(task) {
             backgroundColor: "white"
           }, {duration: 1000, queue: false});
     
-    // el.style.backgroundColor = "white";
-
-
-    // If task deleted from the kanban board, remove the task from the board and enable done button
-    $(`button[data-target="${task.taskDescription}"]`).click(function(event) {
-      kanbanBoard.removeElement(this.dataset.target);
-      toDoButton.removeAttribute("disabled");
-      doneBtn.removeAttribute("disabled");
-      // reset the style
-      item_title.style.textDecoration = "none";
-      item.style.backgroundColor = "whitesmoke";
-      item.style.border = "none";
-      taskDelBtn.classList.remove("btn-danger");
-      taskDelBtn.classList.add("btn-outline-danger");
-    })
+    itemMoved($(`.task_item[data-taskname="${element.id}"]`)[0], element, board);
   })
 
 
@@ -643,37 +617,38 @@ function showTask(task) {
   buttons.setAttribute("role", "group");
 
   // "Move to Kanban" Button for each tasks
-  let toDoButton = document.createElement("button");
+  let moveButton = document.createElement("button");
 
-  toDoButton.innerHTML = "<i class='fas fa-chevron-right'></i>";
-  toDoButton.setAttribute('class', "btn btn-outline-primary btn-sm");
-  toDoButton.classList.add("moveBtn");
+  moveButton.innerHTML = "<i class='fas fa-columns'></i>";
+  moveButton.setAttribute('class', "btn btn-outline-primary btn-xs");
+  moveButton.classList.add("moveBtn");
 
-  toDoButton.addEventListener("click", function (event) {
-    // event.preventDefault();
+  moveButton.addEventListener("click", function (event) {
+    let id = $(`.kanban-board[data-order="1"]`).attr("data-id");
+
     let element = {
       id: task.taskDescription,
-      title: task.taskDescription + "<button type='button' class='btn btn-outline-danger btn-sm kanbanItemBtn' data-target=" + task.taskDescription + "><i class='fas fa-trash-alt'></i></button><div class='kanban-item-bg'></div>" 
+      title: task.taskDescription + "<button type='button' class='btn btn-outline-danger btn-sm kanbanItemBtn' data-target=" + task.taskDescription + "><i class='fas fa-trash-alt'></i></button>",
+      currentBoard: id
     }
 
-    kanbanBoard.addElement("toDo", element);
-    toDoButton.setAttribute("disabled", "true");
-    doneBtn.setAttribute("disabled", "true");
+    kanbanStorage.addItem(element, id);
+    kanbanBoard.addElement(id, element);
 
-    let boardHeader = $(`button[data-target="${task.taskDescription}"]`).closest(".kanban-board").children(".kanban-board-header")[0];
-    let color = boardHeader.style.backgroundColor;
-    let text = boardHeader.firstChild.innerHTML;
+    // moveButton.setAttribute("disabled", "true");
+    // doneBtn.setAttribute("disabled", "true");
 
-    item.style.border = `3px solid ${color}`;
+    // item.style.border = `3px solid ${color}`;
     
-    let itemKanban = {
-      name: text,
-      color: color
-    }
-    $(item).attr("data-kanban", JSON.stringify(itemKanban));
+    // let itemKanban = {
+    //   name: text,
+    //   color: color
+    // }
+    // $(item).attr("data-kanban", JSON.stringify(itemKanban));
 
-    let taskDelBtn = $(item).children(".card-body").children(".task-right").children(".task_buttons").children(".deleteBtn")[0];
-
+    // let taskDelBtn = $(item).children(".card-body").children(".task-right").children(".task_buttons").children(".deleteBtn")[0];
+    let board = kanbanColumns[kanbanStorage.getColumnIndex(element.currentBoard)];  
+    let color = board.color;
     let el = $(`.kanban-item[data-eid="${task.taskDescription}"]`)[0];
 
     el.style.backgroundColor = color;
@@ -681,26 +656,15 @@ function showTask(task) {
           .animate({
             backgroundColor: "white"
           }, {duration: 1000, queue: false});
-
-    $(`button[data-target="${task.taskDescription}"]`).click(function(event) {
-      kanbanBoard.removeElement(this.dataset.target);
-      toDoButton.removeAttribute("disabled");
-      doneBtn.removeAttribute("disabled");
-      item_title.style.textDecoration = "none";
-      item.style.backgroundColor = "whitesmoke";
-      item.style.border = "none";
-      taskDelBtn.classList.remove("btn-danger");
-      taskDelBtn.classList.add("btn-outline-danger");
-
-      $(item).attr("data-kanban", "");
-    })
+    
+    itemMoved($(`.task_item[data-taskname="${element.id}"]`)[0], element, board);
   })
 
   // Delete Button for each tasks
   let delButton = document.createElement("button");
   delButton.innerHTML = "<i class='fas fa-trash-alt'></i></button>";
 
-  delButton.setAttribute('class', "btn btn-outline-danger btn-sm");
+  delButton.setAttribute('class', "btn btn-outline-danger btn-xs");
   delButton.classList.add('deleteBtn');
   // delButton.setAttribute("data-bs-toggle", "tooltip");
   // delButton.setAttribute("data-bs-placement", "top");
@@ -716,10 +680,25 @@ function showTask(task) {
     }
   })
 
-  buttons.appendChild(toDoButton);
-  buttons.appendChild(delButton);
-  // item_body.appendChild(buttons);
+  // Kanban Board Dropdown Button (for mobile)
+  let kanbanSelectBtn = document.createElement("button");
+  kanbanSelectBtn.innerHTML = "No Board";
 
+  kanbanSelectBtn.setAttribute('class', "btn btn-secondary dropdown-toggle btn-sm");
+  kanbanSelectBtn.classList.add('kanbanSelectBtn');
+  kanbanSelectBtn.setAttribute("data-toggle", "dropdown");
+  kanbanSelectBtn.setAttribute("aria-haspopup", "true");
+
+  let kanbanDropdowns = document.createElement("div");
+  kanbanDropdowns.classList.add("dropdown-menu");
+
+  kanbanSelectBtn.appendChild(kanbanDropdowns);
+
+
+  buttons.appendChild(moveButton);
+  buttons.appendChild(delButton);
+  // buttons.appendChild(kanbanSelectBtn);
+  // right_body.appendChild(kanbanSelectBtn);
   right_body.appendChild(buttons);
   item_body.appendChild(right_body);  
   item.appendChild(item_body);
@@ -880,13 +859,6 @@ $(".sortEstimatedTime").click(function(event) {
   $("#closeAdd").click();
 })
 
-// Default columns for Kanban Board
-var columns = [
-  { id: 'toDo', title: "To Do", item: [], color: "#178bff" },
-  { id: 'inProgress', title: "In Progress", item: [], color: "#ffc31e" },
-  { id: 'done', title: "Done", item: [], color: "#3dd66b" }
-];
-
 // Allowing editing on the board titles
 function editableBoardTitle() {
   document.querySelectorAll('.kanban-title-board').forEach((boardName) => {
@@ -907,6 +879,7 @@ function resizeBoards() {
   })
 }
 
+// kanban board using jKanban and custom callback functions for actions
 var kanbanBoard = new jKanban({
   element: '#myKanban',                                          // selector of the kanban container
   // gutter           : '15px',                                  // gutter of the board
@@ -927,73 +900,74 @@ var kanbanBoard = new jKanban({
     customCssHandler: "drag_handler",                             // when customHandler is undefined, jKanban will use this property to set main handler class
     customCssIconHandler: "drag_handler_icon",                    // when customHandler is undefined, jKanban will use this property to set main icon handler class. If you want, you can use font icon libraries here
     customHandler: "<span class='item_handle'>+</span> %title% "  // your entirely customized handler. Use %title% to position item title 
-                                                                  // any key's value included in item collection can be replaced with %key%
   },
-  click: function (el) { },                                       // callback when any board's item are clicked
-  context: function (el, event) { },                              // callback when any board's item are right clicked
+  click: function (el) { },                                       
+  context: function (el, event) { },                              
   dragEl: function (el, source) { 
     let color = source.previousElementSibling.style.backgroundColor;
-    // el.style.backgroundImage = `linear-gradient(to right, white 50%, ${color} 50%)`;
-    // el.style.backgroundPosition = "-100% 0";  
-
-  },                                                              // callback when any board's item are dragged
-  dragendEl: function (el) { },                                   // callback when any board's item stop drag
+  },                                                              
+  dragendEl: function (el) { },                                  
   dropEl: function (el, target, source, sibling) { 
-    let boardColor = target.previousElementSibling.style.backgroundColor;
-    let boardName = target.previousElementSibling.firstChild.innerHTML;
+    let itemId = $(el).attr("data-eid");
+    let targetId = target.parentElement.dataset.id;
+    let sourceId = source.parentElement.dataset.id;
 
-    let itemKanban = {
-      name: boardName,
-      color: boardColor
-    }
+    let item = kanbanStorage.getItemObject(itemId);
+    // console.log(item);
+    item.currentBoard = targetId;
 
-    let taskname = $(el).data("eid");
-    let item = $("#taskList").children(`.task_item[data-taskname=${taskname}]`)[0];
-    $(item).attr("data-kanban", JSON.stringify(itemKanban));
+    kanbanStorage.removeItem(itemId, sourceId);
+    kanbanStorage.addItem(item, targetId);
 
-    let item_title = $(item).children(".card-body").children(".item_top").children(".card-title")[0];
+    let board = kanbanStorage.getBoardObject(targetId);
+    let boardColor = board.color;
 
-    // console.log(target.previousElementSibling.parentElement.dataset.id);
-    let boardId = target.previousElementSibling.parentElement.dataset.id;
-    if (boardId == "done") {
-      item_title.style.textDecoration = "line-through";
-      item.style.backgroundColor = "#c2c2c2";
-
-      let taskDelBtn = $(item).children(".card-body").children(".task-right").children(".task_buttons").children(".deleteBtn")[0];
-      taskDelBtn.classList.add("btn-danger");
-      taskDelBtn.classList.remove("btn-outline-danger");
-      item.style.border = `none`;
-    } else {
-      item_title.style.textDecoration = "none";
-      item.style.backgroundColor = "white";
-      item.style.border = `3px solid ${boardColor}`;
-    }
-
-    el.style.backgroundColor = boardColor;
     $(el).effect("slide", {direction: "left"}, 400)
           .animate({
-            backgroundColor: "white"
-          }, {duration: 1000, queue: false});
+            backgroundColor: boardColor,
+          }, {duration: 400, queue: false});
 
-    // $(el).animate({
-    //   backgroundColor: "white"
-    // }, 150);
+    $(el).animate({
+    backgroundColor: "white"
+    }, {duration: 800, queue: true});
 
-    // let bg = el.lastChild;
-    // el.style.backgroundImage = `linear-gradient(to right, white 50%, ${color} 50%)`;
-    // el.style.backgroundPosition = "-100% 0";  
+    let htmlItem = $(`.task_item[data-taskname="${item.id}"`)[0];
 
-
-  },                                                              // callback when any board's item drop in a board
-  dragBoard: function (el, source) { },                           // callback when any board stop drag
-  dragendBoard: function (el) { },                                // callback when any board stop drag
-  buttonClick: function (el, boardId) { }                         // callback when the board's button is clicked
+    itemMoved(htmlItem,item, board);
+  },                                 
+  dragBoard: function (el, source) { 
+  },                        
+  dragendBoard: function (el) { 
+    $(".kanban-board").each((i, obj) => {
+      let boardId = $(obj).attr("data-id");
+      let boardOrder = $(obj).attr("data-order");
+      kanbanStorage.updateBoardOrder(boardId,boardOrder);
+    })
+    kanbanStorage.sortBoards();
+  },                                                              
+  buttonClick: function (el, boardId) { }                        
 });
 
+// Default columns for Kanban Board
+var columns = [
+  { id: 'toDo', title: "To Do", item: [], color: "#178bff", order: 1},
+  { id: 'inProgress', title: "In Progress", item: [], color: "#ffc31e", order: 2},
+  { id: 'done', title: "Done", item: [], color: "#3dd66b", order: 3}
+];
+
+// add boards from kanbanStorage when document loads
 $(document).ready(function () {
-  for (let i = 0; i < columns.length; i++) {
-    let board = columns[i];
+  for (let i = 0; i < kanbanColumns.length; i++) {
+    let board = kanbanColumns[i];
+
     kanbanBoard.addBoards([board]);
+
+    for (let j=0;j<board.items.length;j++) {
+      let element = board.items[j];
+      kanbanBoard.addElement(board.id, element);
+      itemMoved($(`.task_item[data-taskname="${element.id}"]`)[0], element, board);
+    }
+
     resizeBoards();
     let boardHeader = document.querySelector(".kanban-board[data-id='" + board.id + "'] > .kanban-board-header");
     boardHeader.style.backgroundColor = board.color;
@@ -1004,6 +978,7 @@ $(document).ready(function () {
     deleteBtn.innerHTML = "<i class='fas fa-trash-alt'></i>";
 
     deleteBtn.addEventListener("click", () => {
+      kanbanStorage.removeBoard(board.id);
       kanbanBoard.removeBoard(board.id);
       let boards = kanbanBoard.boardContainer;
       let pos = boards.indexOf(board);
@@ -1014,6 +989,48 @@ $(document).ready(function () {
     editableBoardTitle();
   }
 })
+
+// Helper function for styling when item in kanban board is moved
+function itemMoved(htmlItem, itemObject, board) {
+  let moveButton = $(htmlItem).find(".moveBtn")[0];
+  let doneButton = $(htmlItem).find(".checkBtn")[0];
+  let taskDelBtn = $(htmlItem).find(".deleteBtn")[0];
+  moveButton.setAttribute("disabled", "true");
+  doneButton.setAttribute("disabled", "true");
+
+  let item_title = $(htmlItem).find(".card-title")[0];
+
+  if(board.id == "done") {
+    item_title.style.textDecoration = "line-through";
+    htmlItem.style.backgroundColor = "#c2c2c2";
+    htmlItem.style.border = "none";
+    taskDelBtn.classList.add("btn-danger");
+    taskDelBtn.classList.remove("btn-outline-danger");
+  } else {
+    htmlItem.style.border = `3px solid ${board.color}`;
+    item_title.style.textDecoration = "none";
+    htmlItem.style.backgroundColor = "white";
+    taskDelBtn.classList.remove("btn-danger");
+    taskDelBtn.classList.add("btn-outline-danger");
+  }
+
+  $(`button[data-target="${itemObject.id}"]`).click(function(event) {
+    kanbanStorage.removeItem(itemObject.id, itemObject.currentBoard);
+    kanbanBoard.removeElement(itemObject.id);
+    moveButton.removeAttribute("disabled");
+    doneButton.removeAttribute("disabled");
+
+    item_title.style.textDecoration = "none";
+    htmlItem.style.backgroundColor = "whitesmoke";
+    htmlItem.style.border = "none";
+    taskDelBtn.classList.remove("btn-danger");
+    taskDelBtn.classList.add("btn-outline-danger");
+
+    $(htmlItem).attr("data-kanban", "");
+  })
+}
+
+
 
 const addBoardWrapperBtn = document.getElementById("addBoardWrapperBtn");
 const addBoardBtn = document.getElementById("addBoardBtn");
@@ -1029,9 +1046,12 @@ addBoardBtn.addEventListener("click", () => {
     let board = {
       id: boardTitle,
       title: boardTitle,
-      item: []
+      items: [],
+      color: boardColorInput.value,
+      order: kanbanColumns.length + 1
     }
 
+    kanbanStorage.addBoard(board);
     kanbanBoard.addBoards([board]);
     resizeBoards();
 
@@ -1044,6 +1064,7 @@ addBoardBtn.addEventListener("click", () => {
     deleteBtn.innerHTML = "<i class='fas fa-trash-alt'></i>";
 
     deleteBtn.addEventListener("click", () => {
+      kanbanStorage.removeBoard(board.id);
       kanbanBoard.removeBoard(board.id);
       let boards = kanbanBoard.boardContainer;
       let pos = boards.indexOf(board);

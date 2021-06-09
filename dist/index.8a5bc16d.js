@@ -705,7 +705,7 @@ const labelStorage = new _labelStorageJsDefault.default();
 const labelList = labelStorage.labels;
 // Kanban Storage
 const kanbanStorage = new _kanbanStorageJsDefault.default();
-const kanbanColumns = kanbanStorage.columns;
+const kanbanColumns = kanbanStorage.boards;
 $(document).ready(function () {
   taskList.forEach(element => {
     showTask(element);
@@ -823,7 +823,7 @@ function addTask(taskDescription, dueDate, completionTime, priorityRating, prior
     }
   }
 }
-// showing task visually in regards with its properties
+// ShowTask: showing task visually in regards with its properties
 function showTask(task) {
   updateLabelDropdown();
   let item = document.createElement("div");
@@ -849,26 +849,18 @@ function showTask(task) {
   doneBtn.addEventListener('click', () => {
     let element = {
       id: task.taskDescription,
-      title: task.taskDescription + "<button type='button' class='btn btn-outline-danger btn-sm kanbanItemBtn' data-target=" + task.taskDescription + "><i class='fas fa-trash-alt'></i></button>"
+      title: task.taskDescription + "<button type='button' class='btn btn-outline-danger btn-sm kanbanItemBtn' data-target=" + task.taskDescription + "><i class='fas fa-trash-alt'></i></button>",
+      currentBoard: "done"
     };
+    kanbanStorage.addItem(element, "done");
     kanbanBoard.addElement("done", element);
-    // Disable the done button
-    doneBtn.setAttribute("disabled", "true");
-    toDoButton.setAttribute("disabled", "true");
-    // Style the item in the task list
-    item_title.style.textDecoration = "line-through";
-    item.style.backgroundColor = "#c2c2c2";
-    let taskDelBtn = $(item).children(".card-body").children(".task-right").children(".task_buttons").children(".deleteBtn")[0];
-    taskDelBtn.classList.add("btn-danger");
-    taskDelBtn.classList.remove("btn-outline-danger");
-    let boardHeader = $(`button[data-target="${task.taskDescription}"]`).closest(".kanban-board").children(".kanban-board-header")[0];
-    let color = boardHeader.style.backgroundColor;
-    let text = boardHeader.firstChild.innerHTML;
-    let itemKanban = {
-      name: text,
-      color: color
-    };
-    $(item).attr("data-kanban", JSON.stringify(itemKanban));
+    // let itemKanban = {
+    // name: text,
+    // color: color
+    // }
+    // $(item).attr("data-kanban", JSON.stringify(itemKanban));
+    let board = kanbanColumns[kanbanStorage.getColumnIndex(element.currentBoard)];
+    let color = board.color;
     let el = $(`.kanban-item[data-eid="${task.taskDescription}"]`)[0];
     el.style.backgroundColor = color;
     $(el).effect("slide", {
@@ -879,19 +871,7 @@ function showTask(task) {
       duration: 1000,
       queue: false
     });
-    // el.style.backgroundColor = "white";
-    // If task deleted from the kanban board, remove the task from the board and enable done button
-    $(`button[data-target="${task.taskDescription}"]`).click(function (event) {
-      kanbanBoard.removeElement(this.dataset.target);
-      toDoButton.removeAttribute("disabled");
-      doneBtn.removeAttribute("disabled");
-      // reset the style
-      item_title.style.textDecoration = "none";
-      item.style.backgroundColor = "whitesmoke";
-      item.style.border = "none";
-      taskDelBtn.classList.remove("btn-danger");
-      taskDelBtn.classList.add("btn-outline-danger");
-    });
+    itemMoved($(`.task_item[data-taskname="${element.id}"]`)[0], element, board);
   });
   let left_body = document.createElement("div");
   let right_body = document.createElement("div");
@@ -961,29 +941,30 @@ function showTask(task) {
   buttons.classList.add("task_buttons");
   buttons.setAttribute("role", "group");
   // "Move to Kanban" Button for each tasks
-  let toDoButton = document.createElement("button");
-  toDoButton.innerHTML = "<i class='fas fa-chevron-right'></i>";
-  toDoButton.setAttribute('class', "btn btn-outline-primary btn-sm");
-  toDoButton.classList.add("moveBtn");
-  toDoButton.addEventListener("click", function (event) {
-    // event.preventDefault();
+  let moveButton = document.createElement("button");
+  moveButton.innerHTML = "<i class='fas fa-columns'></i>";
+  moveButton.setAttribute('class', "btn btn-outline-primary btn-xs");
+  moveButton.classList.add("moveBtn");
+  moveButton.addEventListener("click", function (event) {
+    let id = $(`.kanban-board[data-order="1"]`).attr("data-id");
     let element = {
       id: task.taskDescription,
-      title: task.taskDescription + "<button type='button' class='btn btn-outline-danger btn-sm kanbanItemBtn' data-target=" + task.taskDescription + "><i class='fas fa-trash-alt'></i></button><div class='kanban-item-bg'></div>"
+      title: task.taskDescription + "<button type='button' class='btn btn-outline-danger btn-sm kanbanItemBtn' data-target=" + task.taskDescription + "><i class='fas fa-trash-alt'></i></button>",
+      currentBoard: id
     };
-    kanbanBoard.addElement("toDo", element);
-    toDoButton.setAttribute("disabled", "true");
-    doneBtn.setAttribute("disabled", "true");
-    let boardHeader = $(`button[data-target="${task.taskDescription}"]`).closest(".kanban-board").children(".kanban-board-header")[0];
-    let color = boardHeader.style.backgroundColor;
-    let text = boardHeader.firstChild.innerHTML;
-    item.style.border = `3px solid ${color}`;
-    let itemKanban = {
-      name: text,
-      color: color
-    };
-    $(item).attr("data-kanban", JSON.stringify(itemKanban));
-    let taskDelBtn = $(item).children(".card-body").children(".task-right").children(".task_buttons").children(".deleteBtn")[0];
+    kanbanStorage.addItem(element, id);
+    kanbanBoard.addElement(id, element);
+    // moveButton.setAttribute("disabled", "true");
+    // doneBtn.setAttribute("disabled", "true");
+    // item.style.border = `3px solid ${color}`;
+    // let itemKanban = {
+    // name: text,
+    // color: color
+    // }
+    // $(item).attr("data-kanban", JSON.stringify(itemKanban));
+    // let taskDelBtn = $(item).children(".card-body").children(".task-right").children(".task_buttons").children(".deleteBtn")[0];
+    let board = kanbanColumns[kanbanStorage.getColumnIndex(element.currentBoard)];
+    let color = board.color;
     let el = $(`.kanban-item[data-eid="${task.taskDescription}"]`)[0];
     el.style.backgroundColor = color;
     $(el).effect("slide", {
@@ -994,22 +975,12 @@ function showTask(task) {
       duration: 1000,
       queue: false
     });
-    $(`button[data-target="${task.taskDescription}"]`).click(function (event) {
-      kanbanBoard.removeElement(this.dataset.target);
-      toDoButton.removeAttribute("disabled");
-      doneBtn.removeAttribute("disabled");
-      item_title.style.textDecoration = "none";
-      item.style.backgroundColor = "whitesmoke";
-      item.style.border = "none";
-      taskDelBtn.classList.remove("btn-danger");
-      taskDelBtn.classList.add("btn-outline-danger");
-      $(item).attr("data-kanban", "");
-    });
+    itemMoved($(`.task_item[data-taskname="${element.id}"]`)[0], element, board);
   });
   // Delete Button for each tasks
   let delButton = document.createElement("button");
   delButton.innerHTML = "<i class='fas fa-trash-alt'></i></button>";
-  delButton.setAttribute('class', "btn btn-outline-danger btn-sm");
+  delButton.setAttribute('class', "btn btn-outline-danger btn-xs");
   delButton.classList.add('deleteBtn');
   // delButton.setAttribute("data-bs-toggle", "tooltip");
   // delButton.setAttribute("data-bs-placement", "top");
@@ -1023,9 +994,20 @@ function showTask(task) {
       updateEmpty();
     }
   });
-  buttons.appendChild(toDoButton);
+  // Kanban Board Dropdown Button (for mobile)
+  let kanbanSelectBtn = document.createElement("button");
+  kanbanSelectBtn.innerHTML = "No Board";
+  kanbanSelectBtn.setAttribute('class', "btn btn-secondary dropdown-toggle btn-sm");
+  kanbanSelectBtn.classList.add('kanbanSelectBtn');
+  kanbanSelectBtn.setAttribute("data-toggle", "dropdown");
+  kanbanSelectBtn.setAttribute("aria-haspopup", "true");
+  let kanbanDropdowns = document.createElement("div");
+  kanbanDropdowns.classList.add("dropdown-menu");
+  kanbanSelectBtn.appendChild(kanbanDropdowns);
+  buttons.appendChild(moveButton);
   buttons.appendChild(delButton);
-  // item_body.appendChild(buttons);
+  // buttons.appendChild(kanbanSelectBtn);
+  // right_body.appendChild(kanbanSelectBtn);
   right_body.appendChild(buttons);
   item_body.appendChild(right_body);
   item.appendChild(item_body);
@@ -1164,23 +1146,6 @@ $(".sortEstimatedTime").click(function (event) {
   });
   $("#closeAdd").click();
 });
-// Default columns for Kanban Board
-var columns = [{
-  id: 'toDo',
-  title: "To Do",
-  item: [],
-  color: "#178bff"
-}, {
-  id: 'inProgress',
-  title: "In Progress",
-  item: [],
-  color: "#ffc31e"
-}, {
-  id: 'done',
-  title: "Done",
-  item: [],
-  color: "#3dd66b"
-}];
 // Allowing editing on the board titles
 function editableBoardTitle() {
   document.querySelectorAll('.kanban-title-board').forEach(boardName => {
@@ -1199,6 +1164,7 @@ function resizeBoards() {
     board.style.width = boardWidth.toString() + "%";
   });
 }
+// kanban board using jKanban and custom callback functions for actions
 var kanbanBoard = new jKanban({
   element: '#myKanban',
   // selector of the kanban container
@@ -1233,61 +1199,80 @@ var kanbanBoard = new jKanban({
     customHandler: "<span class='item_handle'>+</span> %title% "
   },
   click: function (el) {},
-  // callback when any board's item are clicked
   context: function (el, event) {},
-  // callback when any board's item are right clicked
   dragEl: function (el, source) {
     let color = source.previousElementSibling.style.backgroundColor;
   },
-  // callback when any board's item are dragged
   dragendEl: function (el) {},
-  // callback when any board's item stop drag
   dropEl: function (el, target, source, sibling) {
-    let boardColor = target.previousElementSibling.style.backgroundColor;
-    let boardName = target.previousElementSibling.firstChild.innerHTML;
-    let itemKanban = {
-      name: boardName,
-      color: boardColor
-    };
-    let taskname = $(el).data("eid");
-    let item = $("#taskList").children(`.task_item[data-taskname=${taskname}]`)[0];
-    $(item).attr("data-kanban", JSON.stringify(itemKanban));
-    let item_title = $(item).children(".card-body").children(".item_top").children(".card-title")[0];
-    // console.log(target.previousElementSibling.parentElement.dataset.id);
-    let boardId = target.previousElementSibling.parentElement.dataset.id;
-    if (boardId == "done") {
-      item_title.style.textDecoration = "line-through";
-      item.style.backgroundColor = "#c2c2c2";
-      let taskDelBtn = $(item).children(".card-body").children(".task-right").children(".task_buttons").children(".deleteBtn")[0];
-      taskDelBtn.classList.add("btn-danger");
-      taskDelBtn.classList.remove("btn-outline-danger");
-      item.style.border = `none`;
-    } else {
-      item_title.style.textDecoration = "none";
-      item.style.backgroundColor = "white";
-      item.style.border = `3px solid ${boardColor}`;
-    }
-    el.style.backgroundColor = boardColor;
+    let itemId = $(el).attr("data-eid");
+    let targetId = target.parentElement.dataset.id;
+    let sourceId = source.parentElement.dataset.id;
+    let item = kanbanStorage.getItemObject(itemId);
+    // console.log(item);
+    item.currentBoard = targetId;
+    kanbanStorage.removeItem(itemId, sourceId);
+    kanbanStorage.addItem(item, targetId);
+    let board = kanbanStorage.getBoardObject(targetId);
+    let boardColor = board.color;
     $(el).effect("slide", {
       direction: "left"
     }, 400).animate({
-      backgroundColor: "white"
+      backgroundColor: boardColor
     }, {
-      duration: 1000,
+      duration: 400,
       queue: false
     });
+    $(el).animate({
+      backgroundColor: "white"
+    }, {
+      duration: 800,
+      queue: true
+    });
+    let htmlItem = $(`.task_item[data-taskname="${item.id}"`)[0];
+    itemMoved(htmlItem, item, board);
   },
-  // callback when any board's item drop in a board
   dragBoard: function (el, source) {},
-  // callback when any board stop drag
-  dragendBoard: function (el) {},
-  // callback when any board stop drag
+  dragendBoard: function (el) {
+    $(".kanban-board").each((i, obj) => {
+      let boardId = $(obj).attr("data-id");
+      let boardOrder = $(obj).attr("data-order");
+      kanbanStorage.updateBoardOrder(boardId, boardOrder);
+    });
+    kanbanStorage.sortBoards();
+  },
   buttonClick: function (el, boardId) {}
 });
+// Default columns for Kanban Board
+var columns = [{
+  id: 'toDo',
+  title: "To Do",
+  item: [],
+  color: "#178bff",
+  order: 1
+}, {
+  id: 'inProgress',
+  title: "In Progress",
+  item: [],
+  color: "#ffc31e",
+  order: 2
+}, {
+  id: 'done',
+  title: "Done",
+  item: [],
+  color: "#3dd66b",
+  order: 3
+}];
+// add boards from kanbanStorage when document loads
 $(document).ready(function () {
-  for (let i = 0; i < columns.length; i++) {
-    let board = columns[i];
+  for (let i = 0; i < kanbanColumns.length; i++) {
+    let board = kanbanColumns[i];
     kanbanBoard.addBoards([board]);
+    for (let j = 0; j < board.items.length; j++) {
+      let element = board.items[j];
+      kanbanBoard.addElement(board.id, element);
+      itemMoved($(`.task_item[data-taskname="${element.id}"]`)[0], element, board);
+    }
     resizeBoards();
     let boardHeader = document.querySelector(".kanban-board[data-id='" + board.id + "'] > .kanban-board-header");
     boardHeader.style.backgroundColor = board.color;
@@ -1296,6 +1281,7 @@ $(document).ready(function () {
     deleteBtn.classList.add("btn", "btn-outline-danger", "btn-sm", "boardDeleteBtn");
     deleteBtn.innerHTML = "<i class='fas fa-trash-alt'></i>";
     deleteBtn.addEventListener("click", () => {
+      kanbanStorage.removeBoard(board.id);
       kanbanBoard.removeBoard(board.id);
       let boards = kanbanBoard.boardContainer;
       let pos = boards.indexOf(board);
@@ -1306,6 +1292,40 @@ $(document).ready(function () {
     editableBoardTitle();
   }
 });
+// Helper function for styling when item in kanban board is moved
+function itemMoved(htmlItem, itemObject, board) {
+  let moveButton = $(htmlItem).find(".moveBtn")[0];
+  let doneButton = $(htmlItem).find(".checkBtn")[0];
+  let taskDelBtn = $(htmlItem).find(".deleteBtn")[0];
+  moveButton.setAttribute("disabled", "true");
+  doneButton.setAttribute("disabled", "true");
+  let item_title = $(htmlItem).find(".card-title")[0];
+  if (board.id == "done") {
+    item_title.style.textDecoration = "line-through";
+    htmlItem.style.backgroundColor = "#c2c2c2";
+    htmlItem.style.border = "none";
+    taskDelBtn.classList.add("btn-danger");
+    taskDelBtn.classList.remove("btn-outline-danger");
+  } else {
+    htmlItem.style.border = `3px solid ${board.color}`;
+    item_title.style.textDecoration = "none";
+    htmlItem.style.backgroundColor = "white";
+    taskDelBtn.classList.remove("btn-danger");
+    taskDelBtn.classList.add("btn-outline-danger");
+  }
+  $(`button[data-target="${itemObject.id}"]`).click(function (event) {
+    kanbanStorage.removeItem(itemObject.id, itemObject.currentBoard);
+    kanbanBoard.removeElement(itemObject.id);
+    moveButton.removeAttribute("disabled");
+    doneButton.removeAttribute("disabled");
+    item_title.style.textDecoration = "none";
+    htmlItem.style.backgroundColor = "whitesmoke";
+    htmlItem.style.border = "none";
+    taskDelBtn.classList.remove("btn-danger");
+    taskDelBtn.classList.add("btn-outline-danger");
+    $(htmlItem).attr("data-kanban", "");
+  });
+}
 const addBoardWrapperBtn = document.getElementById("addBoardWrapperBtn");
 const addBoardBtn = document.getElementById("addBoardBtn");
 const boardNameInput = document.getElementById("boardNameInput");
@@ -1319,8 +1339,11 @@ addBoardBtn.addEventListener("click", () => {
     let board = {
       id: boardTitle,
       title: boardTitle,
-      item: []
+      items: [],
+      color: boardColorInput.value,
+      order: kanbanColumns.length + 1
     };
+    kanbanStorage.addBoard(board);
     kanbanBoard.addBoards([board]);
     resizeBoards();
     let boardHeader = document.querySelector(".kanban-board[data-id='" + board.id + "'] > .kanban-board-header");
@@ -1330,6 +1353,7 @@ addBoardBtn.addEventListener("click", () => {
     deleteBtn.classList.add("btn", "btn-outline-danger", "btn-sm", "boardDeleteBtn");
     deleteBtn.innerHTML = "<i class='fas fa-trash-alt'></i>";
     deleteBtn.addEventListener("click", () => {
+      kanbanStorage.removeBoard(board.id);
       kanbanBoard.removeBoard(board.id);
       let boards = kanbanBoard.boardContainer;
       let pos = boards.indexOf(board);
@@ -2263,82 +2287,111 @@ _parcelHelpers.defineInteropFlag(exports);
 class KanbanStorage {
   constructor() {
     // if item by key `tasks` is not defined JSON.parse return null, so I use `or empty array`
-    this.columns = JSON.parse(localStorage.getItem('kanban')) || [];
+    this.boards = JSON.parse(localStorage.getItem('kanban')) || [{
+      id: 'toDo',
+      title: "To Do",
+      items: [],
+      color: "#178bff",
+      order: 1
+    }, {
+      id: 'inProgress',
+      title: "In Progress",
+      items: [],
+      color: "#ffc31e",
+      order: 2
+    }, {
+      id: 'done',
+      title: "Done",
+      items: [],
+      color: "#3dd66b",
+      order: 3
+    }];
   }
-  updateColumn(column) {
-    let index = this.getColumnIndex(column);
-    if (index !== -1) {
-      this.columns[index] = column;
-      localStorage.setItem('kanban', JSON.stringify(this.columns));
-    } else {
-      console.log("Column doesn't exist in the list");
-    }
-  }
-  getColumnIndex(column) {
-    for (let i = 0; i < this.columns.length; i++) {
-      if (this.columns[i].id == column.id) {
+  getColumnIndex(boardId) {
+    for (let i = 0; i < this.boards.length; i++) {
+      if (this.boards[i].id == boardId) {
         return i;
       }
     }
     return -1;
   }
   /*returns the item index with a list of [columnIndex, itemIndex] in this.columns*/
-  getItemIndex(item, column) {
-    let columnIndex = this.getColumnIndex(column);
-    if (columnIndex === -1) {
-      console.log("column doesn't exist");
-    } else {
-      for (let i = 0; i < this.columns[columnIndex].length; i++) {
-        if (this.columns[columnIndex][i].id == item.id) {
+  getItemIndex(itemId, columnIndex) {
+    if (columnIndex !== -1) {
+      for (let i = 0; i < this.boards[columnIndex].items.length; i++) {
+        if (this.boards[columnIndex].items[i].id == itemId) {
           return i;
         }
       }
       return -1;
     }
   }
-  addItem(item, column) {
-    let columnIndex = this.getColumnIndex(column);
-    let itemIndex = this.getItemIndex(item, column);
-    if (itemIndex !== -1 && columnIndex !== -1) {
-      this.columns[columnIndex].push(item);
-      this.updateColumn(column);
-    } else {
-      console.log("Column doesn't exist or item already exists");
+  getItemObject(itemId) {
+    for (let i = 0; i < this.boards.length; i++) {
+      for (let j = 0; j < this.boards[i].items.length; j++) {
+        if (this.boards[i].items[j].id == itemId) {
+          return this.boards[i].items[j];
+        } else {
+          console.log("KanbanStorage.getItemObject(): item not found in the storage");
+        }
+      }
     }
   }
-  removeItem(item) {
-    let columnIndex = this.getColumnIndex(column);
-    let itemIndex = this.getItemIndex(item, column);
-    if (itemIndex !== -1 && columnIndex !== -1) {
-      this.columns[columnIndex].remove(item);
-      this.updateColumn(column);
-    } else {
-      console.log("Column doesn't exist or item doesn't exists");
+  getBoardObject(boardId) {
+    for (let i = 0; i < this.boards.length; i++) {
+      if (this.boards[i].id == boardId) {
+        return this.boards[i];
+      } else {
+        console.log("KanbanStorage.getBoardObject(): board not found in the storage");
+      }
     }
   }
-  /*for (let i = 0; i < this.columns.length; i++) {*/
-  /*if (this.getItemIndex()) {*/
-  /*return i;*/
-  /*}*/
-  /*}*/
-  /*return -1;*/
-  /*}*/
-  addColumn(column) {
-    let index = this.getIndex(column);
+  addBoard(board) {
+    let index = this.getColumnIndex(board.id);
     if (index === -1) {
-      this.columns.push(column);
-      localStorage.setItem('kanban', JSON.stringify(this.columns));
+      this.boards.push(board);
+      localStorage.setItem('kanban', JSON.stringify(this.boards));
     } else {
-      console.log("Column already exist in the list");
+      console.log("Kanban Storage(addBoard): Board already exist in the KanbanStorage.boards");
     }
   }
-  deleteColumn(column) {
-    let index = this.getIndex(column);
+  removeBoard(boardId) {
+    let index = this.getColumnIndex(boardId);
     if (index !== -1) {
-      this.columns.splice(index, 1);
-      localStorage.setItem('kanban', JSON.stringify(this.columns));
+      this.boards.splice(index, 1);
+      localStorage.setItem('kanban', JSON.stringify(this.boards));
     } else {
-      console.log("Column doesn't exist in the list");
+      console.log("Kanban Storage(removeBoard): Board doesn't exist in the KanbanStorage.boards");
+    }
+  }
+  addItem(item, boardId) {
+    let columnIndex = this.getColumnIndex(boardId);
+    let itemIndex = this.getItemIndex(item.id, columnIndex);
+    if (itemIndex == -1 && columnIndex !== -1) {
+      this.boards[columnIndex].items.push(item);
+      localStorage.setItem('kanban', JSON.stringify(this.boards));
+    } else {
+      alert(`Kanban Storage(addItem): Item wasn't added due to invalid index, columnIndex=${columnIndex} itemIndex=${itemIndex}`);
+    }
+  }
+  removeItem(itemId, boardId) {
+    let columnIndex = this.getColumnIndex(boardId);
+    let itemIndex = this.getItemIndex(itemId, columnIndex);
+    if (itemIndex !== -1 && columnIndex !== -1) {
+      this.boards[columnIndex].items.splice(itemIndex, 1);
+      // this.boards[columnIndex].items.remove(itemIndex, 1);
+      localStorage.setItem('kanban', JSON.stringify(this.boards));
+    } else {}
+  }
+  sortBoards() {
+    this.boards.sort((a, b) => a.order - b.order);
+    localStorage.setItem('kanban', JSON.stringify(this.boards));
+  }
+  updateBoardOrder(boardId, order) {
+    let colIndex = this.getColumnIndex(boardId);
+    if (colIndex !== -1) {
+      this.boards[colIndex].order = order;
+      localStorage.setItem('kanban', JSON.stringify(this.boards));
     }
   }
 }
@@ -10207,11 +10260,19 @@ lbTimeInput.addEventListener("input", () => {
 // Pomodoro Timer
 var pomodoro = new Timer();
 $('#pomo-startBtn').click(function () {
-  // console.log(study);
+  $("#pomodoroCircle").effect("bounce", {
+    distance: 20,
+    times: 3
+  }, 550);
+  if (loop === 1) {
+    $("#pomodoroCircle").addClass("studyMode");
+  }
+  $("#pomodoroCircle").removeClass("paused");
+  // Change Here!!!
   pomodoro.start({
     countdown: true,
     startValues: {
-      minutes: study
+      seconds: study
     },
     target: {
       minutes: 0
@@ -10227,6 +10288,11 @@ $('#pomo-startBtn').click(function () {
   $("#pTimerIndicator").removeClass("btn-primary");
 });
 $('#pomo-pauseBtn').click(function () {
+  $("#pomodoroCircle").effect("bounce", {
+    distance: 20,
+    times: 3
+  }, 550);
+  $("#pomodoroCircle").addClass("paused");
   pomodoro.pause();
   pomoPauseBtn.classList.remove("running");
   pomoStartBtn.classList.add("running");
@@ -10234,28 +10300,41 @@ $('#pomo-pauseBtn').click(function () {
   $("#pTimerIndicator").addClass("btn-primary");
 });
 $('#pomo-resetBtn').click(function () {
-  pomodoro.reset();
-  pomodoro.start();
-  pomodoro.pause();
-  pomoPauseBtn.classList.remove("running");
-  pomoStartBtn.classList.add("running");
-  $("#pTimerIndicator").removeClass("btn-danger");
-  $("#pTimerIndicator").addClass("btn-primary");
+  if (confirm("Reset the current Pomodoro session?")) {
+    pomodoro.reset();
+    pomodoro.start();
+    pomodoro.pause();
+    pomoPauseBtn.classList.remove("running");
+    pomoStartBtn.classList.add("running");
+    $("#pTimerIndicator").removeClass("btn-danger");
+    $("#pTimerIndicator").addClass("btn-primary");
+  }
 });
 $('#pomo-stopBtn').click(function () {
-  isBreak = false;
-  progressIndex = 1;
-  loop = 1;
-  pomodoro.stop();
-  $('#pomodoroLoop').html("0");
-  $('#pomodoroTime .minutes').html(study);
-  $('#pomodoroTime .seconds').html("0");
-  pomoPauseBtn.classList.remove("running");
-  pomoStartBtn.classList.add("running");
-  studyTimeInput.removeAttribute("disabled");
-  sbTimeInput.removeAttribute("disabled");
-  lbTimeInput.removeAttribute("disabled");
-  $("#pTimerIndicator").removeClass("show");
+  if (confirm("Stop the current Pomodoro timer?")) {
+    $("#pomodoroCircle").effect("puff", {
+      mode: "hide"
+    }, 300);
+    $("#pomodoroCircle").effect("puff", {
+      mode: "show"
+    }, 300);
+    $("#pomodoroCircle").removeClass("studyMode");
+    $("#pomodoroCircle").removeClass("sbMode");
+    $("#pomodoroCircle").removeClass("lbMode");
+    isBreak = false;
+    progressIndex = 1;
+    loop = 1;
+    pomodoro.stop();
+    $('#pomodoroLoop').html("0");
+    $('#pomodoroTime .minutes').html(study);
+    $('#pomodoroTime .seconds').html("0");
+    pomoPauseBtn.classList.remove("running");
+    pomoStartBtn.classList.add("running");
+    studyTimeInput.removeAttribute("disabled");
+    sbTimeInput.removeAttribute("disabled");
+    lbTimeInput.removeAttribute("disabled");
+    $("#pTimerIndicator").removeClass("show");
+  }
 });
 pomodoro.addEventListener('secondsUpdated', function (e) {
   $('#pomodoroTime .minutes').html(pomodoro.getTimeValues().minutes);
@@ -10287,9 +10366,13 @@ pomodoro.addEventListener('stopped', function (e) {
   $(".progress-bar").removeClass("progress-bar-striped progress-bar-animated");
 });
 pomodoro.addEventListener('targetAchieved', function (e) {
+  $("#pomodoroCircle").effect("shake", 750);
   progressIndex = progressIndex + 1;
   if (isBreak) {
     // Executing Study (minutes)
+    $("#pomodoroCircle").removeClass("sbMode");
+    $("#pomodoroCircle").removeClass("lbMode");
+    $("#pomodoroCircle").addClass("studyMode");
     loop = loop + 1;
     pomodoro.start({
       countdown: true,
@@ -10305,6 +10388,9 @@ pomodoro.addEventListener('targetAchieved', function (e) {
   } else {
     if (loop % pomodoroLoop === 0) {
       // Executing Long Break (minutes)
+      $("#pomodoroCircle").removeClass("sbMode");
+      $("#pomodoroCircle").removeClass("studyMode");
+      $("#pomodoroCircle").addClass("lbMode");
       pomodoro.start({
         countdown: true,
         startValues: {
@@ -10318,6 +10404,9 @@ pomodoro.addEventListener('targetAchieved', function (e) {
       $("#progress" + (progressIndex % 8).toString()).addClass("progress-bar-striped progress-bar-animated");
     } else {
       // Executing Short Break (minutes)
+      $("#pomodoroCircle").removeClass("lbMode");
+      $("#pomodoroCircle").removeClass("studyMode");
+      $("#pomodoroCircle").addClass("sbMode");
       pomodoro.start({
         countdown: true,
         startValues: {
@@ -10335,6 +10424,11 @@ pomodoro.addEventListener('targetAchieved', function (e) {
 // Stopwatch Timer
 var stopWatch = new Timer();
 $('#sw-startBtn').click(function () {
+  $("#stopwatchCircle").addClass("active");
+  $("#stopwatchCircle").effect("bounce", {
+    distance: 20,
+    times: 3
+  }, 550);
   stopWatch.start({
     precision: 'seconds'
   });
@@ -10347,6 +10441,11 @@ $('#sw-startBtn').click(function () {
   $("#sTimerIndicator").removeClass("btn-primary");
 });
 $('#sw-pauseBtn').click(function () {
+  $("#stopwatchCircle").removeClass("active");
+  $("#stopwatchCircle").effect("bounce", {
+    distance: 20,
+    times: 3
+  }, 550);
   stopWatch.pause();
   swResetBtn.classList.add("running");
   swLapBtn.classList.remove("running");
@@ -10356,24 +10455,32 @@ $('#sw-pauseBtn').click(function () {
   $("#sTimerIndicator").addClass("btn-primary");
 });
 $('#sw-stopBtn').click(function () {
-  stopWatch.stop();
-  swResetBtn.classList.add("running");
-  swLapBtn.classList.remove("running");
-  swPauseBtn.classList.remove("running");
-  swStartBtn.classList.add("running");
-  $("#sTimerIndicator").removeClass("btn-danger");
-  $("#sTimerIndicator").addClass("btn-primary");
+  if (confirm("Stop the curren Stopwatch? (current lap times won't be deleted)")) {
+    stopWatch.stop();
+    swResetBtn.classList.add("running");
+    swLapBtn.classList.remove("running");
+    swPauseBtn.classList.remove("running");
+    swStartBtn.classList.add("running");
+    $("#sTimerIndicator").removeClass("btn-danger");
+    $("#sTimerIndicator").addClass("btn-primary");
+  }
 });
 $('#sw-resetBtn').click(function () {
-  if (confirm("Current lap times will be deleted")) {
+  if (confirm("Reset the current Stopwatch? (current lap times will be deleted)")) {
+    $("#stopwatchCircle").effect("puff", {
+      mode: "hide"
+    }, 300);
+    $("#stopwatchCircle").effect("puff", {
+      mode: "show"
+    }, 300);
     stopWatch.reset();
     stopWatch.pause();
     swResetBtn.classList.add("running");
     swLapBtn.classList.remove("running");
     lapList.innerHTML = "";
     lapNum = 1;
+    $("#sTimerIndicator").removeClass("show");
   }
-  $("#sTimerIndicator").removeClass("show");
 });
 // Adding Lapped times when lap button is clicked
 var lapNum = 1;
@@ -10391,20 +10498,10 @@ $('#sw-lapBtn').click(function () {
 });
 stopWatch.addEventListener('secondsUpdated', function (e) {
   $('#stopwatchTime').html(stopWatch.getTimeValues().toString(['minutes', 'seconds']));
-  // $(function () {
-  // var startAnim = function () {
-  // $("#stopwatchTime").animate({
-  // "opacity": "25%"
-  // }, 1000, "easeInOutBack", resetAnim)
-  // }
-  // var resetAnim = function () {
-  // $("#stopwatchTime").css({
-  // "opacity": "100%"
-  // });
-  // startAnim();
-  // }
-  // startAnim()
-  // });
+  $("#sTimerIndicator .indicatorTimes").html(stopWatch.getTimeValues().toString(['minutes', 'seconds']));
+});
+stopWatch.addEventListener('stopped', function (e) {
+  $('#stopwatchTime').html(stopWatch.getTimeValues().toString(['minutes', 'seconds']));
   $("#sTimerIndicator .indicatorTimes").html(stopWatch.getTimeValues().toString(['minutes', 'seconds']));
 });
 stopWatch.addEventListener('started', function (e) {

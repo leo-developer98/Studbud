@@ -1,24 +1,14 @@
 export default class KanbanStorage {
   constructor() {
     // if item by key `tasks` is not defined JSON.parse return null, so I use `or empty array`
-    this.columns = JSON.parse(localStorage.getItem('kanban')) || [];
+    this.boards = JSON.parse(localStorage.getItem('kanban')) || [{ id: 'toDo', title: "To Do", items: [], color: "#178bff", order: 1},
+    { id: 'inProgress', title: "In Progress", items: [], color: "#ffc31e", order: 2},
+    { id: 'done', title: "Done", items: [], color: "#3dd66b", order: 3} ];
   }
 
-  updateColumn(column) {
-    let index = this.getColumnIndex(column);
-
-    if (index !== -1) {
-      this.columns[index] = column;
-
-      localStorage.setItem('kanban', JSON.stringify(this.columns));
-    } else {
-      console.log("Column doesn't exist in the list")
-    }
-  }
-
-  getColumnIndex(column) {
-    for (let i = 0; i < this.columns.length; i++) {
-      if (this.columns[i].id == column.id) {
+  getColumnIndex(boardId) {
+    for (let i = 0; i < this.boards.length; i++) {
+      if (this.boards[i].id == boardId) {
         return i;
       }
     }
@@ -26,13 +16,10 @@ export default class KanbanStorage {
   }
 
   // returns the item index with a list of [columnIndex, itemIndex] in this.columns
-  getItemIndex(item, column) {
-    let columnIndex = this.getColumnIndex(column);
-    if (columnIndex === -1) {
-      console.log("column doesn't exist");
-    } else {
-      for (let i = 0; i < this.columns[columnIndex].length; i++) {
-        if (this.columns[columnIndex][i].id == item.id) {
+  getItemIndex(itemId, columnIndex) {
+    if (columnIndex !== -1) {
+      for (let i = 0; i < this.boards[columnIndex].items.length; i++) {
+        if (this.boards[columnIndex].items[i].id == itemId) {
           return i;
         }
       }
@@ -40,56 +27,91 @@ export default class KanbanStorage {
     }
   }
 
-  addItem(item, column) {
-    let columnIndex = this.getColumnIndex(column);
-    let itemIndex = this.getItemIndex(item, column);
-    if (itemIndex !== -1 && columnIndex !== -1) {
-      this.columns[columnIndex].push(item);
-      this.updateColumn(column);
-    } else {
-      console.log("Column doesn't exist or item already exists");
+  getItemObject(itemId) {
+    for (let i=0;i<this.boards.length;i++) {
+      for (let j=0; j< this.boards[i].items.length;j++) {
+        if (this.boards[i].items[j].id == itemId) {
+          return this.boards[i].items[j]
+        } else {
+          console.log("KanbanStorage.getItemObject(): item not found in the storage")
+        }
+      }
+    }
+    // alert("no item object found in Kanban Storage");
+    // return false
+  }
+
+  getBoardObject(boardId) {
+    for (let i=0;i<this.boards.length;i++) {
+      if (this.boards[i].id == boardId) {
+        return this.boards[i];
+      } else {
+        console.log("KanbanStorage.getBoardObject(): board not found in the storage")
+      }
     }
   }
 
-  removeItem(item) {
-    let columnIndex = this.getColumnIndex(column);
-    let itemIndex = this.getItemIndex(item, column);
-    if (itemIndex !== -1 && columnIndex !== -1) {
-      this.columns[columnIndex].remove(item);
-      this.updateColumn(column);
-    } else {
-      console.log("Column doesn't exist or item doesn't exists");
-    }
-  }
-  //   for (let i = 0; i < this.columns.length; i++) {
-  //     if (this.getItemIndex()) {
-  //       return i;
-  //     }
-  //   }
-  //   return -1;
-  // }
-
-  addColumn(column) {
-    let index = this.getIndex(column);
+  addBoard(board) {
+    let index = this.getColumnIndex(board.id);
 
     if (index === -1) {
-      this.columns.push(column);
-      localStorage.setItem('kanban', JSON.stringify(this.columns));
+      this.boards.push(board);
+      localStorage.setItem('kanban', JSON.stringify(this.boards));
     } else {
-      console.log("Column already exist in the list")
+      console.log("Kanban Storage(addBoard): Board already exist in the KanbanStorage.boards");
     }
   }
 
-
-  deleteColumn(column) {
-    let index = this.getIndex(column);
+  removeBoard(boardId) {
+    let index = this.getColumnIndex(boardId);
 
     if (index !== -1) {
-      this.columns.splice(index, 1);
+      this.boards.splice(index, 1);
 
-      localStorage.setItem('kanban', JSON.stringify(this.columns));
+      localStorage.setItem('kanban', JSON.stringify(this.boards));
     } else {
-      console.log("Column doesn't exist in the list")
+      console.log("Kanban Storage(removeBoard): Board doesn't exist in the KanbanStorage.boards");
+    }
+  }
+
+  addItem(item, boardId) {
+    let columnIndex = this.getColumnIndex(boardId);
+    let itemIndex = this.getItemIndex(item.id, columnIndex);
+
+    if (itemIndex == -1 && columnIndex !== -1) {
+      this.boards[columnIndex].items.push(item);
+      localStorage.setItem('kanban', JSON.stringify(this.boards));
+    } else {
+      alert(`Kanban Storage(addItem): Item wasn't added due to invalid index, columnIndex=${columnIndex} itemIndex=${itemIndex}`);
+    }
+  }
+
+  removeItem(itemId, boardId) {
+    let columnIndex = this.getColumnIndex(boardId);
+    let itemIndex = this.getItemIndex(itemId, columnIndex);
+
+    if (itemIndex !== -1 && columnIndex !== -1) {
+      this.boards[columnIndex].items.splice(itemIndex, 1);
+      // this.boards[columnIndex].items.remove(itemIndex, 1);
+      localStorage.setItem('kanban', JSON.stringify(this.boards));
+    } else {
+      // alert("Kanban Storage(removeItem): Item wasn't removed due to invalid index");
+    }
+  }
+  
+  sortBoards() {
+    this.boards.sort((a,b) => a.order - b.order);
+    localStorage.setItem('kanban', JSON.stringify(this.boards));
+    // this.boards.forEach(board => {
+      
+    // });
+  }
+
+  updateBoardOrder(boardId, order) {
+    let colIndex = this.getColumnIndex(boardId);
+    if (colIndex !== -1) {
+      this.boards[colIndex].order = order;
+      localStorage.setItem('kanban', JSON.stringify(this.boards));
     }
   }
 }

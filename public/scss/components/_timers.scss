@@ -78,7 +78,7 @@
 
         #timers_p {
             display: none;
-            margin: 20px;
+            margin: 0 !important;
 
             &.active {
                 display: block;
@@ -89,42 +89,105 @@
             }
 
             #pomodoroContainer {
-                margin-top: 20px;
-                justify-content: space-between;
-                // align-items: center;
+                display: flex;
+                height: 100%;
+                padding: 0;
+
+                justify-content: center;
+                align-items: center;
+                .progress {
+                    padding: 0;
+                    width: 100%;
+                    // position: relative;
+                }
                 #pInputContainer {
                     display: flex;
                     flex-direction: column;
-                    justify-content: flex-start;
+                    justify-content: center;
+                    height: 100%;                    
+                    border: none;
+
+                    #sliderBtn {
+                        // display: none;
+                        width: 80%;
+                        margin-bottom: auto;
+                    }
+
+                    #slider {
+                        position: absolute;
+                        bottom: 0;
+                        width: 80%;
+
+                        .slider-values {
+                            float: right;
+                        }
+                    }
                 }
                 #pomodoroDisplays {
                     display: flex;
                     justify-content: center;
                     align-items: center;
-                    #pomodoroTime {
-                        position: relative;
+
+                    #pomodoroCircle {
+                        width: 420px;
+                        height: 420px;
+                        border-radius: 100%;
                         display: flex;
-                        font-weight: 600;
-                        font-size: 60px;
-                        flex-direction: column;
-                        // float: right;
                         justify-content: center;
                         align-items: center;
-    
-                        #loopDisplay {
-                            display: none;
-                            font-size: 50px;
+                        z-index: 400;
+                        background-color: #252e59;
+
+                        &.studyMode {
+                            background-color: #43519d !important;
+                            &.paused {
+                            background-color: #252e59 !important;
+                            }
+                        }
+                        &.sbMode {
+                            background-color: #63cf63 !important;
+                            &.paused {
+                            background-color: #459945 !important;
+                            }
+                        }
+
+                        &.lbMode {
+                            background-color: #63cf63 !important;
+                            &.paused {
+                            background-color: #499749 !important;
+                            }
+                        }
+                        background-color: #252e59 !important;
+
+                        #pomodoroTime {
+                            position: relative;
+                            display: flex;
+                            font-weight: 600;
+                            font-size: 60px;
+                            flex-direction: column;
+                            // float: right;
+                            justify-content: center;
+                            align-items: center;
+                            color: whitesmoke;
+        
+                            #loopDisplay {
+                                display: none;
+                                font-size: 50px;
+                            }
                         }
                     }
                 }
             }
+            .studyMode {
+                background-color: #43519d !important;
+            }
 
-            #slider {
-                position: absolute;
-                bottom: 0;
-                .slider-values {
-                    float: right;
-                }
+            .sbMode {
+                background-color: #63cf63;
+            }
+
+            .lbMode {
+                background-color: #63cf63;
             }
         }
 
@@ -150,12 +213,28 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                #stopwatchTime {
+                padding: 0;
+
+                #stopwatchCircle {
                     display: flex;
-                    font-size: 100px;
-                    font-weight: 600;
-                    margin: auto;
-                    text-align: center;
+                    justify-content: center;
+                    align-items: center;
+                    width: 420px;
+                    height: 420px;
+                    border-radius: 100%;
+                    background-color: #252e59;
+                    &.active {
+                        background-color: #43519d;
+                    }
+
+                    #stopwatchTime {
+                        display: flex;
+                        color: whitesmoke;
+                        font-size: 100px;
+                        font-weight: 600;
+                        margin: auto;
+                        text-align: center;
+                    }
                 }
             }
 
@@ -163,7 +242,7 @@
                 display: flex;
                 flex-direction: column-reverse;
                 overflow-y: scroll;
-                height: 100%;
+                height: 500px;
                 width: 100%;
                 border-top: 3px solid darkgray;
                 border-bottom: 3px solid darkgray;
@@ -189,6 +268,7 @@
             flex-direction: column;
             justify-content: space-evenly;
             align-items: center;
+            height: 100%;
             .row {
                 height: 33%;
                 align-items: center;
@@ -269,86 +349,151 @@
     height: 300px;
 }
 
-
-
-#container {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    position: relative;
-  }
-#outerContainer {
-    width: 100%;
-    height: 100%;
-}
-
-.item {
-    i {
-        width: 150px;
-        height: 150px;
-    }
-}
-
-  .circle {
-    border-radius: 50%;
-    background-color: deepskyblue;
-    width: 150px;
-    height: 150px;
-    position: absolute;
-    opacity: 0;
-  }
-
-.circle {
-    border-radius: 50%;
-    background-color: deepskyblue;
-    width: 150px;
-    height: 150px;
-    position: absolute;
-    opacity: 0;
-    animation: scaleIn 10s infinite cubic-bezier(.36, .11, .89, .32);
-  }
-
-@keyframes scaleIn {
-    from {
-        transform: scale(.5, .5);
-        opacity: .5;
-    }
-    to {
-        transform: scale(1.5, 1.5);
-        opacity: 0;
-    }
-}
-
-@keyframes time {
-    0% {
-        opacity: 100%;
-    
-    }
-
-    100% {
-        opacity: 0;
-    }
-}
   
 @media only screen and (max-width: 769px) {
+    .modal-header {
+        padding: 0 !important;
+        .btn-close {
+            width: 5px !important;
+            height: 5px !important;
+            padding: 5px;
+            margin-right: 15px;
+        }
+        #timerNav {
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+    
+            #timerTabs {
+                display: flex;
+                background-color: #252e59;
+                padding: 0.75rem;
+                border-radius: 8px;
+                align-items: center;
+    
+                & > * {
+                    z-index: 2;
+                }
+                i {
+                    margin-left: 10px;
+                }
+                .tab {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    height: 15px !important;
+                    width: 90px !important;
+                    border-radius: 10px;
+                    font-size: 0.9rem !important;
+                    font-weight: 0.25rem;
+                }
+                .glider {
+                    height: 25px !important;
+                    width: 90px !important;
+                    border-radius: 7px;
+                }
+            }
+        }
+    }
     .modal-body {
         padding: 10px;
-
+        height: calc(100vh * 0.85)  !important;
+        overflow-y: scroll;
         #timers_p {
             margin: 5px !important;
             padding: 0;
+            #pomodoroContainer {
+                display: block !important;
+                position: relative;
+                height: 100%;
+                justify-content: space-evenly !important;
+                // align-items: center;
+                #pInputContainer {
+                    // margin-top: 20px;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: flex-start !important;
+                    height: 100px !important;
+                    overflow-y: scroll;
+                    border: 2px solid black;
+                    #sliderBtn {
+                        display: block !important;
+                    }
+
+                    #slider {
+                        margin-top: 5%;
+                        margin-bottom: 5%;
+                        position: relative !important;
+                        width: 100% !important;
+                        height: fit-content;
+                        vertical-align: middle;
+                        // display: none !important;
+
+                        .slider-values {
+                            float: right;
+                        }
+                    }
+                }
+                #pomodoroDisplays {
+                    margin-top: 5%;
+                    #pomodoroCircle {
+                        width: 270px !important;
+                        height: 270px !important;
+                        // position: fixed;
+    
+                        #pomodoroTime {
+                            font-weight: 600;
+                            font-size: 35px !important;
+                        }
+                    }
+                }
+            }
         }
 
         #timers_s {
             margin: 5px !important;
-            // flex-direction: column;
+            padding: 0;
 
-            // div{
-            //     display: flex;
-            // }
+            #stopwatchContainer {
+                position: relative;
+                height: 100% !important;
+                width: 100%;
+                margin: 0;
+                #stopwatchTimeParent {
+                    height: fit-content;
+                    margin-top: 5%;
+                    #stopwatchCircle {
+                        width: 260px !important;
+                        height: 260px !important;
+                        #stopwatchTime {
+                            display: flex;
+                            color: whitesmoke;
+                            font-size: 70px !important;
+                            font-weight: 600;
+                        }
+                    }
+                }
+                #lapTime {
+                    height: 100% !important;
+                    width: 100%;
+                    margin: 0 !important;
+    
+                    #lapTimeList {
+                        list-style: none;
+                        margin-bottom: 0;
+                        .lapTimeItems {
+                            font-weight: 500;
+                            font-size: 20px !important;
+    
+                            .lappedTimes {
+                                float: right;
+                                margin-right: 40px;
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -357,6 +502,19 @@
     }
 
     .timerBtnContainer {
+        position: absolute;
+        // position:relative;
+        width: 100%;
         flex-direction: row !important;
+        height:fit-content !important;
+        bottom: 2%;
+        left: 0;
+        padding: 0;
+
+        .timerBtns {
+            width: 60px !important;
+            height: 60px !important;
+            font-size: 0.75rem;
+        }
     }
 }
