@@ -440,6 +440,9 @@ nav .nav_links .nav_item .nav_btn.active {
 #taskWrapper #addTask.open {
   bottom: 56px;
 }
+#taskWrapper #addTask .input-group {
+  margin-left: 0;
+}
 #taskWrapper #addTask label {
   margin-top: 5px;
 }
@@ -460,7 +463,7 @@ nav .nav_links .nav_item .nav_btn.active {
   width: 270px;
   height: 55px;
   position: absolute;
-  z-index: 3;
+  z-index: 1;
   bottom: 26px;
   justify-content: space-around;
   align-items: center;
@@ -661,7 +664,9 @@ nav .nav_links .nav_item .nav_btn.active {
     display: block;
   }
   #taskWrapper #addTask #taskForm .input-group {
+    display: flex;
     width: 100% !important;
+    margin-left: 0;
   }
   #taskWrapper #task_bottom {
     width: 100%;
@@ -748,12 +753,13 @@ nav .nav_links .nav_item .nav_btn.active {
 #timers .modal-body #timers_p > .row {
   height: 100%;
 }
+#timers .modal-body #timers_p > .row .col-5 {
+  height: 100%;
+}
 #timers .modal-body #timers_p #pomodoroContainer {
   display: flex;
-  height: 100%;
+  height: calc(100% - 16px);
   padding: 0;
-  justify-content: center;
-  align-items: center;
 }
 #timers .modal-body #timers_p #pomodoroContainer .progress {
   padding: 0;
@@ -773,7 +779,6 @@ nav .nav_links .nav_item .nav_btn.active {
 #timers .modal-body #timers_p #pomodoroContainer #pInputContainer #slider {
   position: absolute;
   bottom: 0;
-  width: 80%;
 }
 #timers .modal-body #timers_p #pomodoroContainer #pInputContainer #slider .slider-values {
   float: right;
@@ -782,6 +787,7 @@ nav .nav_links .nav_item .nav_btn.active {
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 0;
 }
 #timers .modal-body #timers_p #pomodoroContainer #pomodoroDisplays #pomodoroCircle {
   width: 420px;
@@ -837,7 +843,7 @@ nav .nav_links .nav_item .nav_btn.active {
 }
 #timers .modal-body #timers_s {
   display: none;
-  margin: 20px;
+  margin: 0 !important;
 }
 #timers .modal-body #timers_s > .row .col-5 {
   height: 100%;
@@ -848,13 +854,19 @@ nav .nav_links .nav_item .nav_btn.active {
 #timers .modal-body #timers_s > .row {
   height: 100%;
 }
-#timers .modal-body #timers_s #stopwatchTimeParent {
+#timers .modal-body #timers_s #stopwatchContainer {
+  display: flex;
+  height: 100%;
+  padding: 0;
+  padding-top: 16px;
+}
+#timers .modal-body #timers_s #stopwatchContainer #stopwatchDisplays {
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 0;
 }
-#timers .modal-body #timers_s #stopwatchTimeParent #stopwatchCircle {
+#timers .modal-body #timers_s #stopwatchContainer #stopwatchDisplays #stopwatchCircle {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -863,10 +875,10 @@ nav .nav_links .nav_item .nav_btn.active {
   border-radius: 100%;
   background-color: #252e59;
 }
-#timers .modal-body #timers_s #stopwatchTimeParent #stopwatchCircle.active {
+#timers .modal-body #timers_s #stopwatchContainer #stopwatchDisplays #stopwatchCircle.active {
   background-color: #43519d;
 }
-#timers .modal-body #timers_s #stopwatchTimeParent #stopwatchCircle #stopwatchTime {
+#timers .modal-body #timers_s #stopwatchContainer #stopwatchDisplays #stopwatchCircle #stopwatchTime {
   display: flex;
   color: whitesmoke;
   font-size: 100px;
@@ -874,24 +886,25 @@ nav .nav_links .nav_item .nav_btn.active {
   margin: auto;
   text-align: center;
 }
-#timers .modal-body #timers_s #lapTime {
+#timers .modal-body #timers_s #stopwatchContainer #lapTime {
   display: flex;
   flex-direction: column-reverse;
   overflow-y: scroll;
-  height: 500px;
+  min-height: 100%;
   width: 100%;
-  border-top: 3px solid darkgray;
-  border-bottom: 3px solid darkgray;
+  border-radius: 8px;
+  background-image: linear-gradient(#252e59, #43519d);
 }
-#timers .modal-body #timers_s #lapTime #lapTimeList {
+#timers .modal-body #timers_s #stopwatchContainer #lapTime #lapTimeList {
   list-style: none;
   margin-bottom: 0;
 }
-#timers .modal-body #timers_s #lapTime #lapTimeList .lapTimeItems {
+#timers .modal-body #timers_s #stopwatchContainer #lapTime #lapTimeList .lapTimeItems {
   font-weight: 500;
   font-size: 30px;
+  color: whitesmoke;
 }
-#timers .modal-body #timers_s #lapTime #lapTimeList .lapTimeItems .lappedTimes {
+#timers .modal-body #timers_s #stopwatchContainer #lapTime #lapTimeList .lapTimeItems .lappedTimes {
   float: right;
   margin-right: 40px;
 }
@@ -955,7 +968,7 @@ nav .nav_links .nav_item .nav_btn.active {
   display: none;
 }
 #lapTime::-webkit-scrollbar-thumb {
-  background-color: #4e4e4e;
+  background-color: #c2c2c2;
   border-radius: 5px;
 }
 #slider {
@@ -1010,48 +1023,51 @@ nav .nav_links .nav_item .nav_btn.active {
   .modal-body {
     padding: 10px;
     height: calc(100vh * 0.85) !important;
-    overflow-y: scroll;
   }
   .modal-body #timers_p {
     margin: 5px !important;
     padding: 0;
   }
+  .modal-body #timers_p .progress-bar {
+    font-size: 9px !important;
+  }
   .modal-body #timers_p #pomodoroContainer {
-    display: block !important;
     position: relative;
-    height: 100%;
-    justify-content: space-evenly !important;
+    height: calc(100% - 16px) !important;
+    width: 100%;
+    margin: 0;
+    margin-bottom: 16px;
   }
   .modal-body #timers_p #pomodoroContainer #pInputContainer {
-    display: flex;
+    display: none !important;
     flex-direction: column;
     justify-content: flex-start !important;
-    height: 100px !important;
-    overflow-y: scroll;
     border: 2px solid black;
   }
   .modal-body #timers_p #pomodoroContainer #pInputContainer #sliderBtn {
     display: block !important;
   }
   .modal-body #timers_p #pomodoroContainer #pInputContainer #slider {
-    margin-top: 5%;
-    margin-bottom: 5%;
     position: relative !important;
-    width: 100% !important;
-    height: -webkit-fit-content;
-    height: -moz-fit-content;
-    height: fit-content;
+    width: 100%;
+    height: 100%;
     vertical-align: middle;
+    background-color: #43519d;
+    z-index: 500;
+    overflow: hidden;
   }
   .modal-body #timers_p #pomodoroContainer #pInputContainer #slider .slider-values {
     float: right;
   }
   .modal-body #timers_p #pomodoroContainer #pomodoroDisplays {
+    height: -webkit-fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
     margin-top: 5%;
   }
   .modal-body #timers_p #pomodoroContainer #pomodoroDisplays #pomodoroCircle {
-    width: 270px !important;
-    height: 270px !important;
+    width: 260px !important;
+    height: 260px !important;
   }
   .modal-body #timers_p #pomodoroContainer #pomodoroDisplays #pomodoroCircle #pomodoroTime {
     font-weight: 600;
@@ -1067,17 +1083,17 @@ nav .nav_links .nav_item .nav_btn.active {
     width: 100%;
     margin: 0;
   }
-  .modal-body #timers_s #stopwatchContainer #stopwatchTimeParent {
+  .modal-body #timers_s #stopwatchContainer #stopwatchDisplays {
     height: -webkit-fit-content;
     height: -moz-fit-content;
     height: fit-content;
     margin-top: 5%;
   }
-  .modal-body #timers_s #stopwatchContainer #stopwatchTimeParent #stopwatchCircle {
+  .modal-body #timers_s #stopwatchContainer #stopwatchDisplays #stopwatchCircle {
     width: 260px !important;
     height: 260px !important;
   }
-  .modal-body #timers_s #stopwatchContainer #stopwatchTimeParent #stopwatchCircle #stopwatchTime {
+  .modal-body #timers_s #stopwatchContainer #stopwatchDisplays #stopwatchCircle #stopwatchTime {
     display: flex;
     color: whitesmoke;
     font-size: 70px !important;
@@ -1087,6 +1103,7 @@ nav .nav_links .nav_item .nav_btn.active {
     height: 100% !important;
     width: 100%;
     margin: 0 !important;
+    overflow-y: scroll;
   }
   .modal-body #timers_s #stopwatchContainer #lapTime #lapTimeList {
     list-style: none;
@@ -1112,7 +1129,7 @@ nav .nav_links .nav_item .nav_btn.active {
     height: -webkit-fit-content !important;
     height: -moz-fit-content !important;
     height: fit-content !important;
-    bottom: 2%;
+    bottom: 2.5%;
     left: 0;
     padding: 0;
   }

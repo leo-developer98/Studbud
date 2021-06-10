@@ -547,7 +547,7 @@ function showTask(task) {
       let labelName = task.label.name;
       let labelNameString = labelName.toString();
       let item_tag = document.createElement('span');
-      item_tag.classList.add("badge", "task-labels")
+      item_tag.classList.add("badge", "task-labels");
       item_tag.setAttribute('id', labelNameString);
       item_tag.appendChild(document.createTextNode(labelName));
       item_tag.style.backgroundColor = task.label.colour;
@@ -555,6 +555,10 @@ function showTask(task) {
       // item_top.appendChild(item_tag);
     }
   }
+
+  // let kanbanTag = document.createElement('span');
+  // kanbanTag.classList.add("badge", "kanban-labels");
+  
 
   // Due date shown when theres an input value
   if (task.hasOwnProperty('dueDate') && task['dueDate']) {
@@ -624,29 +628,17 @@ function showTask(task) {
   moveButton.classList.add("moveBtn");
 
   moveButton.addEventListener("click", function (event) {
-    let id = $(`.kanban-board[data-order="1"]`).attr("data-id");
+    let boardId = $(`.kanban-board[data-order="1"]`).attr("data-id");
 
     let element = {
       id: task.taskDescription,
       title: task.taskDescription + "<button type='button' class='btn btn-outline-danger btn-sm kanbanItemBtn' data-target=" + task.taskDescription + "><i class='fas fa-trash-alt'></i></button>",
-      currentBoard: id
+      currentBoard: boardId
     }
 
-    kanbanStorage.addItem(element, id);
-    kanbanBoard.addElement(id, element);
+    kanbanStorage.addItem(element, boardId);
+    kanbanBoard.addElement(boardId, element);
 
-    // moveButton.setAttribute("disabled", "true");
-    // doneBtn.setAttribute("disabled", "true");
-
-    // item.style.border = `3px solid ${color}`;
-    
-    // let itemKanban = {
-    //   name: text,
-    //   color: color
-    // }
-    // $(item).attr("data-kanban", JSON.stringify(itemKanban));
-
-    // let taskDelBtn = $(item).children(".card-body").children(".task-right").children(".task_buttons").children(".deleteBtn")[0];
     let board = kanbanColumns[kanbanStorage.getColumnIndex(element.currentBoard)];  
     let color = board.color;
     let el = $(`.kanban-item[data-eid="${task.taskDescription}"]`)[0];
@@ -659,6 +651,17 @@ function showTask(task) {
     
     itemMoved($(`.task_item[data-taskname="${element.id}"]`)[0], element, board);
   })
+
+  // let kanbanSelect = document.createElement("select");
+  // kanbanSelect.classList.add("form-select", "kanban-select", "form-select-sm");
+  // kanbanSelect.setAttribute("data-item", task.taskDescription);
+
+  // let defaultOption = document.createElement("option");
+  // defaultOption.innerHTML = "Select the Board:";
+  // defaultOption.classList.add("kanban-none", "kanban-options");
+  // defaultOption.setAttribute("value", "");
+  // kanbanSelect.appendChild(defaultOption);
+
 
   // Delete Button for each tasks
   let delButton = document.createElement("button");
@@ -681,26 +684,44 @@ function showTask(task) {
   })
 
   // Kanban Board Dropdown Button (for mobile)
-  let kanbanSelectBtn = document.createElement("button");
-  kanbanSelectBtn.innerHTML = "No Board";
+  let kanbanDropdown = document.createElement("div");
+  kanbanDropdown.classList.add("btn-group");
+  let dropdownBtn = document.createElement("button");
+  dropdownBtn.classList.add("btn", "dropdown-toggle", "kanban-select");
+  dropdownBtn.setAttribute("type", "button");
+  dropdownBtn.setAttribute("data-bs-toggle", "dropdown");
+  dropdownBtn.setAttribute("data-item", task.taskDescription);
+  dropdownBtn.innerHTML = "None";
+  let dropdownList = document.createElement("ul");
+  dropdownList.classList.add("dropdown-menu");
+  dropdownList.classList.add("kanban-dropdown-list");
+  dropdownList.setAttribute("data-item", task.taskDescription);
+  // let defaultOption = document.createElement("li");
+  // let defaultOptionA = document.createElement("a");
+  // defaultOptionA.classList.add("dropdown-item");
+  // defaultOptionA.innerHTML = "No Board Selected";
 
-  kanbanSelectBtn.setAttribute('class', "btn btn-secondary dropdown-toggle btn-sm");
-  kanbanSelectBtn.classList.add('kanbanSelectBtn');
-  kanbanSelectBtn.setAttribute("data-toggle", "dropdown");
-  kanbanSelectBtn.setAttribute("aria-haspopup", "true");
+  // defaultOption.appendChild(defaultOptionA);
+  // dropdownList.appendChild(defaultOption);
+  kanbanDropdown.appendChild(dropdownBtn);
+  kanbanDropdown.appendChild(dropdownList);
 
-  let kanbanDropdowns = document.createElement("div");
-  kanbanDropdowns.classList.add("dropdown-menu");
+  // $(".kanban-select").on("focus", function() {
+  //   var previous = $(this).children(".kanban-options:selected");
+  //   console.log(previous);
 
-  kanbanSelectBtn.appendChild(kanbanDropdowns);
+  //   $(".kanban-options").change((event) => {
+  //     previous.setAttribute("selected", "false");
+  //     console.log(event.target.value);
+  //   })
+  // })
 
 
   buttons.appendChild(moveButton);
   buttons.appendChild(delButton);
-  // buttons.appendChild(kanbanSelectBtn);
-  // right_body.appendChild(kanbanSelectBtn);
   right_body.appendChild(buttons);
   item_body.appendChild(right_body);  
+  item_body.appendChild(kanbanDropdown);
   item.appendChild(item_body);
   // item.appendChild(buttons);
   tasks.appendChild(item);
@@ -859,6 +880,47 @@ $(".sortEstimatedTime").click(function(event) {
   $("#closeAdd").click();
 })
 
+function updateKanbanSelect() {
+  $(".task_item").each(function(i,obj) {
+    let id = $(obj).attr("data-taskname");
+
+    kanbanColumns.forEach((board) => {
+      let li = document.createElement("li");
+      let newOption = document.createElement("a");
+      newOption.innerHTML = board.title;
+      newOption.setAttribute("data-target", board.id);
+      newOption.classList.add("kanban-" + board.id, "kanban-options", "dropdown-item");
+      newOption.style.color = "white";
+      li.appendChild(newOption);
+      li.style.backgroundColor = board.color;
+      $(newOption).click(function() {
+        let boardId = $(newOption).attr("data-target")
+        KanbanStorage.removeItemAll(id);
+        kanbanBoard.removeElement(id);
+        let item = {
+          id: $(obj).attr("data-taskname"),
+          currentBoard: boardId,
+          title: id + `<button type='button' class='btn btn-outline-danger btn-sm kanbanItemBtn' data-target="${id}"><i class='fas fa-trash-alt'></i></button>`
+        }
+        KanbanStorage.addItem(item, boardId);
+        kanbanBoard.addElement(boardId, item);
+      })
+      $(obj).find(".kanban-dropdown-list").append(li);
+    })
+  })
+    // let li = document.createElement("li");
+    // let newOption = document.createElement("a");
+    // newOption.innerHTML = board.title;
+    // newOption.setAttribute("value", board.id);
+    // newOption.classList.add("kanban-" + board.id, "kanban-options", "dropdown-item");
+    // newOption.style.color = "white";
+    // li.appendChild(newOption);
+    // li.style.backgroundColor = board.color;
+    // $(newOption).click(function() {
+    //   console.log(newOption.classList);
+    // })
+}
+
 // Allowing editing on the board titles
 function editableBoardTitle() {
   document.querySelectorAll('.kanban-title-board').forEach((boardName) => {
@@ -988,6 +1050,7 @@ $(document).ready(function () {
     boardHeader.appendChild(deleteBtn);
     editableBoardTitle();
   }
+  updateKanbanSelect();
 })
 
 // Helper function for styling when item in kanban board is moved

@@ -368,3 +368,5 @@ $("#sTimerIndicator").click(function(e) {
 // $('#pomodoroCircle').css({
 //     'height': pw + "px"
 // });
+
+// console.log($('.progress').height());

@@ -145,6 +145,10 @@
             bottom: 56px;
         }
 
+        .input-group {
+            margin-left: 0;
+        }
+
         label {
             margin-top: 5px;
             span {
@@ -171,7 +175,7 @@
     width: 270px;
     height: 55px;
     position: absolute;
-    z-index: 3;
+    z-index: 1;
     bottom: 26px;
     justify-content: space-around;
     align-items: center;
@@ -467,7 +471,9 @@
                 }
 
                 .input-group {
+                    display: flex;
                     width: 100% !important;
+                    margin-left: 0;
                 }
             }
         }

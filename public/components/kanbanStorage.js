@@ -51,12 +51,33 @@ export default class KanbanStorage {
     }
   }
 
+  updateKanbanSelect() {
+    this.boards.forEach((board) => {
+      let li = document.createElement("li");
+      let newOption = document.createElement("a");
+      newOption.innerHTML = board.title;
+      newOption.setAttribute("value", board.id);
+      newOption.classList.add("kanban-" + board.id, "kanban-options", "dropdown-item");
+      newOption.style.color = "white";
+      li.appendChild(newOption);
+      li.style.backgroundColor = board.color;
+      $(newOption).click(function() {
+        console.log(newOption.classList);
+      })
+    })
+  }
+
   addBoard(board) {
     let index = this.getColumnIndex(board.id);
 
     if (index === -1) {
       this.boards.push(board);
       localStorage.setItem('kanban', JSON.stringify(this.boards));
+      // let newOption = document.createElement("option");
+      // newOption.innerHTML = board.title;
+      // newOption.setAttribute("value", board.id);
+      // newOption.classList.add("kanban-" + board.title, "kanban-options");
+      // $(".kanban-select").append($(newOption));
     } else {
       console.log("Kanban Storage(addBoard): Board already exist in the KanbanStorage.boards");
     }
@@ -67,6 +88,8 @@ export default class KanbanStorage {
 
     if (index !== -1) {
       this.boards.splice(index, 1);
+      // let option = $(".kanban-" + boardId);
+      // $(option).remove();
 
       localStorage.setItem('kanban', JSON.stringify(this.boards));
     } else {
@@ -80,6 +103,9 @@ export default class KanbanStorage {
 
     if (itemIndex == -1 && columnIndex !== -1) {
       this.boards[columnIndex].items.push(item);
+
+      let button = $(`.kanban-select[data-item="${item.id}"]`);
+      console.log(button);
       localStorage.setItem('kanban', JSON.stringify(this.boards));
     } else {
       alert(`Kanban Storage(addItem): Item wasn't added due to invalid index, columnIndex=${columnIndex} itemIndex=${itemIndex}`);
@@ -98,13 +124,20 @@ export default class KanbanStorage {
       // alert("Kanban Storage(removeItem): Item wasn't removed due to invalid index");
     }
   }
+
+  removeItemAll(itemId) {
+    for (let i = 0; i < this.boards.length; i++) {
+      for (let j = 0; j < this.boards.items.length; j++) {
+        if (this.boards[i].items[j].id == itemId) {
+          this.boards[i].items.splice[j, 1];
+        }
+      }
+    }
+  }
   
   sortBoards() {
     this.boards.sort((a,b) => a.order - b.order);
     localStorage.setItem('kanban', JSON.stringify(this.boards));
-    // this.boards.forEach(board => {
-      
-    // });
   }
 
   updateBoardOrder(boardId, order) {
