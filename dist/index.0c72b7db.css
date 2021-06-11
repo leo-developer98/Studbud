@@ -570,7 +570,7 @@ nav .nav_links .nav_item .nav_btn.active {
   z-index: 0;
 }
 .kanban-board {
-  height: 620px;
+  height: calc(100vh * 0.8);
 }
 .kanban-board .kanban-title-board {
   color: white;
@@ -663,6 +663,11 @@ nav .nav_links .nav_item .nav_btn.active {
   #taskWrapper #uploadBtnContainer {
     width: 100%;
     bottom: 65px;
+  }
+}
+@media only screen and (min-height: 830px) {
+  .kanban-board {
+    height: calc(100vh * 0.85);
   }
 }
 #timers .modal-header {

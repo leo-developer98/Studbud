@@ -302,7 +302,7 @@
 }
 
 .kanban-board {
-    height: 620px;
+    height: calc(100vh * 0.8);
 
     .kanban-title-board {
         color: white;
@@ -423,5 +423,12 @@
             width: 100%;
             bottom: 65px;
         }
+    }
+}
+
+@media only screen and (min-height: 830px) {
+
+    .kanban-board {
+        height: calc(100vh * 0.85);
     }
 }
