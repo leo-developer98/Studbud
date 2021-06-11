@@ -1,5 +1,6 @@
 const musicPlayer = document.getElementById("musicPlayer");
 
+// close the Music Player by clicking designated sections in the window
 $("#myKanban").click(function(event) {
     // event.preventDefault();
     if ($("#musicPlayer").hasClass('show')) {

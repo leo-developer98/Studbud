@@ -6,6 +6,7 @@ export default class KanbanStorage {
     { id: 'done', title: "Done", items: [], color: "#3dd66b", order: 3} ];
   }
 
+  // returns board index in this.boards
   getColumnIndex(boardId) {
     for (let i = 0; i < this.boards.length; i++) {
       if (this.boards[i].id == boardId) {
@@ -27,6 +28,7 @@ export default class KanbanStorage {
     }
   }
 
+  // returns item object from the storage corresponding to the itemId
   getItemObject(itemId) {
     for (let i=0;i<this.boards.length;i++) {
       for (let j=0; j< this.boards[i].items.length;j++) {
@@ -37,10 +39,9 @@ export default class KanbanStorage {
         }
       }
     }
-    // alert("no item object found in Kanban Storage");
-    // return false
   }
 
+  // returns board object from the storage corresponding to the boardId
   getBoardObject(boardId) {
     for (let i=0;i<this.boards.length;i++) {
       if (this.boards[i].id == boardId) {
@@ -51,6 +52,7 @@ export default class KanbanStorage {
     }
   }
 
+  // add board in the local storage
   addBoard(board) {
     let index = this.getColumnIndex(board.id);
 
@@ -67,6 +69,7 @@ export default class KanbanStorage {
     }
   }
 
+  // remove board from the local storage
   removeBoard(boardId) {
     let index = this.getColumnIndex(boardId);
 
@@ -81,6 +84,7 @@ export default class KanbanStorage {
     }
   }
 
+  // adds item to the corresponding board using boardId
   addItem(item, boardId) {
     let columnIndex = this.getColumnIndex(boardId);
     let itemIndex = this.getItemIndex(item.id, columnIndex);
@@ -96,6 +100,7 @@ export default class KanbanStorage {
     }
   }
 
+  // removes item from the corresponding board using boardId
   removeItem(itemId, boardId) {
     let columnIndex = this.getColumnIndex(boardId);
     let itemIndex = this.getItemIndex(itemId, columnIndex);
@@ -109,6 +114,7 @@ export default class KanbanStorage {
     }
   }
 
+  // removes item from any board in the storage 
   removeItemAll(itemId) {
     for (let i = 0; i < this.boards.length; i++) {
       for (let j = 0; j < this.boards[i].items.length; j++) {
@@ -119,11 +125,13 @@ export default class KanbanStorage {
     }
   }
   
+  // sorts and save the order of the boards using board's order property
   sortBoards() {
     this.boards.sort((a,b) => a.order - b.order);
     localStorage.setItem('kanban', JSON.stringify(this.boards));
   }
 
+  // updates a board's order property
   updateBoardOrder(boardId, order) {
     let colIndex = this.getColumnIndex(boardId);
     if (colIndex !== -1) {

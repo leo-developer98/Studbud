@@ -17,21 +17,19 @@ export default class LabelStorage {
       } else {
         console.log("Label already exist in the list")
       }
-    }
-  
+    } 
+    
+    // returns the index of the label using label.name || returns -1 when not found
     getIndex(label) {
       for (let i = 0; i < this.labels.length; i++) {
         if (this.labels[i].name == label.name) {
           return i;
         } 
-        
-        // else if (this.labels[i].colour == label.colour) {
-        //   return i;
-        // }
       }
       return -1;
     }
 
+    // returns the label's color if the lable name exists
     getColour(name) {
       for (let i = 0; i < this.labels.length; i++) {
         if (this.labels[i].name == name) {
@@ -41,13 +39,9 @@ export default class LabelStorage {
       console.log("cannot find the label: " + name.toString());
     }
 
+    // returns boolean value whether lable exists by colour
     labelColourExists(label) {
       for (let i = 0; i < this.labels.length; i++) {
-        // if (this.labels[i].name == label.name) {
-        //   // alert("Label name already exists");
-        //   return true;
-        // } else 
-        
         if (this.labels[i].colour == label.colour) {
           // alert("Label colour already exists");
           return true;
@@ -56,6 +50,7 @@ export default class LabelStorage {
       return false;
     }
 
+    // returns boolean value whether label exists by name
     labelNameExists(label) {
       for (let i = 0; i < this.labels.length; i++) {
         if (this.labels[i].name == label.name) {
@@ -65,8 +60,9 @@ export default class LabelStorage {
       }
       return false;
     }
-  
-    update(label) {
+    
+    // updates the label in the storage
+    update(label) { 
       let index = this.getIndex(label);
 
       if (index !== -1) {
@@ -76,7 +72,8 @@ export default class LabelStorage {
         console.log("Label doesn't exist in the list")
       }
     }
-  
+    
+    // deletes label from the storage
     delete(label) {
       let index = this.getIndex(label);
       if (index !== -1) {

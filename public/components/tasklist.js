@@ -790,7 +790,7 @@ $(".kanbanBoard-inputs").keypress(function(e) {
   }
 })
 
-// Sorting items in taskList(storage) and re-showing them via showTask() function 
+// Sorting items in taskList(storage) by their properties and re-showing them via showTask() function 
 $(".sortDateCreated").click(function(event) {
   taskList.sort(compareDateCreated);
   console.log(taskList);
@@ -920,12 +920,13 @@ var kanbanBoard = new jKanban({
   },                                                              
   dragendEl: function (el) { },                                  
   dropEl: function (el, target, source, sibling) { 
+    // save and move the item when its dragged in kanbanBoard
     let itemId = $(el).attr("data-eid");
     let targetId = target.parentElement.dataset.id;
     let sourceId = source.parentElement.dataset.id;
 
     let item = kanbanStorage.getItemObject(itemId);
-    // console.log(item);
+
     item.currentBoard = targetId;
 
     kanbanStorage.removeItem(itemId, sourceId);
@@ -934,6 +935,7 @@ var kanbanBoard = new jKanban({
     let board = kanbanStorage.getBoardObject(targetId);
     let boardColor = board.color;
 
+    // animation for drop
     $(el).effect("slide", {direction: "left"}, 400)
           .animate({
             backgroundColor: boardColor,

@@ -24,6 +24,7 @@ import { event } from "jquery";
 const searchBtn = document.getElementById("dicSearchBtn");
 const searchInput = document.getElementById("searchBox");
 
+// search the word and style them in the document
 function wordSearch(word) {
     var settings = {
         "async": true,
@@ -36,6 +37,7 @@ function wordSearch(word) {
         }
     };
 
+    // when result is found
     $.ajax(settings).done(function (response) {
         console.log(response);
         let resultLength = response.results.length;
@@ -55,11 +57,7 @@ function wordSearch(word) {
             allResults.append(box);
             let synonyms = $('<div class="synonyms"></div>');
             if (result.hasOwnProperty('synonyms')) {
-                // for (let i=0;i<result.synonyms.length;i++) {
-                //     synonyms.push(result.synonyms[i]);
-
-                // }
-
+                // create a seeMore button if a definition has more than 4 synonyms
                 if (result.synonyms.length > 4) {
                     let seeMore = $("<button class='btn btn-outline-primary btn-sm seeMoreBtn'>SEE MORE</button>");
                     synonyms.append(seeMore);
@@ -68,7 +66,6 @@ function wordSearch(word) {
                         synonyms.css('max-height', 'none');
                         seeMore.css("display", "none");
                         seeLess.css("display", "flex");
-                        // synonyms.css('background-color', 'black');
                     })
 
                     let seeLess = $("<button class='btn btn-outline-primary btn-sm seeLessBtn'>SEE LESS</button>");
@@ -77,7 +74,6 @@ function wordSearch(word) {
 
                     seeLess.click(function() {
                         synonyms.css('max-height', '65px');
-                        // synonyms.css('background-color', 'black');
                         seeLess.css("display", "none");
                         seeMore.css("display", "flex");
                     })
@@ -87,38 +83,21 @@ function wordSearch(word) {
                     let synonymBox = $("<button class='synonym btn btn-outline-primary btn-sm'></button>").text(result.synonyms[i]);
                     synonyms.append(synonymBox);
 
+                    // re-search the synonym when clicked
                     synonymBox.click(function () {
                         let word = synonymBox.text();
-                        console.log(word);
+                        // console.log(word);
                         searchInput.value = word;
                         searchBtn.click();
-                        // wordSearch()
                     });
                 }
-
-                // seeMore.click(function() {
-                //     synonyms.css('max-height', '');
-                // })
             }
             allResults.append(synonyms);
             $("#definitions").append(allResults);
         }
-        // // console.log(synonyms);
-        // $('#synonyms').empty();
-        // for (let i=0;i<synonyms.length; i++) {
-        //     let synonymBox = $("<button class='synonym btn btn-outline-primary'></button>").text(synonyms[i]);
-        //     $('#synonyms').append(synonymBox);
-
-        //     synonymBox.click(function() {
-        //         let word = synonymBox.text();
-        //         console.log(word);
-        //         searchInput.value = word;
-        //         searchBtn.click();
-        //         // wordSearch()
-        //     });
-        // }
     });
-
+    
+    // when no result is found
     $.ajax(settings).fail(function () {
         console.log("No word found");
         $('#word').html("No result found");

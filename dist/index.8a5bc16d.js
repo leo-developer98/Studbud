@@ -501,23 +501,17 @@ class Navigation {
     document.getElementById(pageId).style.display = "block";
   }
 }
+// open and close the mobile menus
 let mobileMenuOpen = false;
 $(".mobile_menu_btn").click(function (e) {
   // e.preventDefault();
   if (mobileMenuOpen === false) {
     $(".mobile_menu_btn").addClass("open");
     $("#mobileNavLinks").addClass("open");
-    // $(".mobile_menus").addClass("open");
-    // $("#taskWrapper").css("transform", "translate(56px, 0)");
-    // $("#taskWrapper").css("width", "calc(100vw - 56px)");
-    // $("#taskWrapper").css("float", "right");
     mobileMenuOpen = true;
   } else {
     $(".mobile_menu_btn").removeClass("open");
     $("#mobileNavLinks").removeClass("open");
-    // $(".mobile_menus").removeClass("open");
-    // $("#taskWrapper").css("transform", "translate(0, 0)");
-    // $("#taskWrapper").css("width", "100%");
     mobileMenuOpen = false;
   }
 });
@@ -526,10 +520,6 @@ $("#mobileNavLinks > .nav_item > .nav_link").click(function (e) {
   if (mobileMenuOpen === true) {
     $(".mobile_menu_btn").removeClass("open");
     $("#mobileNavLinks").removeClass("open");
-    // $(".mobile_menus").addClass("open");
-    // $("#taskWrapper").css("transform", "translate(56px, 0)");
-    // $("#taskWrapper").css("width", "calc(100vw - 56px)");
-    // $("#taskWrapper").css("float", "right");
     mobileMenuOpen = false;
   }
 });
@@ -1087,7 +1077,7 @@ $(".kanbanBoard-inputs").keypress(function (e) {
     $("#addBoardBtn").click();
   }
 });
-// Sorting items in taskList(storage) and re-showing them via showTask() function
+// Sorting items in taskList(storage) by their properties and re-showing them via showTask() function
 $(".sortDateCreated").click(function (event) {
   taskList.sort(compareDateCreated);
   console.log(taskList);
@@ -1217,16 +1207,17 @@ var kanbanBoard = new jKanban({
   },
   dragendEl: function (el) {},
   dropEl: function (el, target, source, sibling) {
+    // save and move the item when its dragged in kanbanBoard
     let itemId = $(el).attr("data-eid");
     let targetId = target.parentElement.dataset.id;
     let sourceId = source.parentElement.dataset.id;
     let item = kanbanStorage.getItemObject(itemId);
-    // console.log(item);
     item.currentBoard = targetId;
     kanbanStorage.removeItem(itemId, sourceId);
     kanbanStorage.addItem(item, targetId);
     let board = kanbanStorage.getBoardObject(targetId);
     let boardColor = board.color;
+    // animation for drop
     $(el).effect("slide", {
       direction: "left"
     }, 400).animate({
@@ -1451,6 +1442,7 @@ class LabelStorage {
       console.log("Label already exist in the list");
     }
   }
+  /*returns the index of the label using label.name || returns -1 when not found*/
   getIndex(label) {
     for (let i = 0; i < this.labels.length; i++) {
       if (this.labels[i].name == label.name) {
@@ -1459,6 +1451,7 @@ class LabelStorage {
     }
     return -1;
   }
+  /*returns the label's color if the lable name exists*/
   getColour(name) {
     for (let i = 0; i < this.labels.length; i++) {
       if (this.labels[i].name == name) {
@@ -1467,12 +1460,9 @@ class LabelStorage {
     }
     console.log("cannot find the label: " + name.toString());
   }
+  /*returns boolean value whether lable exists by colour*/
   labelColourExists(label) {
     for (let i = 0; i < this.labels.length; i++) {
-      // if (this.labels[i].name == label.name) {
-      // // alert("Label name already exists");
-      // return true;
-      // } else
       if (this.labels[i].colour == label.colour) {
         // alert("Label colour already exists");
         return true;
@@ -1480,6 +1470,7 @@ class LabelStorage {
     }
     return false;
   }
+  /*returns boolean value whether label exists by name*/
   labelNameExists(label) {
     for (let i = 0; i < this.labels.length; i++) {
       if (this.labels[i].name == label.name) {
@@ -1489,6 +1480,7 @@ class LabelStorage {
     }
     return false;
   }
+  /*updates the label in the storage*/
   update(label) {
     let index = this.getIndex(label);
     if (index !== -1) {
@@ -1498,6 +1490,7 @@ class LabelStorage {
       console.log("Label doesn't exist in the list");
     }
   }
+  /*deletes label from the storage*/
   delete(label) {
     let index = this.getIndex(label);
     if (index !== -1) {
@@ -2323,6 +2316,7 @@ class KanbanStorage {
       order: 3
     }];
   }
+  /*returns board index in this.boards*/
   getColumnIndex(boardId) {
     for (let i = 0; i < this.boards.length; i++) {
       if (this.boards[i].id == boardId) {
@@ -2342,6 +2336,7 @@ class KanbanStorage {
       return -1;
     }
   }
+  /*returns item object from the storage corresponding to the itemId*/
   getItemObject(itemId) {
     for (let i = 0; i < this.boards.length; i++) {
       for (let j = 0; j < this.boards[i].items.length; j++) {
@@ -2353,6 +2348,7 @@ class KanbanStorage {
       }
     }
   }
+  /*returns board object from the storage corresponding to the boardId*/
   getBoardObject(boardId) {
     for (let i = 0; i < this.boards.length; i++) {
       if (this.boards[i].id == boardId) {
@@ -2362,6 +2358,7 @@ class KanbanStorage {
       }
     }
   }
+  /*add board in the local storage*/
   addBoard(board) {
     let index = this.getColumnIndex(board.id);
     if (index === -1) {
@@ -2371,6 +2368,7 @@ class KanbanStorage {
       console.log("Kanban Storage(addBoard): Board already exist in the KanbanStorage.boards");
     }
   }
+  /*remove board from the local storage*/
   removeBoard(boardId) {
     let index = this.getColumnIndex(boardId);
     if (index !== -1) {
@@ -2382,6 +2380,7 @@ class KanbanStorage {
       console.log("Kanban Storage(removeBoard): Board doesn't exist in the KanbanStorage.boards");
     }
   }
+  /*adds item to the corresponding board using boardId*/
   addItem(item, boardId) {
     let columnIndex = this.getColumnIndex(boardId);
     let itemIndex = this.getItemIndex(item.id, columnIndex);
@@ -2394,6 +2393,7 @@ class KanbanStorage {
       console.log(`Kanban Storage(addItem): Item wasn't added due to invalid index, columnIndex=${columnIndex} itemIndex=${itemIndex}`);
     }
   }
+  /*removes item from the corresponding board using boardId*/
   removeItem(itemId, boardId) {
     let columnIndex = this.getColumnIndex(boardId);
     let itemIndex = this.getItemIndex(itemId, columnIndex);
@@ -2403,6 +2403,7 @@ class KanbanStorage {
       localStorage.setItem('kanban', JSON.stringify(this.boards));
     } else {}
   }
+  /*removes item from any board in the storage*/
   removeItemAll(itemId) {
     for (let i = 0; i < this.boards.length; i++) {
       for (let j = 0; j < this.boards[i].items.length; j++) {
@@ -2412,10 +2413,12 @@ class KanbanStorage {
       }
     }
   }
+  /*sorts and save the order of the boards using board's order property*/
   sortBoards() {
     this.boards.sort((a, b) => a.order - b.order);
     localStorage.setItem('kanban', JSON.stringify(this.boards));
   }
+  /*updates a board's order property*/
   updateBoardOrder(boardId, order) {
     let colIndex = this.getColumnIndex(boardId);
     if (colIndex !== -1) {
@@ -10288,7 +10291,9 @@ lbTimeInput.addEventListener("input", () => {
 });
 // Pomodoro Timer
 var pomodoro = new Timer();
+// Event Listener for Start Button
 $('#pomo-startBtn').click(function () {
+  // effect
   $("#pomodoroCircle").effect("bounce", {
     distance: 20,
     times: 3
@@ -10306,40 +10311,54 @@ $('#pomo-startBtn').click(function () {
       minutes: 0
     }
   });
+  // Hide start button & show pause button
   pomoStartBtn.classList.remove("running");
   pomoPauseBtn.classList.add("running");
+  // disable timer setting sliders
   studyTimeInput.setAttribute("disabled", "true");
   sbTimeInput.setAttribute("disabled", "true");
   lbTimeInput.setAttribute("disabled", "true");
-  $("#pTimerIndicator").addClass("show    ");
+  // show timer indicator
+  $("#pTimerIndicator").addClass("show");
   $("#pTimerIndicator").addClass("btn-danger");
   $("#pTimerIndicator").removeClass("btn-primary");
 });
+// Event Listener for Pause Button
 $('#pomo-pauseBtn').click(function () {
+  // effect
   $("#pomodoroCircle").effect("bounce", {
     distance: 20,
     times: 3
   }, 550);
   $("#pomodoroCircle").addClass("paused");
   pomodoro.pause();
+  // Hide pause button & show start button
   pomoPauseBtn.classList.remove("running");
   pomoStartBtn.classList.add("running");
+  // change timer indicator colour
   $("#pTimerIndicator").removeClass("btn-danger");
   $("#pTimerIndicator").addClass("btn-primary");
 });
+// Event Listener for Reset Button
 $('#pomo-resetBtn').click(function () {
+  // confirm user for action
   if (confirm("Reset the current Pomodoro session?")) {
     pomodoro.reset();
     pomodoro.start();
     pomodoro.pause();
+    // Hide pause button & show start button
     pomoPauseBtn.classList.remove("running");
     pomoStartBtn.classList.add("running");
+    // change timer indicator colour
     $("#pTimerIndicator").removeClass("btn-danger");
     $("#pTimerIndicator").addClass("btn-primary");
   }
 });
+// Event Listener for Stop Button
 $('#pomo-stopBtn').click(function () {
+  // confirm user for action
   if (confirm("Stop the current Pomodoro timer?")) {
+    // effect
     $("#pomodoroCircle").effect("puff", {
       mode: "hide"
     }, 300);
@@ -11372,6 +11391,7 @@ require("jquery");
 // SOFTWARE.
 const searchBtn = document.getElementById("dicSearchBtn");
 const searchInput = document.getElementById("searchBox");
+// search the word and style them in the document
 function wordSearch(word) {
   var settings = {
     "async": true,
@@ -11383,6 +11403,7 @@ function wordSearch(word) {
       "x-rapidapi-host": "wordsapiv1.p.rapidapi.com"
     }
   };
+  // when result is found
   $.ajax(settings).done(function (response) {
     console.log(response);
     let resultLength = response.results.length;
@@ -11401,9 +11422,7 @@ function wordSearch(word) {
       allResults.append(box);
       let synonyms = $('<div class="synonyms"></div>');
       if (result.hasOwnProperty('synonyms')) {
-        // for (let i=0;i<result.synonyms.length;i++) {
-        // synonyms.push(result.synonyms[i]);
-        // }
+        // create a seeMore button if a definition has more than 4 synonyms
         if (result.synonyms.length > 4) {
           let seeMore = $("<button class='btn btn-outline-primary btn-sm seeMoreBtn'>SEE MORE</button>");
           synonyms.append(seeMore);
@@ -11417,7 +11436,6 @@ function wordSearch(word) {
           synonyms.append(seeLess);
           seeLess.click(function () {
             synonyms.css('max-height', '65px');
-            // synonyms.css('background-color', 'black');
             seeLess.css("display", "none");
             seeMore.css("display", "flex");
           });
@@ -11425,9 +11443,10 @@ function wordSearch(word) {
         for (let i = 0; i < result.synonyms.length; i++) {
           let synonymBox = $("<button class='synonym btn btn-outline-primary btn-sm'></button>").text(result.synonyms[i]);
           synonyms.append(synonymBox);
+          // re-search the synonym when clicked
           synonymBox.click(function () {
             let word = synonymBox.text();
-            console.log(word);
+            // console.log(word);
             searchInput.value = word;
             searchBtn.click();
           });
@@ -11437,6 +11456,7 @@ function wordSearch(word) {
       $("#definitions").append(allResults);
     }
   });
+  // when no result is found
   $.ajax(settings).fail(function () {
     console.log("No word found");
     $('#word').html("No result found");
@@ -11457,6 +11477,7 @@ $("#searchBox").keypress(function (e) {
 },{"jquery":"6Oaih"}],"6m8Cd":[function(require,module,exports) {
 const musicPlayer = document.getElementById("musicPlayer");
 
+// close the Music Player by clicking designated sections in the window
 $("#myKanban").click(function(event) {
     // event.preventDefault();
     if ($("#musicPlayer").hasClass('show')) {

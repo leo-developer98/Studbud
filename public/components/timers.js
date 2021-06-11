@@ -118,47 +118,66 @@ lbTimeInput.addEventListener("input", () => {
 // Pomodoro Timer
 var pomodoro = new Timer();
 
+// Event Listener for Start Button
 $('#pomo-startBtn').click(function () {
+    // effect
     $("#pomodoroCircle").effect("bounce", { distance: 20, times: 3 }, 550);
     if (loop === 1) {
         $("#pomodoroCircle").addClass("studyMode");
     }
     $("#pomodoroCircle").removeClass("paused");
     pomodoro.start({ countdown: true, startValues: { minutes: study }, target: { minutes: 0 } });
+    // Hide start button & show pause button
     pomoStartBtn.classList.remove("running");
     pomoPauseBtn.classList.add("running");
+    // disable timer setting sliders
     studyTimeInput.setAttribute("disabled", "true");
     sbTimeInput.setAttribute("disabled", "true");
     lbTimeInput.setAttribute("disabled", "true");
-    $("#pTimerIndicator").addClass("show    ");
+
+    // show timer indicator
+    $("#pTimerIndicator").addClass("show");
     $("#pTimerIndicator").addClass("btn-danger");
     $("#pTimerIndicator").removeClass("btn-primary");
 });
 
+// Event Listener for Pause Button
 $('#pomo-pauseBtn').click(function () {
+    // effect
     $("#pomodoroCircle").effect("bounce", { distance: 20, times: 3 }, 550);
     $("#pomodoroCircle").addClass("paused");
     pomodoro.pause();
+    // Hide pause button & show start button
     pomoPauseBtn.classList.remove("running");
     pomoStartBtn.classList.add("running");
+    
+    // change timer indicator colour
     $("#pTimerIndicator").removeClass("btn-danger");
     $("#pTimerIndicator").addClass("btn-primary");
 });
 
+// Event Listener for Reset Button
 $('#pomo-resetBtn').click(function () {
+    // confirm user for action
     if (confirm("Reset the current Pomodoro session?")) {
         pomodoro.reset();
         pomodoro.start();
         pomodoro.pause();
+        // Hide pause button & show start button
         pomoPauseBtn.classList.remove("running");
         pomoStartBtn.classList.add("running");
+
+        // change timer indicator colour
         $("#pTimerIndicator").removeClass("btn-danger");
         $("#pTimerIndicator").addClass("btn-primary");
     }
 });
 
+// Event Listener for Stop Button
 $('#pomo-stopBtn').click(function () {
+    // confirm user for action
     if (confirm("Stop the current Pomodoro timer?")) {
+        // effect
         $("#pomodoroCircle").effect("puff", { mode: "hide" }, 300);
         $("#pomodoroCircle").effect("puff", { mode: "show" }, 300);
         $("#pomodoroCircle").removeClass("studyMode");
