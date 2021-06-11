@@ -617,6 +617,9 @@ nav .nav_links .nav_item .nav_btn.active {
     z-index: 0;
     top: 56px;
   }
+  #taskWrapper #taskgrid {
+    padding-bottom: 10px;
+  }
   #taskWrapper #taskgrid #taskList {
     height: calc(100vh - 66px);
   }
@@ -1273,7 +1276,6 @@ nav .nav_links .nav_item .nav_btn.active {
 @media only screen and (max-width: 769px) {
   .input-group {
     width: 100% !important;
-    margin-left: 15px;
   }
 }
 #musicPlayer .offcanvas-header {

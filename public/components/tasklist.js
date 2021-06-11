@@ -626,6 +626,10 @@ function showTask(task) {
     let color = board.color;
     let el = $(`.kanban-item[data-eid="${task.taskDescription}"]`)[0];
 
+    let kanbanSelect = $(`.task_item[data-taskname="${element.id}"]`).find(".kanban-select")[0];
+    $(kanbanSelect).html(board.title);
+    kanbanSelect.style.backgroundColor = board.color;
+
     el.style.backgroundColor = color;
     $(el).effect("slide", {direction: "left"}, 400)
           .animate({
