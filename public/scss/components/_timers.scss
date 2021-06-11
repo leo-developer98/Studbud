@@ -120,7 +120,6 @@
                         border-radius: 8px;
                         padding: 15px;
                         .slider-values {
-                            float: right;
                         }
                     }
                 }
@@ -454,9 +453,9 @@
                             margin: 5% 0;
                             z-index: 500;
                             overflow: scroll;
-                            background-color: rgb(37, 46, 89, 0.97) !important;
-                            color: whitesmoke;
-                            border: 0px solid #252e59 !important;
+                            background-color: rgb(245, 245, 245) !important;
+                            color: rgb(51, 51, 51);
+                            border: 0;
                             &.open {
                                 height: fit-content !important;  
                                 padding: 2.5% !important; 

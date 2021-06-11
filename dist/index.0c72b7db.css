@@ -777,9 +777,6 @@ nav .nav_links .nav_item .nav_btn.active {
   border-radius: 8px;
   padding: 15px;
 }
-#timers .modal-body #timers_p #pomodoroContainer #pInputContainer .slider .slider-values {
-  float: right;
-}
 #timers .modal-body #timers_p #pomodoroContainer #pomodoroDisplays {
   display: flex;
   justify-content: center;
@@ -1062,9 +1059,9 @@ nav .nav_links .nav_item .nav_btn.active {
     margin: 5% 0;
     z-index: 500;
     overflow: scroll;
-    background-color: rgba(37, 46, 89, 0.97) !important;
-    color: whitesmoke;
-    border: 0px solid #252e59 !important;
+    background-color: whitesmoke !important;
+    color: #333333;
+    border: 0;
   }
   #timers .modal-body #timers_p #pomodoroContainer #pInputContainer .slider.open {
     height: -webkit-fit-content !important;
