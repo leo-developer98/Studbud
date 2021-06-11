@@ -4,8 +4,8 @@ DECO 2017 Web Application
 # Features
 
 - Task List: 
-- The users are able to create and add their tasks in the task list with the inputs of: task description, due date, estimated time, priority rating, and task label. 
-- The users are able to create, select and delete their own task labels for tasks. 
+The users are able to create and add their tasks in the task list with the inputs of: task description, due date, estimated time, priority rating, and task label. 
+The users are able to create, select and delete their own task labels for tasks. 
 The users are able to sort their tasks in the task list by the input they have provided.
 The users can move the tasks from task list to the kanban board.
 All changes and status of the task list and labels are stored in the local storage.
