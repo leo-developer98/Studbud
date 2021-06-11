@@ -98,12 +98,9 @@
                 display: flex;
                 height: calc(100% - 16px);
                 padding: 0;
-                // justify-content: center;
-                // align-items: center;
                 .progress {
                     padding: 0;
                     width: 100%;
-                    // position: relative;
                 }
                 #pInputContainer {
                     display: flex;
@@ -113,15 +110,15 @@
                     border: none;
 
                     #sliderBtn {
-                        // display: none;
-                        width: 80%;
-                        margin-bottom: auto;
+                        display: none;
                     }
 
-                    #slider {
-                        position: absolute;
-                        bottom: 0;
-
+                    .slider {
+                        width: 350px;
+                        height: fit-content;
+                        border: 5px solid #252e59;
+                        border-radius: 8px;
+                        padding: 15px;
                         .slider-values {
                             float: right;
                         }
@@ -170,7 +167,6 @@
                             font-weight: 600;
                             font-size: 60px;
                             flex-direction: column;
-                            // float: right;
                             justify-content: center;
                             align-items: center;
                             color: whitesmoke;
@@ -216,7 +212,7 @@
 
             #stopwatchContainer {
                 display: flex;
-                height: 100%;
+                max-height: 100%;
                 padding: 0;
                 padding-top: 16px;
 
@@ -253,21 +249,20 @@
                     display: flex;
                     flex-direction: column-reverse;
                     overflow-y: scroll;
-                    // height: 500px;
-                    min-height: 100%;
-                    width: 100%;
-                    // border-top: 3px solid #252e59;
-                    // border-bottom: 3px solid #252e59;
+                    height: 492px;
+                    width: calc(100% - 68px);
                     border-radius: 8px;
-                    background-image: linear-gradient(#252e59, #43519d);
+                    border: 5px solid #252e59;
+                    margin: 30px;
 
                     #lapTimeList {
                         list-style: none;
                         margin-bottom: 0;
                         .lapTimeItems {
-                            font-weight: 500;
+                            font-weight: 550;
                             font-size: 30px;
-                            color: whitesmoke;
+                            color: #252e59;
+                            // color: black;
 
                             .lappedTimes {
                                 float: right;
@@ -356,201 +351,225 @@
 }
 
 #lapTime::-webkit-scrollbar-thumb {
-    background-color: #c2c2c2;
+    background-color: #5c5b5b;
     border-radius: 5px;
 }
 
-#slider {
-    width: 300px;
-    height: 300px;
-}
 
   
 @media only screen and (max-width: 769px) {
-    .modal-header {
-        padding: 0 !important;
-        .btn-close {
-            width: 5px !important;
-            height: 5px !important;
-            padding: 5px;
-            margin-right: 15px;
-        }
-        #timerNav {
-            position: absolute;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-    
-            #timerTabs {
+    #timers {
+        .modal-header {
+            padding: 0 !important;
+            .btn-close {
+                width: 5px !important;
+                height: 5px !important;
+                padding: 5px;
+                margin-right: 15px;
+            }
+            #timerNav {
+                position: absolute;
                 display: flex;
-                background-color: #252e59;
-                padding: 0.75rem;
-                border-radius: 8px;
+                justify-content: center;
                 align-items: center;
-    
-                & > * {
-                    z-index: 2;
-                }
-                i {
-                    margin-left: 10px;
-                }
-                .tab {
+        
+                #timerTabs {
                     display: flex;
+                    background-color: #252e59;
+                    padding: 0.75rem;
+                    border-radius: 8px;
                     align-items: center;
-                    justify-content: center;
-                    height: 15px !important;
-                    width: 90px !important;
-                    border-radius: 10px;
-                    font-size: 0.9rem !important;
-                    font-weight: 0.25rem;
-                }
-                .glider {
-                    height: 25px !important;
-                    width: 90px !important;
-                    border-radius: 7px;
+        
+                    & > * {
+                        z-index: 2;
+                    }
+                    i {
+                        margin-left: 10px;
+                    }
+                    .tab {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        height: 15px !important;
+                        width: 90px !important;
+                        border-radius: 10px;
+                        font-size: 0.9rem !important;
+                        font-weight: 0.25rem;
+                    }
+                    .glider {
+                        height: 25px !important;
+                        width: 90px !important;
+                        border-radius: 7px;
+                    }
                 }
             }
         }
-    }
-    .modal-body {
-        padding: 10px;
-        height: calc(100vh * 0.85)  !important;
-        // overflow-y: scroll;
-        #timers_p {
-            margin: 5px !important;
-            padding: 0;
-
-            .progress-bar {
-                font-size: 9px !important;
-            }
-            #pomodoroContainer {
-                position: relative;
-                height: calc(100% - 16px) !important;
-                width: 100%;
-                margin: 0;
-                margin-bottom: 16px;
-                // padding-bottom: 16px !important;
-
-                #pInputContainer {
-                    // margin-top: 20px;
-                    display: none !important;
-                    flex-direction: column;
-                    justify-content: flex-start !important;
-                    // height: 100px !important;
-                    // overflow-y: scroll;
-                    border: 2px solid black;
-
-                    #sliderBtn {
-                        display: block !important;
-                    }
-
-                    #slider {
-                        // margin-top: 5%;
-                        // margin-bottom: 5%;
-                        position: relative !important;
-                        width: 100%;
-                        // height: fit-content;
-                        height: 100%;
-                        vertical-align: middle;
-                        background-color: #43519d;
-                        z-index: 500;
-                        overflow: hidden;
-                        // display: none !important;
-
-                        .slider-values {
-                            float: right;
-                        }
+        .modal-body {
+            padding: 10px;
+            height: calc(100vh * 0.85)  !important;
+            max-height: 550px;
+            #timers_p {
+                margin: 5px !important;
+                padding: 0;
+                .progress {
+                    .progress-bar {
+                        font-size: 9px !important;
                     }
                 }
-
-                #pomodoroDisplays {
-                    height: fit-content;
-                    margin-top: 5%;
-
-                    #pomodoroCircle {
-                        width: 260px !important;
-                        height: 260px !important;
-                        // position: fixed;
+                #pomodoroContainer {
+                    position: relative;
+                    height: calc(100% - 16px) !important;
+                    width: 100%;
+                    margin: 0;
+                    margin-bottom: 16px;
+                    // padding-bottom: 16px !important;
     
-                        #pomodoroTime {
-                            font-weight: 600;
-                            font-size: 35px !important;
+                    > .pc1 {
+                        height: 100%;
+                        width: 100%;
+                        padding: 0;
+                    }
+    
+                    #pInputContainer {
+                        margin-top: 2.5%;
+                        flex-direction: column;
+                        justify-content: flex-start !important;
+    
+                        #sliderBtn {
+                            display: block !important;
+                            width: fit-content;
+                            margin-top: 5%;
+                        }
+                        > div {
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                        }
+                        .slider {
+                            // margin-bottom: 5%;
+                            padding: 0 !important;
+                            position: relative !important;
+                            width: 100% !important;
+                            height: 0px !important;    
+                            margin: 5% 0;
+                            z-index: 500;
+                            overflow: scroll;
+                            background-color: rgb(37, 46, 89, 0.97) !important;
+                            color: whitesmoke;
+                            border: 0px solid #252e59 !important;
+                            &.open {
+                                height: fit-content !important;  
+                                padding: 2.5% !important; 
+                                justify-content: center;
+                                border: 3px solid #252e59 I !important;
+                            }
+    
+                            .slider-values {
+                                float: right;
+                            }
+                        }
+                    }
+                    
+                    #pomodoroDisplays {
+                        height: fit-content;
+                        margin-top: 5%;
+    
+                        #pomodoroCircle {
+                            width: 270px !important;
+                            height: 270px !important;
+                            position: fixed;
+                            top: 55%;
+                            left: 50%;
+                            margin-top: -130px;
+                            margin-left: -130px;
+        
+                            #pomodoroTime {
+                                font-weight: 600;
+                                font-size: 35px !important;
+                            }
                         }
                     }
                 }
             }
-        }
-
-        #timers_s {
-            margin: 5px !important;
-            padding: 0;
-
-            #stopwatchContainer {
-                position: relative;
-                height: 100% !important;
-                width: 100%;
-                margin: 0;
-                // padding-top: 0 !important;
-                // margin-top: 16px;
-
-                #stopwatchDisplays {
-                    height: fit-content;
-                    margin-top: 5%;
-
-                    #stopwatchCircle {
-                        width: 260px !important;
-                        height: 260px !important;
-                        #stopwatchTime {
-                            display: flex;
-                            color: whitesmoke;
-                            font-size: 70px !important;
-                            font-weight: 600;
-                        }
-                    }
-                }
-                #lapTime {
-                    // height: 100% !important;
+    
+            #timers_s {
+                margin: 5px !important;
+                padding: 0;
+    
+                #stopwatchContainer {
+                    position: relative;
                     height: 100% !important;
                     width: 100%;
-                    margin: 0 !important;
-                    overflow-y: scroll;
+                    margin: 0;
     
-                    #lapTimeList {
-                        list-style: none;
-                        margin-bottom: 0;
-                        .lapTimeItems {
-                            font-weight: 500;
-                            font-size: 20px !important;
+                    > .sc1 {
+                        height: 15%;
+                    }
     
-                            .lappedTimes {
-                                float: right;
-                                margin-right: 40px;
+                    #stopwatchDisplays {
+                        height: fit-content;
+                        margin-top: 5%;
+    
+                        #stopwatchCircle {
+                            width: 270px !important;
+                            height: 270px !important;
+                            position: fixed;
+                            top: 55%;
+                            left: 50%;
+                            margin-top: -130px;
+                            margin-left: -130px;
+                            #stopwatchTime {
+                                display: flex;
+                                color: whitesmoke;
+                                font-size: 70px !important;
+                                font-weight: 600;
+                            }
+                        }
+                    }
+                    #lapTime {
+                        // height: 100% !important;
+                        height: 100% !important;
+                        width: 100% !important;
+                        margin: 0 !important;
+                        overflow-y: scroll;
+                        margin: 0 !important;
+                        #lapTimeList {
+                            list-style: none;
+                            margin-bottom: 0;
+                            .lapTimeItems {
+                                font-weight: 500;
+                                font-size: 20px !important;
+        
+                                .lappedTimes {
+                                    float: right;
+                                    margin-right: 40px;
+                                }
                             }
                         }
                     }
                 }
             }
         }
-    }
-
-    .container {
-        margin: 5px;
-    }
-
-    .timerBtnContainer {
-        position: absolute;
-        // position:relative;
-        width: 100%;
-        flex-direction: row !important;
-        height:fit-content !important;
-        bottom: 2.5%;
-        left: 0;
-        padding: 0;
-
-        .timerBtns {
-            width: 60px !important;
-            height: 60px !important;
-            font-size: 0.75rem;
+    
+        .container {
+            margin: 5px;
+        }
+    
+        .timerBtnContainer {
+            position: absolute;
+            // position:relative;
+            width: 100%;
+            flex-direction: row !important;
+            height:fit-content !important;
+            bottom: 2.5%;
+            left: 0;
+            padding: 0;
+    
+            .timerBtns {
+                width: 60px !important;
+                height: 60px !important;
+                font-size: 0.75rem;
+            }
         }
     }
 }

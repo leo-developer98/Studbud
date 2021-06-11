@@ -252,7 +252,6 @@ taskBtn.addEventListener('click', () => {
 })
 
 $("#myKanban").click(function(event) {
-  // console.log(event.target);
   // Disable closing tasklist when the following elements were clicked
   if($(event.target).is('.kanbanItemBtn, .kanban-title-board, .kanban-board-header') || $(event.target).is("i, input")){
   } else if (taskOpen) {
@@ -316,21 +315,6 @@ uploadBtn.addEventListener("click", function (event) {
     addTask(td, dd, ct, pr, prIndex, et, cs, label);
   }
 })
-
-// var taskList = [];
-// localStorage.setItem('tasks', JSON.stringify(taskList));
-
-// Object.keys(localStorage).forEach(function (key) {
-//   let task = localStorage.getItem(key);
-//   let taskObj = JSON.parse(task);
-//   showTask(taskObj);
-// });
-
-// Object.keys(localStorage).forEach(function (key) {
-//   let task = localStorage.getItem(key);
-//   let taskObj = JSON.parse(task);
-//   showTask(taskObj);
-// });
 
 // Task Storage
 const taskStorage = new TaskStorage();
@@ -458,7 +442,6 @@ function addTask(taskDescription, dueDate, completionTime, priorityRating, prior
         showTask(task);
         closeBtn.click();
 
-        console.log("add task end");
       } else if (labelStorage.labelColourExists(task.label)) {
         alert("Label colour already exists");
       } else {
@@ -687,11 +670,11 @@ function showTask(task) {
   let kanbanDropdown = document.createElement("div");
   kanbanDropdown.classList.add("btn-group");
   let dropdownBtn = document.createElement("button");
-  dropdownBtn.classList.add("btn", "dropdown-toggle", "kanban-select");
+  dropdownBtn.classList.add("btn", "dropdown-toggle", "kanban-select", "btn-sm");
   dropdownBtn.setAttribute("type", "button");
   dropdownBtn.setAttribute("data-bs-toggle", "dropdown");
   dropdownBtn.setAttribute("data-item", task.taskDescription);
-  dropdownBtn.innerHTML = "None";
+  dropdownBtn.innerHTML = "Move Item";
   let dropdownList = document.createElement("ul");
   dropdownList.classList.add("dropdown-menu");
   dropdownList.classList.add("kanban-dropdown-list");
@@ -719,9 +702,10 @@ function showTask(task) {
 
   buttons.appendChild(moveButton);
   buttons.appendChild(delButton);
+  right_body.appendChild(kanbanDropdown);
   right_body.appendChild(buttons);
   item_body.appendChild(right_body);  
-  item_body.appendChild(kanbanDropdown);
+  // item_body.appendChild(kanbanDropdown);
   item.appendChild(item_body);
   // item.appendChild(buttons);
   tasks.appendChild(item);
@@ -732,25 +716,11 @@ function showTask(task) {
 
 // Helper Compare functions for sorting 
 function compareDateCreated(a,b) {
-  // if (a.id < b.id) {
-  //   return -1;
-  // } else if (a.id > b.id) {
-  //   return 1;
-  // } else {
-  //   return 0;
-  // }
 
   return a.id - b.id;
 }
 
 function compareDueDate(a, b) {
-  // if (a.dueDate < b.dueDate) {
-  //   return -1;
-  // } else if (a.dueDate > b.dueDate) {
-  //   return 1;
-  // } else {
-  //   return 0;
-  // }
   // equal items sort equally
   if (a.dueDate === b.dueDate) {
     return 0;
@@ -763,18 +733,10 @@ function compareDueDate(a, b) {
     return -1;
   } else { 
       return a.dueDate < b.dueDate ? -1 : 1;
-        // return parseInt(a.dueDate) - parseInt(b.dueDate);
   }
 }
 
 function comparePriority(a, b) {
-  // if (a.priorityRatingIndex < b.priorityRatingIndex) {
-  //   return 1;
-  // } else if (a.priorityRatingIndex > b.priorityRatingIndex) {
-  //   return -1;
-  // } else {
-  //   return 0;
-  // }
   if (a.priorityRatingIndex === b.priorityRatingIndex) {
     return 0;
   }
@@ -787,7 +749,6 @@ function comparePriority(a, b) {
   } else { 
     return parseInt(a.priorityRatingIndex) < parseInt(b.priorityRatingIndex) ? 1 : -1;
   }
-  // return b.priorityRatingIndex - a.priorityRatingIndex;
 }
 
 function compareEstimatedTime(a, b) {
@@ -810,16 +771,6 @@ function compareEstimatedTime(a, b) {
   } else { 
     return parseInt(a.estimatedTime) < parseInt(b.estimatedTime) ? -1 : 1;
   }
-
-  return a.estimatedTime - b.estimatedTime;
-}
-
-function removeItemFromArray(arr, index) {
-  if (index > -1) {
-    arr.splice(index, 1);
-  }
-
-  return arr;
 }
 
 
@@ -880,9 +831,14 @@ $(".sortEstimatedTime").click(function(event) {
   $("#closeAdd").click();
 })
 
+// Updates the Kanban Select (mobile) dropdown button
 function updateKanbanSelect() {
   $(".task_item").each(function(i,obj) {
     let id = $(obj).attr("data-taskname");
+    let kanbanButton = $(obj).find(".kanban-select")[0];
+
+    let htmlItem = $(`.task_item[data-taskname="${id}"]`)[0];
+    let itemObject = kanbanStorage.getItemObject(id);
 
     kanbanColumns.forEach((board) => {
       let li = document.createElement("li");
@@ -893,32 +849,26 @@ function updateKanbanSelect() {
       newOption.style.color = "white";
       li.appendChild(newOption);
       li.style.backgroundColor = board.color;
+    
       $(newOption).click(function() {
+        kanbanButton.innerHTML = board.title; 
+        kanbanButton.style.backgroundColor = board.color;
         let boardId = $(newOption).attr("data-target")
-        KanbanStorage.removeItemAll(id);
+        kanbanStorage.removeItemAll(id);
         kanbanBoard.removeElement(id);
         let item = {
           id: $(obj).attr("data-taskname"),
           currentBoard: boardId,
           title: id + `<button type='button' class='btn btn-outline-danger btn-sm kanbanItemBtn' data-target="${id}"><i class='fas fa-trash-alt'></i></button>`
         }
-        KanbanStorage.addItem(item, boardId);
+        kanbanStorage.addItem(item, boardId);
         kanbanBoard.addElement(boardId, item);
+        itemMoved(htmlItem, itemObject, board);
       })
+
       $(obj).find(".kanban-dropdown-list").append(li);
     })
   })
-    // let li = document.createElement("li");
-    // let newOption = document.createElement("a");
-    // newOption.innerHTML = board.title;
-    // newOption.setAttribute("value", board.id);
-    // newOption.classList.add("kanban-" + board.id, "kanban-options", "dropdown-item");
-    // newOption.style.color = "white";
-    // li.appendChild(newOption);
-    // li.style.backgroundColor = board.color;
-    // $(newOption).click(function() {
-    //   console.log(newOption.classList);
-    // })
 }
 
 // Allowing editing on the board titles
@@ -927,7 +877,7 @@ function editableBoardTitle() {
     boardName.setAttribute("contenteditable", "true");
     boardName.addEventListener("click", () => {
       let name = boardName.innerHTML.toString();
-      console.log(name);
+      // console.log(name);
     })
   })
 }
@@ -1028,6 +978,10 @@ $(document).ready(function () {
       let element = board.items[j];
       kanbanBoard.addElement(board.id, element);
       itemMoved($(`.task_item[data-taskname="${element.id}"]`)[0], element, board);
+
+      let kanbanSelect = $(`.task_item[data-taskname="${element.id}"]`).find(".kanban-select")[0];
+      $(kanbanSelect).html(board.title);
+      kanbanSelect.style.backgroundColor = board.color;
     }
 
     resizeBoards();

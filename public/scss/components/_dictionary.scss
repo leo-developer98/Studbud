@@ -8,13 +8,9 @@
 
         .input-group {
             width: 100%;
-            #searchBox {
-                // width: 100%;
-            }
             #dicSearchBtn {
                 background-color: #252e59;
                 border: none;
-                // border-color: #43519d;
             }
     
             #dicRefreshBtn {
@@ -30,7 +26,6 @@
         padding-top: 0;
         margin-right: 3px;
         overflow-y: scroll;
-        // padding: 0;
 
         &::-webkit-scrollbar {
             width: 8px;
@@ -61,13 +56,10 @@
                 }
             }
             #definitions {
-                // padding: 20px;
                 .results {
                     background-color: rgb(236, 236, 236);
                     border-radius: 8px;
-                    // margin: 20px 0;
                     margin-bottom: 15px;;
-                    // padding: 20px;
                     .eachDefinition {
                         background-color: #252e59;
                         padding: 10px;
@@ -134,7 +126,7 @@
 
 @media only screen and (max-width: 769px) {
     .input-group {
-        width: 80% !important;
+        width: 100% !important;
         margin-left: 15px;
     }
 }

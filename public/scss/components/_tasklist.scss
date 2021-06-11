@@ -6,7 +6,6 @@
     transition: all 0.25s ease-in-out;
     background-color: rgb(225, 225, 225);
     left: -270px;
-    // top: 56px;
 
     &.open {
         left: 0px;
@@ -121,9 +120,11 @@
                     .task_buttons {
                         display: flex;
                         align-self: flex-end;
-                        // margin-top: 10px;
-                        // width: 100%;
                     }
+                }
+
+                .kanban-select {
+                    display: none;
                 }
             }
         }
@@ -255,18 +256,6 @@
     }
 }
 
-// .sortTasksBtn {
-//     align-items: center;
-//     justify-content: center;
-//     background-color: #252e59;
-//     color: white;
-//     border: none;
-//     margin-left: auto;
-//     margin-right: 5px;
-//     // height: 60%;
-//     float: right;
-// }
-
 #taskList::-webkit-scrollbar {
     width: 8px;
 }
@@ -279,32 +268,6 @@
     background-color: #4e4e4e;
     border-radius: 5px;
 }
-
-// #taskList::-moz-scrollbar {
-//     width: 8px;
-// }
-
-// #taskList::-moz-scrollbar-track {
-//     display: none;
-// }
-
-// #taskList::-moz-scrollbar-thumb {
-//     background-color: #4e4e4e;
-//     border-radius: 5px;
-// }
-
-// #taskList::-o-scrollbar {
-//     width: 8px;
-// }
-
-// #taskList::-o-scrollbar-track {
-//     display: none;
-// }
-
-// #taskList::-o-scrollbar-thumb {
-//     background-color: #4e4e4e;
-//     border-radius: 5px;
-// }
 
 // Kanban Board
 
@@ -376,66 +339,17 @@
     justify-content: center;
     align-items: center;
     overflow: hidden;
-    // background-image: linear-gradient(to right, white 50%, --slideColor 50%);
     background-size: 200%;
     transition: background-position .3s cubic-bezier(.47, .1, 1, .63), color .2s linear;
     transition-delay: 0.0s, 0.15s;
-    // -webkit-transition: all 1s;
-    // -moz-transition: all 1s;
-    // -o-transition: all 1s;
-    // transition: all 1s;
     .kanbanItemBtn {
         border: none;
         display: flex;
         float: right;
         margin: auto;
     }
-    // .kanban-item-bg {
-    //     height: 5px;
-    //     /* to grow from center: */
-    //     position: absolute;
-    //     left: 50%;
-    //     transform: translateX(-50%);
-    //     // height: 100%;
-    //     background-color: #178bff;
-    //     // top: 50%;
-    //     // left: -100%;
-    //     // width: fit-content;
-    //     // height: fit-content;
-    //     // -webkit-transition: all 1s;
-    //     // -moz-transition: all 1s;
-    //     // -o-transition: all 1s;
-    //     // transition: all 1s;
-    // }
 }
 
-@keyframes backgroundSlide {
-    0% {
-        // transform: translateX(-100%);
-        width: 0%;
-    }
-
-    100% {
-        // transform: translateX(100%);
-        width: 100%;
-    }
-}
-
-@keyframes colorChange {
-    0% {
-        // transform: translateX(-100%);
-        width: 0%;
-    }
-
-    50% {
-
-    }
-
-    100% {
-        // transform: translateX(100%);
-        width: 100%;
-    }
-}
 
 
 @media only screen and (max-width: 769px) {
@@ -453,6 +367,28 @@
         #taskgrid {
             #taskList {
                 height: calc(100vh - 66px);
+
+                .task_item {
+
+                    .task-left {
+                        width: 60%;
+                    }
+
+                    .task-right {
+                        width: 40%;
+                        position: relative;
+                        .btn-group {
+                            width: 100%;
+                            .kanban-select {
+                                display: block;
+                                background-color:#252e59;
+                                color: white;
+                                margin-bottom: 8px;
+                                width: 100% !important;
+                            }
+                        }
+                    }
+                }
             }
         }
 

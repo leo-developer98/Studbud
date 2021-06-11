@@ -1,6 +1,5 @@
 nav {
     display: flex;
-    // position:fixed;
     height: 56px;
     background-color: #43519d;
     color: white;
@@ -54,8 +53,7 @@ nav {
 
     #timerIndicators {
         display: flex;
-        // float: right;
-        width:fit-content;
+        width: fit-content;
         height: 56px;
         margin-left: auto;
         margin-right: 15px;
@@ -67,32 +65,31 @@ nav {
             float: right;
             justify-content: center;
             align-items: center;
-    
+
             &.show {
                 display: inline-block;
             }
-    
+
             .indicatorTimes {
                 margin-left: 10px;
-                font-weight:700;
+                font-weight: 700;
             }
         }
-    
+
         #sTimerIndicator {
             display: none;
             margin-left: 10px;
             float: right;
             justify-content: center;
             align-items: center;
-    
+
             &.show {
                 display: flex;
             }
-    
+
             .indicatorTimes {
                 margin-left: 10px;
-                font-weight:700;
-                
+                font-weight: 700;
             }
         }
     }
@@ -101,13 +98,12 @@ nav {
         display: none;
         align-items: center;
         justify-content: center;
-        background-color:#43519d;
+        background-color: #43519d;
         color: white;
         border: none;
         margin-right: 5px;
         float: right;
     }
-
 
     .nav_links {
         list-style: none;
@@ -132,7 +128,6 @@ nav {
 
                 &.active {
                     font-weight: bold;
-                    // background-color: #43519d;
                 }
             }
 
@@ -144,11 +139,6 @@ nav {
                 border: none;
                 border-radius: 0;
                 transition: all 0.3s ease-in-out;
-
-                // &:focus {
-                //     outline: none !important;
-                //     outline:0;
-                // }
 
                 &:hover {
                     background-color: #252e59;
@@ -195,7 +185,7 @@ nav {
         position: fixed;
         height: calc(100vh - 56px);
         width: 100%;
-        background:#252e59;
+        background: #252e59;
         left: calc(-100vw);
         top: 56px;
         z-index: 10;
@@ -215,7 +205,7 @@ nav {
             justify-content: center;
             font-size: 24px;
 
-            i{
+            i {
                 display: flex;
                 margin-right: 20px;
             }

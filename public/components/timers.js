@@ -119,13 +119,12 @@ lbTimeInput.addEventListener("input", () => {
 var pomodoro = new Timer();
 
 $('#pomo-startBtn').click(function () {
-    $("#pomodoroCircle").effect("bounce", {distance: 20,times: 3} ,550);
-    if(loop === 1) {
+    $("#pomodoroCircle").effect("bounce", { distance: 20, times: 3 }, 550);
+    if (loop === 1) {
         $("#pomodoroCircle").addClass("studyMode");
     }
     $("#pomodoroCircle").removeClass("paused");
-    // Change Here!!!
-    pomodoro.start({ countdown: true, startValues: { seconds: study }, target: { minutes: 0 } });
+    pomodoro.start({ countdown: true, startValues: { minutes: study }, target: { minutes: 0 } });
     pomoStartBtn.classList.remove("running");
     pomoPauseBtn.classList.add("running");
     studyTimeInput.setAttribute("disabled", "true");
@@ -137,7 +136,7 @@ $('#pomo-startBtn').click(function () {
 });
 
 $('#pomo-pauseBtn').click(function () {
-    $("#pomodoroCircle").effect("bounce", {distance: 20,times: 3} ,550);
+    $("#pomodoroCircle").effect("bounce", { distance: 20, times: 3 }, 550);
     $("#pomodoroCircle").addClass("paused");
     pomodoro.pause();
     pomoPauseBtn.classList.remove("running");
@@ -148,20 +147,20 @@ $('#pomo-pauseBtn').click(function () {
 
 $('#pomo-resetBtn').click(function () {
     if (confirm("Reset the current Pomodoro session?")) {
-    pomodoro.reset();
-    pomodoro.start();
-    pomodoro.pause();
-    pomoPauseBtn.classList.remove("running");
-    pomoStartBtn.classList.add("running");
-    $("#pTimerIndicator").removeClass("btn-danger");
-    $("#pTimerIndicator").addClass("btn-primary");
+        pomodoro.reset();
+        pomodoro.start();
+        pomodoro.pause();
+        pomoPauseBtn.classList.remove("running");
+        pomoStartBtn.classList.add("running");
+        $("#pTimerIndicator").removeClass("btn-danger");
+        $("#pTimerIndicator").addClass("btn-primary");
     }
 });
 
 $('#pomo-stopBtn').click(function () {
     if (confirm("Stop the current Pomodoro timer?")) {
-        $("#pomodoroCircle").effect("puff", { mode : "hide"},   300);
-        $("#pomodoroCircle").effect("puff", { mode : "show"},   300);
+        $("#pomodoroCircle").effect("puff", { mode: "hide" }, 300);
+        $("#pomodoroCircle").effect("puff", { mode: "show" }, 300);
         $("#pomodoroCircle").removeClass("studyMode");
         $("#pomodoroCircle").removeClass("sbMode");
         $("#pomodoroCircle").removeClass("lbMode");
@@ -258,7 +257,7 @@ var stopWatch = new Timer();
 
 $('#sw-startBtn').click(function () {
     $("#stopwatchCircle").addClass("active");
-    $("#stopwatchCircle").effect("bounce", {distance: 20,times: 3} ,550);
+    $("#stopwatchCircle").effect("bounce", { distance: 20, times: 3 }, 550);
     stopWatch.start({ precision: 'seconds' });
     swResetBtn.classList.remove("running");
     swLapBtn.classList.add("running");
@@ -271,7 +270,7 @@ $('#sw-startBtn').click(function () {
 
 $('#sw-pauseBtn').click(function () {
     $("#stopwatchCircle").removeClass("active");
-    $("#stopwatchCircle").effect("bounce", {distance: 20,times: 3} ,550);
+    $("#stopwatchCircle").effect("bounce", { distance: 20, times: 3 }, 550);
     stopWatch.pause();
     swResetBtn.classList.add("running");
     swLapBtn.classList.remove("running");
@@ -290,13 +289,14 @@ $('#sw-stopBtn').click(function () {
         swStartBtn.classList.add("running");
         $("#sTimerIndicator").removeClass("btn-danger");
         $("#sTimerIndicator").addClass("btn-primary");
+        $("#stopwatchCircle").removeClass("active");
     }
 });
 
 $('#sw-resetBtn').click(function () {
     if (confirm("Reset the current Stopwatch? (current lap times will be deleted)")) {
-        $("#stopwatchCircle").effect("puff", { mode : "hide"},   300);
-        $("#stopwatchCircle").effect("puff", { mode : "show"},   300);
+        $("#stopwatchCircle").effect("puff", { mode: "hide" }, 300);
+        $("#stopwatchCircle").effect("puff", { mode: "show" }, 300);
         stopWatch.reset();
         stopWatch.pause();
         swResetBtn.classList.add("running");
@@ -304,6 +304,7 @@ $('#sw-resetBtn').click(function () {
         lapList.innerHTML = "";
         lapNum = 1;
         $("#sTimerIndicator").removeClass("show");
+        $("#stopwatchCircle").removeClass("active");
     }
 });
 
@@ -351,22 +352,36 @@ stopWatch.addEventListener('reset', function (e) {
 });
 
 // Timer Indicator linked to Timer modal
-$("#pTimerIndicator").click(function(e) {
+$("#pTimerIndicator").click(function (e) {
     e.preventDefault();
     $("#tabP").prop("checked", true);
     $('#timers').modal('show');
 })
 
-$("#sTimerIndicator").click(function(e) {
+$("#sTimerIndicator").click(function (e) {
     e.preventDefault();
     $("#tabS").prop("checked", true);
     $('#timers').modal('show');
 })
 
-// var pw = $("#pomodoroCircle").width();
-// console.log(pw);
-// $('#pomodoroCircle').css({
-//     'height': pw + "px"
-// });
+let sliderOpen = false;
+$("#sliderBtn").click(function (event) {
+    if (sliderOpen == false) {
+        $(".slider").addClass("open");
+        $("#pInputContainer").addClass("open");
+        sliderOpen = true;
+    } else {
+        $(".slider").removeClass("open");
+        $("#pInputContainer").removeClass("open");
+        sliderOpen = false;
+    }
+})
 
-// console.log($('.progress').height());
+$("#pInputContainer").click(function (event) {
+    if ($(event.target).is("#sliderBtn") || $(event.target).is("i")) {
+    } else if (sliderOpen) {
+        $(".slider").removeClass("open");
+        $("#pInputContainer").removeClass("open");
+        sliderOpen = false;
+    }
+})

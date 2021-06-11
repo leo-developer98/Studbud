@@ -51,22 +51,6 @@ export default class KanbanStorage {
     }
   }
 
-  updateKanbanSelect() {
-    this.boards.forEach((board) => {
-      let li = document.createElement("li");
-      let newOption = document.createElement("a");
-      newOption.innerHTML = board.title;
-      newOption.setAttribute("value", board.id);
-      newOption.classList.add("kanban-" + board.id, "kanban-options", "dropdown-item");
-      newOption.style.color = "white";
-      li.appendChild(newOption);
-      li.style.backgroundColor = board.color;
-      $(newOption).click(function() {
-        console.log(newOption.classList);
-      })
-    })
-  }
-
   addBoard(board) {
     let index = this.getColumnIndex(board.id);
 
@@ -105,10 +89,10 @@ export default class KanbanStorage {
       this.boards[columnIndex].items.push(item);
 
       let button = $(`.kanban-select[data-item="${item.id}"]`);
-      console.log(button);
+      // console.log(button);
       localStorage.setItem('kanban', JSON.stringify(this.boards));
     } else {
-      alert(`Kanban Storage(addItem): Item wasn't added due to invalid index, columnIndex=${columnIndex} itemIndex=${itemIndex}`);
+      console.log(`Kanban Storage(addItem): Item wasn't added due to invalid index, columnIndex=${columnIndex} itemIndex=${itemIndex}`);
     }
   }
 
@@ -127,9 +111,9 @@ export default class KanbanStorage {
 
   removeItemAll(itemId) {
     for (let i = 0; i < this.boards.length; i++) {
-      for (let j = 0; j < this.boards.items.length; j++) {
+      for (let j = 0; j < this.boards[i].items.length; j++) {
         if (this.boards[i].items[j].id == itemId) {
-          this.boards[i].items.splice[j, 1];
+          this.boards[i].items.splice(j, 1);
         }
       }
     }
