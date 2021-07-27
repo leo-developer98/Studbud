@@ -282,6 +282,22 @@ addBtn.addEventListener('click', () => {
     addBtn.classList.add('open');
     uploadBtn.classList.add('open');
     addOpen = true;
+    $("#pr").change(function() {
+      $("#pr option:selected").each(function() {
+        let selectedPr = $(this).text();
+        console.log(selectedPr);
+        if (selectedPr == "Select from below:") {
+          $('#pr_flag').css("color", "rgb(56, 56, 56)");
+        }
+        else if (selectedPr == "Low") {
+          $("#pr_flag").css("color", "rgb(41, 62, 255)");
+        } else if (selectedPr == "Medium") {
+          $('#pr_flag').css("color", "rgb(252, 181, 0)");
+        } else if (selectedPr == "High") {
+          $('#pr_flag').css("color", "rgb(201, 20, 0)");
+        }
+      })
+    })
   }
 })
 
@@ -308,8 +324,8 @@ uploadBtn.addEventListener("click", function (event) {
     let et = estimatedTime.value;
     let cs = false;
     let label = {
-      name: labelName.value,
-      colour: labelColour.value
+      name: $("#tl option:selected").text(),
+      colour: $("#tl option:selected").val()
     }
 
     addTask(td, dd, ct, pr, prIndex, et, cs, label);
@@ -332,7 +348,8 @@ $(document).ready(function () {
   taskList.forEach((element) => {
     showTask(element);
   })
-  updateLabelDropdown();
+  // updateLabelDropdown();
+  updateLabelSelect();
   editableBoardTitle();
   resizeBoards();
 });
@@ -404,6 +421,61 @@ function updateLabelDropdown() {
   updateEmpty();
 }
 
+function updateLabelSelect() {
+  for (let i=0; i < labelList.length; i++) {
+    let labelName = labelList[i].name;
+    let labelColour = labelList[i].colour;
+
+    let newOption = new Option(labelName, labelColour);
+    console.log(newOption);
+    $("#tl").append(newOption, undefined);
+  }
+}
+
+$("#createLabelBtn").click(function() {
+  let label = {
+    name: $("#newLabelInput").val(),
+    colour: $("#labelColourInput").val()
+  }
+
+  if (label.name == "") {
+    alert("No label name input!");
+  } else if (labelStorage.labelNameExists(label)) {
+    alert(`Label name: ${label.name} already exists!`) 
+  } else if (labelStorage.labelColourExists(label)) {
+    alert("Label colour already exists! Choose a different colour.")
+  } else {
+    labelStorage.create(label, label.name, label.colour);
+    $("#cancelLabelBtn").click();
+
+    let newOption = new Option(label.name, label.colour);
+    $("#tl").append(newOption, undefined);
+  }
+
+  // if (task.label.name == "") {
+  //   task.label = null;
+  //   taskStorage.create(task, key);
+  //   showTask(task);
+  //   closeBtn.click();
+  // } else if (labelStorage.labelNameExists(task.label)) {
+  //   let colour = labelStorage.getColour(task.label.name);
+  //   task.label.colour = colour;
+  //   // Add a task in Task Storage 
+  //   taskStorage.create(task, key);
+  //   showTask(task);
+  //   closeBtn.click();
+
+  // } else if (labelStorage.labelColourExists(task.label)) {
+  //   alert("Label colour already exists");
+  // } else {
+  //   labelStorage.create(task.label, task.label.name, task.label.colour);
+  //   // Add a task in Task Storage 
+  //   taskStorage.create(task, key);
+  //   showTask(task);
+  //   closeBtn.click();
+  // }
+})
+
 // Add task in the local storage & call showTask()
 function addTask(taskDescription, dueDate, completionTime, priorityRating, priorityRatingIndex, estimatedTime, completionStatus, label) {
   let task = {
@@ -427,30 +499,36 @@ function addTask(taskDescription, dueDate, completionTime, priorityRating, prior
     let key = (task.taskDescription).toString();
     // If created task doesn't exits (task name):
     if (taskStorage.getIndexByName(key) === -1) {
-      // console.log(task.label)
+      console.log(task.label)
       // If there is no label input, empty label for the task
       if (task.label.name == "") {
         task.label = null;
         taskStorage.create(task, key);
         showTask(task);
         closeBtn.click();
-      } else if (labelStorage.labelNameExists(task.label)) {
-        let colour = labelStorage.getColour(task.label.name);
-        task.label.colour = colour;
-        // Add a task in Task Storage 
-        taskStorage.create(task, key);
-        showTask(task);
-        closeBtn.click();
-
-      } else if (labelStorage.labelColourExists(task.label)) {
-        alert("Label colour already exists");
       } else {
-        labelStorage.create(task.label, task.label.name, task.label.colour);
-        // Add a task in Task Storage 
         taskStorage.create(task, key);
         showTask(task);
         closeBtn.click();
       }
+      
+      //    else if (labelStorage.labelNameExists(task.label)) {
+      //   let colour = labelStorage.getColour(task.label.name);
+      //   task.label.colour = colour;
+      //   // Add a task in Task Storage 
+      //   taskStorage.create(task, key);
+      //   showTask(task);
+      //   closeBtn.click();
+
+      // } else if (labelStorage.labelColourExists(task.label)) {
+      //   alert("Label colour already exists");
+      // } else {
+      //   labelStorage.create(task.label, task.label.name, task.label.colour);
+      //   // Add a task in Task Storage 
+      //   taskStorage.create(task, key);
+      //   showTask(task);
+      //   closeBtn.click();
+      // }
     } else {
       alert("Task " + key + " is already exists in the list")
     }
@@ -459,7 +537,7 @@ function addTask(taskDescription, dueDate, completionTime, priorityRating, prior
 
 // ShowTask: showing task visually in regards with its properties
 function showTask(task) {
-  updateLabelDropdown();
+  // updateLabelDropdown();
 
   let item = document.createElement("div");
   item.setAttribute('class', 'card');
