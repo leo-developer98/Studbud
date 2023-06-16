@@ -1,4 +1,4 @@
-# Studbud
+# Eassay
 DECO 2017 Web Application
 
 # Features
