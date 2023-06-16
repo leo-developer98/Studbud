@@ -1,6 +1,8 @@
 # 📓 Eassay
 A comprehensive single page web application to assist students
 
+<br></br>
+
 ## Features
 
 ### 📝 Task List
