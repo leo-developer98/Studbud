@@ -471,7 +471,7 @@ subNav.links.forEach(link => {
   });
 });
 
-},{"./components/navigation":"2K1cj","./components/tasklist":"Rj9Cl","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","./components/timers":"1ujtl","./components/readinglist":"2jNHT","./components/dictionary":"2aL5o","./components/musicplayer":"6m8Cd"}],"2K1cj":[function(require,module,exports) {
+},{"./components/navigation":"2K1cj","./components/tasklist":"Rj9Cl","./components/timers":"1ujtl","./components/readinglist":"2jNHT","./components/dictionary":"2aL5o","./components/musicplayer":"6m8Cd","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"2K1cj":[function(require,module,exports) {
 var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
 _parcelHelpers.defineInteropFlag(exports);
 class Navigation {
@@ -706,6 +706,7 @@ $(document).ready(function () {
   updateLabelSelect();
   editableBoardTitle();
   resizeBoards();
+  updateEmpty();
 });
 // Updates the Empty Status for Task List and Task Label Dropdown
 function updateEmpty() {
@@ -1408,7 +1409,7 @@ addBoardBtn.addEventListener("click", () => {
   }
 });
 
-},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","./taskStorage.js":"3WapR","./labelStorage.js":"BKomJ","../libraries/jkanban.min.js":"3IAxf","./kanbanStorage.js":"3QfYK","jquery":"6Oaih"}],"3WapR":[function(require,module,exports) {
+},{"./taskStorage.js":"3WapR","./labelStorage.js":"BKomJ","./kanbanStorage.js":"3QfYK","../libraries/jkanban.min.js":"3IAxf","jquery":"6Oaih","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"3WapR":[function(require,module,exports) {
 var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
 _parcelHelpers.defineInteropFlag(exports);
 class TaskStorage {
@@ -1537,6 +1538,145 @@ class LabelStorage {
   }
 }
 exports.default = LabelStorage;
+
+},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"3QfYK":[function(require,module,exports) {
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+class KanbanStorage {
+  constructor() {
+    // if item by key `tasks` is not defined JSON.parse return null, so I use `or empty array`
+    this.boards = JSON.parse(localStorage.getItem('kanban')) || [{
+      id: 'toDo',
+      title: "To Do",
+      items: [],
+      color: "#178bff",
+      order: 1
+    }, {
+      id: 'inProgress',
+      title: "In Progress",
+      items: [],
+      color: "#ffc31e",
+      order: 2
+    }, {
+      id: 'done',
+      title: "Done",
+      items: [],
+      color: "#3dd66b",
+      order: 3
+    }];
+  }
+  /*returns board index in this.boards*/
+  getColumnIndex(boardId) {
+    for (let i = 0; i < this.boards.length; i++) {
+      if (this.boards[i].id == boardId) {
+        return i;
+      }
+    }
+    return -1;
+  }
+  /*returns the item index with a list of [columnIndex, itemIndex] in this.columns*/
+  getItemIndex(itemId, columnIndex) {
+    if (columnIndex !== -1) {
+      for (let i = 0; i < this.boards[columnIndex].items.length; i++) {
+        if (this.boards[columnIndex].items[i].id == itemId) {
+          return i;
+        }
+      }
+      return -1;
+    }
+  }
+  /*returns item object from the storage corresponding to the itemId*/
+  getItemObject(itemId) {
+    for (let i = 0; i < this.boards.length; i++) {
+      for (let j = 0; j < this.boards[i].items.length; j++) {
+        if (this.boards[i].items[j].id == itemId) {
+          return this.boards[i].items[j];
+        } else {
+          console.log("KanbanStorage.getItemObject(): item not found in the storage");
+        }
+      }
+    }
+  }
+  /*returns board object from the storage corresponding to the boardId*/
+  getBoardObject(boardId) {
+    for (let i = 0; i < this.boards.length; i++) {
+      if (this.boards[i].id == boardId) {
+        return this.boards[i];
+      } else {
+        console.log("KanbanStorage.getBoardObject(): board not found in the storage");
+      }
+    }
+  }
+  /*add board in the local storage*/
+  addBoard(board) {
+    let index = this.getColumnIndex(board.id);
+    if (index === -1) {
+      this.boards.push(board);
+      localStorage.setItem('kanban', JSON.stringify(this.boards));
+    } else {
+      console.log("Kanban Storage(addBoard): Board already exist in the KanbanStorage.boards");
+    }
+  }
+  /*remove board from the local storage*/
+  removeBoard(boardId) {
+    let index = this.getColumnIndex(boardId);
+    if (index !== -1) {
+      this.boards.splice(index, 1);
+      // let option = $(".kanban-" + boardId);
+      // $(option).remove();
+      localStorage.setItem('kanban', JSON.stringify(this.boards));
+    } else {
+      console.log("Kanban Storage(removeBoard): Board doesn't exist in the KanbanStorage.boards");
+    }
+  }
+  /*adds item to the corresponding board using boardId*/
+  addItem(item, boardId) {
+    let columnIndex = this.getColumnIndex(boardId);
+    let itemIndex = this.getItemIndex(item.id, columnIndex);
+    if (itemIndex == -1 && columnIndex !== -1) {
+      this.boards[columnIndex].items.push(item);
+      let button = $(`.kanban-select[data-item="${item.id}"]`);
+      // console.log(button);
+      localStorage.setItem('kanban', JSON.stringify(this.boards));
+    } else {
+      console.log(`Kanban Storage(addItem): Item wasn't added due to invalid index, columnIndex=${columnIndex} itemIndex=${itemIndex}`);
+    }
+  }
+  /*removes item from the corresponding board using boardId*/
+  removeItem(itemId, boardId) {
+    let columnIndex = this.getColumnIndex(boardId);
+    let itemIndex = this.getItemIndex(itemId, columnIndex);
+    if (itemIndex !== -1 && columnIndex !== -1) {
+      this.boards[columnIndex].items.splice(itemIndex, 1);
+      // this.boards[columnIndex].items.remove(itemIndex, 1);
+      localStorage.setItem('kanban', JSON.stringify(this.boards));
+    } else {}
+  }
+  /*removes item from any board in the storage*/
+  removeItemAll(itemId) {
+    for (let i = 0; i < this.boards.length; i++) {
+      for (let j = 0; j < this.boards[i].items.length; j++) {
+        if (this.boards[i].items[j].id == itemId) {
+          this.boards[i].items.splice(j, 1);
+        }
+      }
+    }
+  }
+  /*sorts and save the order of the boards using board's order property*/
+  sortBoards() {
+    this.boards.sort((a, b) => a.order - b.order);
+    localStorage.setItem('kanban', JSON.stringify(this.boards));
+  }
+  /*updates a board's order property*/
+  updateBoardOrder(boardId, order) {
+    let colIndex = this.getColumnIndex(boardId);
+    if (colIndex !== -1) {
+      this.boards[colIndex].order = order;
+      localStorage.setItem('kanban', JSON.stringify(this.boards));
+    }
+  }
+}
+exports.default = KanbanStorage;
 
 },{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"3IAxf":[function(require,module,exports) {
 var global = arguments[3];
@@ -2325,146 +2465,7 @@ var global = arguments[3];
   }]
 }, {}, [1]);
 
-},{}],"3QfYK":[function(require,module,exports) {
-var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
-_parcelHelpers.defineInteropFlag(exports);
-class KanbanStorage {
-  constructor() {
-    // if item by key `tasks` is not defined JSON.parse return null, so I use `or empty array`
-    this.boards = JSON.parse(localStorage.getItem('kanban')) || [{
-      id: 'toDo',
-      title: "To Do",
-      items: [],
-      color: "#178bff",
-      order: 1
-    }, {
-      id: 'inProgress',
-      title: "In Progress",
-      items: [],
-      color: "#ffc31e",
-      order: 2
-    }, {
-      id: 'done',
-      title: "Done",
-      items: [],
-      color: "#3dd66b",
-      order: 3
-    }];
-  }
-  /*returns board index in this.boards*/
-  getColumnIndex(boardId) {
-    for (let i = 0; i < this.boards.length; i++) {
-      if (this.boards[i].id == boardId) {
-        return i;
-      }
-    }
-    return -1;
-  }
-  /*returns the item index with a list of [columnIndex, itemIndex] in this.columns*/
-  getItemIndex(itemId, columnIndex) {
-    if (columnIndex !== -1) {
-      for (let i = 0; i < this.boards[columnIndex].items.length; i++) {
-        if (this.boards[columnIndex].items[i].id == itemId) {
-          return i;
-        }
-      }
-      return -1;
-    }
-  }
-  /*returns item object from the storage corresponding to the itemId*/
-  getItemObject(itemId) {
-    for (let i = 0; i < this.boards.length; i++) {
-      for (let j = 0; j < this.boards[i].items.length; j++) {
-        if (this.boards[i].items[j].id == itemId) {
-          return this.boards[i].items[j];
-        } else {
-          console.log("KanbanStorage.getItemObject(): item not found in the storage");
-        }
-      }
-    }
-  }
-  /*returns board object from the storage corresponding to the boardId*/
-  getBoardObject(boardId) {
-    for (let i = 0; i < this.boards.length; i++) {
-      if (this.boards[i].id == boardId) {
-        return this.boards[i];
-      } else {
-        console.log("KanbanStorage.getBoardObject(): board not found in the storage");
-      }
-    }
-  }
-  /*add board in the local storage*/
-  addBoard(board) {
-    let index = this.getColumnIndex(board.id);
-    if (index === -1) {
-      this.boards.push(board);
-      localStorage.setItem('kanban', JSON.stringify(this.boards));
-    } else {
-      console.log("Kanban Storage(addBoard): Board already exist in the KanbanStorage.boards");
-    }
-  }
-  /*remove board from the local storage*/
-  removeBoard(boardId) {
-    let index = this.getColumnIndex(boardId);
-    if (index !== -1) {
-      this.boards.splice(index, 1);
-      // let option = $(".kanban-" + boardId);
-      // $(option).remove();
-      localStorage.setItem('kanban', JSON.stringify(this.boards));
-    } else {
-      console.log("Kanban Storage(removeBoard): Board doesn't exist in the KanbanStorage.boards");
-    }
-  }
-  /*adds item to the corresponding board using boardId*/
-  addItem(item, boardId) {
-    let columnIndex = this.getColumnIndex(boardId);
-    let itemIndex = this.getItemIndex(item.id, columnIndex);
-    if (itemIndex == -1 && columnIndex !== -1) {
-      this.boards[columnIndex].items.push(item);
-      let button = $(`.kanban-select[data-item="${item.id}"]`);
-      // console.log(button);
-      localStorage.setItem('kanban', JSON.stringify(this.boards));
-    } else {
-      console.log(`Kanban Storage(addItem): Item wasn't added due to invalid index, columnIndex=${columnIndex} itemIndex=${itemIndex}`);
-    }
-  }
-  /*removes item from the corresponding board using boardId*/
-  removeItem(itemId, boardId) {
-    let columnIndex = this.getColumnIndex(boardId);
-    let itemIndex = this.getItemIndex(itemId, columnIndex);
-    if (itemIndex !== -1 && columnIndex !== -1) {
-      this.boards[columnIndex].items.splice(itemIndex, 1);
-      // this.boards[columnIndex].items.remove(itemIndex, 1);
-      localStorage.setItem('kanban', JSON.stringify(this.boards));
-    } else {}
-  }
-  /*removes item from any board in the storage*/
-  removeItemAll(itemId) {
-    for (let i = 0; i < this.boards.length; i++) {
-      for (let j = 0; j < this.boards[i].items.length; j++) {
-        if (this.boards[i].items[j].id == itemId) {
-          this.boards[i].items.splice(j, 1);
-        }
-      }
-    }
-  }
-  /*sorts and save the order of the boards using board's order property*/
-  sortBoards() {
-    this.boards.sort((a, b) => a.order - b.order);
-    localStorage.setItem('kanban', JSON.stringify(this.boards));
-  }
-  /*updates a board's order property*/
-  updateBoardOrder(boardId, order) {
-    let colIndex = this.getColumnIndex(boardId);
-    if (colIndex !== -1) {
-      this.boards[colIndex].order = order;
-      localStorage.setItem('kanban', JSON.stringify(this.boards));
-    }
-  }
-}
-exports.default = KanbanStorage;
-
-},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"6Oaih":[function(require,module,exports) {
+},{}],"6Oaih":[function(require,module,exports) {
 var define;
 /*!
 * jQuery JavaScript Library v3.6.0

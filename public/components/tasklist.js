@@ -352,6 +352,7 @@ $(document).ready(function () {
   updateLabelSelect();
   editableBoardTitle();
   resizeBoards();
+  updateEmpty();
 });
 
 // Updates the Empty Status for Task List and Task Label Dropdown
