@@ -10,12 +10,18 @@ A comprehensive single page web application to assist students
 * Sort tasks by options.
 * Add tasks from task list to Kanban board.
 
-All changes and status are saved in the local storage.
+> All changes and current status are saved in the local storage.
+
+<br></br>
 
 ### 📋 Kanban Board
 * Simply grab and drop tasks to different boards.
 * Add new or remove existing boards.
 * Modify and style existing boards.
+
+> All changes and current status are saved in the local storage.
+
+<br></br>
 
 ### ⌛ Study Timers
 
@@ -28,9 +34,13 @@ All changes and status are saved in the local storage.
 * Start, pause, reset the timer.
 * Lap the time when timer is running.
 
+<br></br>
+
 ### 📚 Dictionary
 * Search a word to get its definitions, pronunciations, part of speech and synonyms.
 * Click the synonyms to re-search the word.
+
+<br></br>
 
 ### 🎧 Music Player
 * Listen to music while studying using the embedded "spotify" music player.
