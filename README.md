@@ -19,12 +19,12 @@ All changes and status are saved in the local storage.
 
 ### ⌛ Study Timers
 
-#### 🍅 Pomodoro Timer
+#### Pomodoro Timer 🍅
 * Start, pause, stop or reset the timer.
 * Set timer settings to your own preference.
 * Timer widget is shown when user leaves the timer page.
 
-#### ⏱️ Stopwatch Timer
+#### Stopwatch Timer ⏱️
 * Start, pause, reset the timer.
 * Lap the time when timer is running.
 
